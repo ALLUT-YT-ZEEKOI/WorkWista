@@ -13,7 +13,7 @@ class Signupscreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            const SizedBox(height: 20),
+            const SizedBox(height: 80),
             const Text(
               'Sign up for an account now!',
               textAlign: TextAlign.center,
@@ -25,7 +25,7 @@ class Signupscreen extends StatelessWidget {
               textAlign: TextAlign.center,
               style: AppTextStyle.loginsubhead,
             ),
-            const SizedBox(height: 80),
+            const SizedBox(height: 40),
 
             // OR Divider
 
@@ -182,36 +182,50 @@ class Signupscreen extends StatelessWidget {
 
             // Pushes login button to the bottom
             const Spacer(),
-            const SizedBox(
-              width: 372,
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  SizedBox(
-                    width: 340,
-                    child: Text.rich(
-                      TextSpan(
-                        children: [
-                          TextSpan(text: 'Dont have and account ? ', style: AppTextStyle.loginsubhead),
-                          TextSpan(
-                            text: 'Sign up now',
-                            style: TextStyle(
-                              color: Color(0xFF1E83FF),
-                              fontSize: 12,
-                              fontFamily: 'Mona Sans',
-                              fontWeight: FontWeight.w500,
-                              height: 1.33,
-                              letterSpacing: 0.04,
+            GestureDetector(
+              onTap: () {},
+              child: const SizedBox(
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                      width: 340,
+                      child: Text.rich(
+                        TextSpan(
+                          children: [
+                            TextSpan(text: 'By continuing, you agree to the ', style: AppTextStyle.loginsubhead),
+                            TextSpan(
+                              text: 'terms',
+                              style: TextStyle(
+                                color: Color(0xFF1E83FF),
+                                fontSize: 12,
+                                fontFamily: 'Mona Sans',
+                                fontWeight: FontWeight.w500,
+                                height: 1.33,
+                                letterSpacing: 0.04,
+                              ),
                             ),
-                          ),
-                        ],
+                            TextSpan(text: ' and ', style: AppTextStyle.loginsubhead),
+                            TextSpan(
+                              text: 'privacy',
+                              style: TextStyle(
+                                color: Color(0xFF1E83FF),
+                                fontSize: 12,
+                                fontFamily: 'Mona Sans',
+                                fontWeight: FontWeight.w500,
+                                height: 1.33,
+                                letterSpacing: 0.04,
+                              ),
+                            ),
+                          ],
+                        ),
+                        textAlign: TextAlign.center,
                       ),
-                      textAlign: TextAlign.center,
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
             // Login Button

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:workwista/AppTextStyle/appTextStyle.dart';
+import 'package:workwista/view/loginScreens/forgotPassword.dart';
+import 'package:workwista/view/loginScreens/signUpscreen.dart';
 
 class Splashscreen extends StatelessWidget {
   const Splashscreen({super.key});
@@ -16,45 +19,31 @@ class Splashscreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             const SizedBox(height: 30),
-            Image.asset(
-              'assets/Workwista (1).png',
-              width: screenWidth * 0.3,
+            Center(
+              child: Image.asset(
+                'assets/Workwista (1).png',
+                width: screenWidth * 0.4,
+                fit: BoxFit.cover,
+              ),
             ),
             const SizedBox(height: 20),
-            const Text(
-              'Welcome to Workwista 👋',
-              textAlign: TextAlign.center,
-              style: AppTextStyle.heading,
-            ),
+            const Text('Welcome to Workwista 👋', textAlign: TextAlign.center, style: AppTextStyle.heading),
             const SizedBox(height: 10),
-            const Text(
-              'Don’t miss the opportunity to easily find jobs and hire workers.',
-              textAlign: TextAlign.center,
-              style: AppTextStyle.loginsubhead,
-            ),
+            const Text('Don’t miss the opportunity to easily find jobs and hire workers.', textAlign: TextAlign.center, style: AppTextStyle.loginsubhead),
             const SizedBox(height: 80),
-
-            // Google Sign-in Button
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
               decoration: BoxDecoration(
                 color: Colors.white,
-                borderRadius: BorderRadius.circular(24),
+                borderRadius: BorderRadius.circular(35),
                 border: Border.all(color: const Color(0xFFBDBDBD), width: 1),
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Image.asset(
-                    'assets/flat-color-icons_google.png',
-                    width: screenWidth * 0.08,
-                  ),
+                  Image.asset('assets/flat-color-icons_google.png', width: screenWidth * 0.07),
                   const SizedBox(width: 10),
-                  const Text(
-                    'Sign up with Google',
-                    textAlign: TextAlign.center,
-                    style: AppTextStyle.normalFont,
-                  ),
+                  const Text('Sign up with Google', textAlign: TextAlign.center, style: AppTextStyle.normalFont),
                 ],
               ),
             ),
@@ -81,35 +70,22 @@ class Splashscreen extends StatelessWidget {
                 const Text('Phone Number/Email', style: AppTextStyle.labeltext),
                 const SizedBox(height: 5),
                 SizedBox(
-                  height: 50,
-                  child: TextField(
-                    decoration: InputDecoration(
-                      filled: true,
-                      fillColor: Colors.white,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(33),
-                        borderSide: const BorderSide(
-                          color: Color(0xFFBDBDBD), // Gray border color
-                          width: 1,
-                        ),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(33),
-                        borderSide: const BorderSide(
-                          color: Color(0xFFBDBDBD), // Gray border color when not focused
-                          width: 1,
-                        ),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(33),
-                        borderSide: const BorderSide(
-                          color: Color(0xFF757575), // Slightly darker gray when focused
-                          width: 1.5,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
+                    height: 50,
+                    child: TextField(
+                        decoration: InputDecoration(
+                            filled: true,
+                            fillColor: Colors.white,
+                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(33), borderSide: const BorderSide(color: Color(0xFFBDBDBD), width: 1)),
+                            enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(33),
+                                borderSide: const BorderSide(
+                                    color: Color(0xFFBDBDBD), // Gray border color when not focused
+                                    width: 1)),
+                            focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(33),
+                                borderSide: const BorderSide(
+                                    color: Color(0xFF757575), // Slightly darker gray when focused
+                                    width: 1.5))))),
                 const SizedBox(height: 20),
                 const Text('Password', style: AppTextStyle.labeltext),
                 const SizedBox(height: 5),
@@ -143,41 +119,66 @@ class Splashscreen extends StatelessWidget {
                     ),
                   ),
                 ),
+                const SizedBox(height: 5),
+                GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        PageTransition(
+                          type: PageTransitionType.rightToLeft, // Fade transition
+                          child: const Forgotpassword(),
+                          childCurrent: const Splashscreen(), // Optional: For better transition effects
+                          duration: const Duration(milliseconds: 300), // Adjust transition speed if needed
+                          reverseDuration: const Duration(milliseconds: 300),
+                        ),
+                      );
+                    },
+                    child: const Text('Forgot Password?', style: AppTextStyle.loginsubhead)),
               ],
             ),
 
             // Pushes login button to the bottom
             const Spacer(),
-            const SizedBox(
-              width: 372,
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  SizedBox(
-                    width: 340,
-                    child: Text.rich(
-                      TextSpan(
-                        children: [
-                          TextSpan(text: 'Dont have and account ? ', style: AppTextStyle.loginsubhead),
-                          TextSpan(
-                            text: 'Sign up now',
-                            style: TextStyle(
-                              color: Color(0xFF1E83FF),
-                              fontSize: 12,
-                              fontFamily: 'Mona Sans',
-                              fontWeight: FontWeight.w500,
-                              height: 1.33,
-                              letterSpacing: 0.04,
-                            ),
-                          ),
-                        ],
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  PageTransition(
+                    type: PageTransitionType.rightToLeft, // Fade transition
+                    child: const Signupscreen(),
+                    childCurrent: const Splashscreen(), // Optional: For better transition effects
+                    duration: const Duration(milliseconds: 300), // Adjust transition speed if needed
+                    reverseDuration: const Duration(milliseconds: 300),
                   ),
-                ],
+                );
+              },
+              child: const SizedBox(
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                      child: Text.rich(
+                        TextSpan(
+                          children: [
+                            TextSpan(text: 'Dont have and account ? ', style: AppTextStyle.loginsubhead),
+                            TextSpan(
+                              text: 'Sign up now',
+                              style: TextStyle(
+                                color: Color(0xFF1E83FF),
+                                fontSize: 12,
+                                fontFamily: 'Mona Sans',
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ],
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
             // Login Button
@@ -190,9 +191,7 @@ class Splashscreen extends StatelessWidget {
                 backgroundColor: Colors.transparent,
                 shadowColor: Colors.transparent,
               ),
-              onPressed: () {
-                // Add your onPressed logic here
-              },
+              onPressed: () {},
               child: Ink(
                 decoration: BoxDecoration(
                   gradient: const LinearGradient(

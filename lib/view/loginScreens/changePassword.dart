@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:workwista/AppTextStyle/appTextStyle.dart';
+import 'package:workwista/view/loginScreens/forgotPassword.dart';
 
 class Changepassword extends StatelessWidget {
   const Changepassword({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-
     return Scaffold(
       backgroundColor: Colors.white,
       body: Padding(
@@ -104,39 +104,6 @@ class Changepassword extends StatelessWidget {
 
             // Pushes login button to the bottom
             const Spacer(),
-            const SizedBox(
-              width: 372,
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  SizedBox(
-                    width: 340,
-                    child: Text.rich(
-                      TextSpan(
-                        children: [
-                          TextSpan(text: 'Dont have and account ? ', style: AppTextStyle.loginsubhead),
-                          TextSpan(
-                            text: 'Sign up now',
-                            style: TextStyle(
-                              color: Color(0xFF1E83FF),
-                              fontSize: 12,
-                              fontFamily: 'Mona Sans',
-                              fontWeight: FontWeight.w500,
-                              height: 1.33,
-                              letterSpacing: 0.04,
-                            ),
-                          ),
-                        ],
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            // Login Button
             ElevatedButton(
               style: ElevatedButton.styleFrom(
                 padding: const EdgeInsets.symmetric(vertical: 14),
@@ -147,7 +114,18 @@ class Changepassword extends StatelessWidget {
                 shadowColor: Colors.transparent,
               ),
               onPressed: () {
-                // Add your onPressed logic here
+                print("Button Pressed"); // Debugging log
+
+                // Navigator.push(
+                //   context,
+                //   PageTransition(
+                //     type: PageTransitionType.fade, // Left to Right transition
+                //     child: const Changepassword(),
+                //     childCurrent: const Forgotpassword(), // Optional: For better transition effects
+                //     duration: const Duration(milliseconds: 300), // Adjust transition speed if needed
+                //     reverseDuration: const Duration(milliseconds: 300),
+                //   ),
+                // );
               },
               child: Ink(
                 decoration: BoxDecoration(
@@ -163,7 +141,7 @@ class Changepassword extends StatelessWidget {
                   alignment: Alignment.center,
                   padding: const EdgeInsets.symmetric(vertical: 12),
                   child: const Text(
-                    'Login',
+                    'Next',
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       color: Color(0xFFFAFAFA),
@@ -174,6 +152,19 @@ class Changepassword extends StatelessWidget {
                 ),
               ),
             ),
+            GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    PageTransition(
+                      type: PageTransitionType.leftToRight, // Fade transition
+                      child: const Forgotpassword(),
+                      duration: const Duration(milliseconds: 300), // Adjust transition speed if needed
+                      reverseDuration: const Duration(milliseconds: 300),
+                    ),
+                  );
+                },
+                child: const Text('Back', style: AppTextStyle.labeltext)),
           ],
         ),
       ),
