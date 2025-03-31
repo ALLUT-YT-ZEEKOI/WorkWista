@@ -36,8 +36,9 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.6
   google_fonts: ^6.2.1
+  curved_navigation_bar: ^1.0.6
   page_transition: ^2.1.0
-
+  smooth_page_indicator: ^1.2.0+3
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -67,7 +68,15 @@ flutter:
     - assets\Frame 26080486.png
     - assets/bell.png
     - assets/ant-design_message-outlined.png
-    
+    - assets/location.png
+    - assets/clock.png
+    - assets/applicants.png
+    - assets/fulltime.png
+    - assets/onsite.png
+    - assets/fulltime2.png
+    - assets/cardbg.png
+    - assets/location_white.png
+    - assets/flag_white.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
