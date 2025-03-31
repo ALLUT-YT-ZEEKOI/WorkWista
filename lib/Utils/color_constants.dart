@@ -6,6 +6,7 @@ class ColorConstants {
   static Color viewMoreText = Color(0xff4498FF);
   static Color lightred = Color(0xffFFCED3);
   static Color daysleftRed = Color(0xff8C1823);
-   static Color indicatorBlue = Color(0xff4498FF);
- 
+  static Color lighttext = Color(0xff4A5E6D);
+  static Color indicatorBlue = Color(0xff4498FF);
+  static Color descText = Color(0xff92A585);
 }
