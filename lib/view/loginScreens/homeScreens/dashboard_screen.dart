@@ -4,6 +4,7 @@ import 'package:workwista/Utils/color_constants.dart';
 import 'package:workwista/view/Wdigets/companiescard.dart';
 import 'package:workwista/view/Wdigets/greencard.dart';
 import 'package:workwista/view/Wdigets/jobofferscard.dart';
+import 'package:workwista/view/Wdigets/search_field.dart';
 import 'package:workwista/view/responsive_helper.dart';
 
 class Dashboard extends StatefulWidget {
@@ -49,7 +50,7 @@ class _DashboardState extends State<Dashboard>
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
-    final screenHeight = MediaQuery.of(context).size.height;
+    // final screenHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
       body: SafeArea(
@@ -119,24 +120,8 @@ class _DashboardState extends State<Dashboard>
                         child: Row(
                           children: [
                             Expanded(
-                              child: SizedBox(
-                                height: ResponsiveHelper.height(50, context),
-                                child: TextFormField(
-                                  decoration: InputDecoration(
-                                    hintText: "Search...",
-                                    prefixIcon:
-                                        Icon(Icons.search, color: Colors.grey),
-                                    filled: true,
-                                    fillColor: Colors.white,
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(15.0),
-                                      borderSide: BorderSide(
-                                        color: ColorConstants.containerBorder
-                                            .withOpacity(0.1),
-                                      ),
-                                    ),
-                                  ),
-                                ),
+                              child: searchField(
+                                height: 50,
                               ),
                             ),
                             SizedBox(width: ResponsiveHelper.width(5, context)),

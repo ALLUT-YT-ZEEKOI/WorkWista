@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:workwista/view/loginScreens/homeScreens/add_job_screen.dart';
 import 'package:workwista/view/loginScreens/homeScreens/categories_screen.dart';
 import 'package:workwista/view/loginScreens/homeScreens/dashboard_screen.dart';
 import 'package:workwista/view/loginScreens/homeScreens/my_jobs_screen.dart';
 import 'package:workwista/view/loginScreens/homeScreens/profile_screen.dart';
+import 'package:workwista/view/responsive_helper.dart';
 
 class CustomBottomNavbar extends StatefulWidget {
   const CustomBottomNavbar({super.key});
@@ -18,6 +20,7 @@ class _CustomBottomNavbarState extends State<CustomBottomNavbar> {
   final List<Widget> _screens = [
     Dashboard(),
     MyJobsScreen(),
+    AddJobScreen(),
     CategoriesScreen(),
     ProfileScreen()
   ];
@@ -34,26 +37,101 @@ class _CustomBottomNavbarState extends State<CustomBottomNavbar> {
           });
         },
         type: BottomNavigationBarType.fixed, // For more than 3 items
-        items: const [
+        items: [
           BottomNavigationBarItem(
-            icon: Icon(Icons.home),
+            icon: Image.asset('assets/home_nofill.png'),
+            activeIcon: Image.asset('assets/home_fill.png'),
             label: 'Home',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.work),
+            icon: Image.asset(
+              'assets/briefcase.png',
+            ),
+            activeIcon: ShaderMask(
+              shaderCallback: (Rect bounds) {
+                return LinearGradient(
+                  colors: [
+                    Color(0xFF48AAFF), // #48AAFF
+                    Color(0xFF2B6699), // #2B6699
+                  ],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ).createShader(bounds);
+              },
+              blendMode: BlendMode.srcIn,
+              child: Image.asset(
+                'assets/briefcase_fill.png',
+                color: Colors
+                    .white, // Important: Set to white for gradient to show
+              ),
+            ),
             label: 'My Jobs',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.category),
+              icon: Image.asset('assets/add.png'),
+              activeIcon: ShaderMask(
+                shaderCallback: (Rect bounds) {
+                  return LinearGradient(
+                    colors: [
+                      Color(0xFF48AAFF), // #48AAFF
+                      Color(0xFF2B6699), // #2B6699
+                    ],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ).createShader(bounds);
+                },
+                blendMode: BlendMode.srcIn,
+                child: Image.asset(
+                  'assets/add.png',
+                  color: Colors
+                      .white, // Important: Set to white for gradient to show
+                ),
+              ),
+              label: ''),
+          BottomNavigationBarItem(
+            icon: Image.asset(
+              'assets/categories_nofill.png',
+            ),
+            activeIcon: ShaderMask(
+                shaderCallback: (Rect bounds) {
+                  return LinearGradient(
+                    colors: [
+                      Color(0xFF48AAFF), // #48AAFF
+                      Color(0xFF2B6699), // #2B6699
+                    ],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ).createShader(bounds);
+                },
+                blendMode: BlendMode.srcIn,
+                child: Icon(Icons.category)),
             label: 'Categories',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.person),
+            icon: Icon(
+              Icons.person_outline,
+              color: Colors.black,
+            ),
+            activeIcon: ShaderMask(
+                shaderCallback: (Rect bounds) {
+                  return LinearGradient(
+                    colors: [
+                      Color(0xFF48AAFF), // #48AAFF
+                      Color(0xFF2B6699), // #2B6699
+                    ],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ).createShader(bounds);
+                },
+                blendMode: BlendMode.srcIn,
+                child: Icon(
+                  Icons.person,
+                )),
             label: 'Profile',
           ),
         ],
         selectedItemColor: Colors.blue, // Customize selected color
-        unselectedItemColor: Colors.grey, // Customize unselected color
+        unselectedItemColor: Colors.black, // Customize unselected color
       ),
     );
   }

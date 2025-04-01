@@ -80,6 +80,15 @@ flutter:
     - assets/flag_white.png
     - assets/building.png
     - assets/flag_black.png
+    - assets/home_nofill.png
+    - assets/home_fill.png
+    - assets/briefcase.png
+    - assets/briefcase_fill.png
+    - assets/categories_nofill.png
+    - assets/add.png
+
+
+
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
