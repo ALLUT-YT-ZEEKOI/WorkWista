@@ -1,5 +1,3 @@
-
-
 import 'package:flutter/material.dart';
 import 'package:workwista/Utils/color_constants.dart';
 import 'package:workwista/view/loginScreens/homeScreens/job_details_screen.dart';
@@ -23,7 +21,7 @@ class JobOffersCard extends StatelessWidget {
                 ));
           },
           child: Container(
-            height: 216,
+            height: 232,
             width: ResponsiveHelper.width(373, context),
             margin: EdgeInsets.only(bottom: 10),
             decoration: BoxDecoration(
@@ -45,7 +43,7 @@ class JobOffersCard extends StatelessWidget {
                     child: Container(
                       width: ResponsiveHelper.width(373, context),
                       height:
-                          166, // Increased height to accommodate the new row
+                          182, // Increased height to accommodate the new row
                       decoration: BoxDecoration(
                           border: Border.all(
                             color: Colors.black,
@@ -99,58 +97,72 @@ class JobOffersCard extends StatelessWidget {
                                       ),
                                       Row(
                                         children: [
-                                          RichText(
-                                            text: TextSpan(
-                                              children: <TextSpan>[
-                                                TextSpan(
-                                                    text: 'Lulu HyperMarket',
-                                                    style: TextStyle(
+                                          Flexible(
+                                            child: Container(
+                                              constraints: BoxConstraints(
+                                                maxWidth: ResponsiveHelper.width(
+                                                    180,
+                                                    context), // Adjust this value
+                                              ),
+                                              child: RichText(
+                                                overflow: TextOverflow.ellipsis,
+                                                maxLines: 3,
+                                                text: TextSpan(
+                                                  children: <TextSpan>[
+                                                    TextSpan(
+                                                      text: 'Lulu HyperMarket',
+                                                      style: TextStyle(
                                                         fontSize: 12,
                                                         fontWeight:
                                                             FontWeight.w400,
-                                                        color: Colors.black)),
-                                                TextSpan(
-                                                  text: ' • ',
-                                                  style: TextStyle(
-                                                      fontSize: 12,
-                                                      fontWeight:
-                                                          FontWeight.w400,
-                                                      color: Colors.black),
+                                                        color: Colors.black,
+                                                      ),
+                                                    ),
+                                                    TextSpan(
+                                                      text: ' • ',
+                                                      style: TextStyle(
+                                                        fontSize: 12,
+                                                        fontWeight:
+                                                            FontWeight.w400,
+                                                        color: Colors.black,
+                                                      ),
+                                                    ),
+                                                    TextSpan(
+                                                      text: 'Edapally',
+                                                      style: TextStyle(
+                                                        fontSize: 12,
+                                                        fontWeight:
+                                                            FontWeight.w400,
+                                                        color: Colors.black,
+                                                      ),
+                                                    ),
+                                                  ],
                                                 ),
-                                                TextSpan(
-                                                  text: 'Edapally',
-                                                  style: TextStyle(
-                                                      fontSize: 12,
-                                                      fontWeight:
-                                                          FontWeight.w400,
-                                                      color: Colors.black),
-                                                ),
-                                              ],
+                                              ),
                                             ),
                                           ),
                                           Spacer(),
                                           Container(
-                                              height: ResponsiveHelper.height(
-                                                  22, context),
-                                              width: ResponsiveHelper.width(
-                                                  106, context),
-                                              decoration: BoxDecoration(
-                                                  color:
-                                                      ColorConstants.lightred,
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          12)),
-                                              child: Center(
-                                                child: Text(
-                                                  "Only for 2 days",
-                                                  style: TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.w400,
-                                                      color: ColorConstants
-                                                          .daysleftRed,
-                                                      fontSize: 12),
-                                                ),
-                                              ))
+                                            height: ResponsiveHelper.height(
+                                                22, context),
+                                            width: ResponsiveHelper.width(
+                                                110, context),
+                                            decoration: BoxDecoration(
+                                              color: ColorConstants.lightred,
+                                              borderRadius:
+                                                  BorderRadius.circular(12),
+                                            ),
+                                            child: Center(
+                                              child: Text(
+                                                "Only for 2 days",
+                                                style: TextStyle(
+                                                    fontWeight: FontWeight.w400,
+                                                    color: ColorConstants
+                                                        .daysleftRed,
+                                                    fontSize: 12),
+                                              ),
+                                            ),
+                                          )
                                         ],
                                       ),
                                     ],
@@ -175,7 +187,7 @@ class JobOffersCard extends StatelessWidget {
                                       Container(
                                         padding: EdgeInsets.symmetric(
                                             horizontal: ResponsiveHelper.width(
-                                                5, context),
+                                                3, context),
                                             vertical: ResponsiveHelper.height(
                                                 8, context)),
                                         decoration: BoxDecoration(
@@ -202,7 +214,7 @@ class JobOffersCard extends StatelessWidget {
                                       Container(
                                         padding: EdgeInsets.symmetric(
                                             horizontal: ResponsiveHelper.width(
-                                                5, context),
+                                                3, context),
                                             vertical: ResponsiveHelper.height(
                                                 8, context)),
                                         decoration: BoxDecoration(
@@ -237,7 +249,7 @@ class JobOffersCard extends StatelessWidget {
                                       Container(
                                         padding: EdgeInsets.symmetric(
                                             horizontal: ResponsiveHelper.width(
-                                                12, context),
+                                                5, context),
                                             vertical: ResponsiveHelper.height(
                                                 8, context)),
                                         decoration: BoxDecoration(

@@ -135,7 +135,7 @@ class _DashboardState extends State<Dashboard>
                                 borderRadius: BorderRadius.circular(12),
                               ),
                               height: ResponsiveHelper.height(50, context),
-                              width: ResponsiveHelper.width(119, context),
+                              width: ResponsiveHelper.width(125, context),
                               child: Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceEvenly,
@@ -149,7 +149,7 @@ class _DashboardState extends State<Dashboard>
                                   Text(
                                     "Eranakulam",
                                     style: TextStyle(
-                                      fontSize: 13,
+                                      fontSize: 12,
                                       fontWeight: FontWeight.w600,
                                     ),
                                   )

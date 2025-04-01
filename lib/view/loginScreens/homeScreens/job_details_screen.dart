@@ -343,20 +343,35 @@ class _JobDetailsScreenState extends State<JobDetailsScreen> {
     );
   }
 
-  Container skillsContainer(BuildContext context, String SkillText) {
+  Container skillsContainer(BuildContext context, String skillText) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 12),
+      padding: EdgeInsets.symmetric(
+        horizontal: ResponsiveHelper.width(12, context),
+      ),
       height: ResponsiveHelper.height(36, context),
+      constraints: BoxConstraints(
+        maxWidth:
+            ResponsiveHelper.width(180, context), // Add max width constraint
+      ),
       decoration: BoxDecoration(
-          color: Colors.white,
-          border: Border.all(color: Colors.black),
-          borderRadius: BorderRadius.circular(27)),
+        color: Colors.white,
+        border: Border.all(color: Colors.black),
+        borderRadius: BorderRadius.circular(27),
+      ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text(
-            SkillText,
-            style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+          Flexible(
+            // Or use Expanded if you want to force maximum available space
+            child: Text(
+              skillText,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
           ),
         ],
       ),
