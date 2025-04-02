@@ -171,7 +171,7 @@ class _EnterJobDetailsScreenState extends State<EnterJobDetailsScreen> {
                 width: 373,
                 name: "Next",
               ),
-              ButtonWithoutGradient(name: "Back")
+              ButtonWithoutGradient(name: "Backk")
             ],
           ),
         ),
