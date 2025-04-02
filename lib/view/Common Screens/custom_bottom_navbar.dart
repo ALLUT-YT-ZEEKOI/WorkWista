@@ -4,7 +4,6 @@ import 'package:workwista/view/loginScreens/homeScreens/categories_screen.dart';
 import 'package:workwista/view/loginScreens/homeScreens/dashboard_screen.dart';
 import 'package:workwista/view/loginScreens/homeScreens/my_jobs_screen.dart';
 import 'package:workwista/view/loginScreens/homeScreens/profile_screen.dart';
-import 'package:workwista/view/responsive_helper.dart';
 
 class CustomBottomNavbar extends StatefulWidget {
   const CustomBottomNavbar({super.key});

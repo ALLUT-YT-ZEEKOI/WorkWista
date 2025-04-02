@@ -3,6 +3,8 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:workwista/Utils/color_constants.dart';
+import 'package:workwista/view/Wdigets/button_without_gradient.dart';
+import 'package:workwista/view/Wdigets/gradient_button.dart';
 import 'package:workwista/view/responsive_helper.dart';
 
 class JobDetailsScreen extends StatefulWidget {
@@ -270,72 +272,17 @@ class _JobDetailsScreenState extends State<JobDetailsScreen> {
               SizedBox(
                 height: ResponsiveHelper.height(17, context),
               ),
-              ElevatedButton(
-                style: ButtonStyle(
-                  minimumSize: WidgetStateProperty.all(Size(
-                    ResponsiveHelper.width(373, context),
-                    ResponsiveHelper.height(44, context),
-                  )),
-                  backgroundColor: WidgetStateProperty.all(Colors.transparent),
-                  shadowColor: WidgetStateProperty.all(Colors.transparent),
-                  shape: WidgetStateProperty.all(
-                    RoundedRectangleBorder(
-                      borderRadius:
-                          BorderRadius.circular(53), // Adjust as needed
-                    ),
-                  ),
-                  padding: WidgetStateProperty.all(EdgeInsets.zero),
-                ),
-                onPressed: () {
-                  log("pressed");
-                  // implement the logic
-                },
-                child: Ink(
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [
-                        Color(0xFF56A2FF), // Light blue (#56A2FF) on left
-                        Color(0xFF00316D), // Dark blue (#00316D) on right
-                      ],
-                      begin: Alignment.centerLeft, // Gradient starts from left
-                      end: Alignment.centerRight,
-                    ),
-                    borderRadius: BorderRadius.circular(
-                        53), // Match button's border radius
-                  ),
-                  child: Container(
-                    width: ResponsiveHelper.width(373, context),
-                    height: ResponsiveHelper.height(44, context),
-                    alignment: Alignment.center,
-                    child: Text(
-                      "Apply job",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 14,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                  ),
-                ),
+              GradientButton(
+                name: "Apply job",
+                width: 373,
+                height: 44,
               ),
               SizedBox(
                 height: ResponsiveHelper.height(10, context),
               ),
-              ElevatedButton(
-                  style: ButtonStyle(
-                      minimumSize: WidgetStatePropertyAll(Size(
-                          ResponsiveHelper.width(373, context),
-                          ResponsiveHelper.height(44, context)))),
-                  onPressed: () {
-                    log("pressed");
-                  },
-                  child: Text(
-                    "Back",
-                    style: TextStyle(
-                        color: ColorConstants.viewMoreText,
-                        fontSize: 14,
-                        fontWeight: FontWeight.w500),
-                  ))
+              ButtonWithoutGradient(
+                name: "Back",
+              )
             ],
           ),
         ),

@@ -43,7 +43,7 @@ class JobOffersCard extends StatelessWidget {
                     child: Container(
                       width: ResponsiveHelper.width(373, context),
                       height:
-                          182, // Increased height to accommodate the new row
+                          182, 
                       decoration: BoxDecoration(
                           border: Border.all(
                             color: Colors.black,

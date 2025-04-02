@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:workwista/view/Wdigets/search_field.dart';
+import 'package:workwista/view/loginScreens/homeScreens/Enter_job_details_screen.dart';
 import 'package:workwista/view/responsive_helper.dart';
 
 class AddJobScreen extends StatefulWidget {
@@ -42,19 +43,28 @@ class _AddJobScreenState extends State<AddJobScreen> {
                 children: List.generate(
                   20,
                   (index) {
-                    return Container(
-                        margin: EdgeInsets.only(
-                            bottom: ResponsiveHelper.height(
-                                20, context)), // Vertical gap
-                        padding: EdgeInsets.all(ResponsiveHelper.width(
-                            12, context)), // Inner padding
-                        decoration:
-                            BoxDecoration(color: Colors.white, boxShadow: []),
-                        child: Text(
-                          "Grass cutting",
-                          style: TextStyle(
-                              fontSize: 16, fontWeight: FontWeight.w400),
-                        ));
+                    return InkWell(
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => EnterJobDetailsScreen(),
+                            ));
+                      },
+                      child: Container(
+                          margin: EdgeInsets.only(
+                              bottom: ResponsiveHelper.height(
+                                  20, context)), // Vertical gap
+                          padding: EdgeInsets.all(ResponsiveHelper.width(
+                              12, context)), // Inner padding
+                          decoration:
+                              BoxDecoration(color: Colors.white, boxShadow: []),
+                          child: Text(
+                            "Grass cutting",
+                            style: TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.w400),
+                          )),
+                    );
                   },
                 ),
               ),
