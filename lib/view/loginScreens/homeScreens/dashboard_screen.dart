@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:workwista/Utils/color_constants.dart';
 import 'package:workwista/view/Wdigets/companiescard.dart';
+import 'package:workwista/view/Wdigets/custom_tab_bar.dart';
 import 'package:workwista/view/Wdigets/greencard.dart';
 import 'package:workwista/view/Wdigets/jobofferscard.dart';
 import 'package:workwista/view/Wdigets/search_field.dart';
+import 'package:workwista/view/loginScreens/homeScreens/categories_screen.dart';
 import 'package:workwista/view/responsive_helper.dart';
 
 class Dashboard extends StatefulWidget {
@@ -17,14 +19,14 @@ class Dashboard extends StatefulWidget {
 class _DashboardState extends State<Dashboard>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
-  late PageController _pageController;
+  // late PageController _pageController;
   int _currentIndex = 0;
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 5, vsync: this);
-    _pageController = PageController(initialPage: _currentIndex);
+    // _pageController = PageController(initialPage: _currentIndex);
 
     // Add listener to sync tab controller with page changes
     _tabController.addListener(_handleTabSelection);
@@ -32,7 +34,7 @@ class _DashboardState extends State<Dashboard>
 
   void _handleTabSelection() {
     if (_tabController.indexIsChanging) {
-      _pageController.jumpToPage(_tabController.index);
+      // _pageController.jumpToPage(_tabController.index);
       setState(() {
         _currentIndex = _tabController.index;
       });
@@ -43,7 +45,7 @@ class _DashboardState extends State<Dashboard>
   void dispose() {
     _tabController.removeListener(_handleTabSelection);
     _tabController.dispose();
-    _pageController.dispose();
+    // _pageController.dispose();
     super.dispose();
   }
 
@@ -180,12 +182,21 @@ class _DashboardState extends State<Dashboard>
                           fontSize: 18,
                         ),
                       ),
-                      Text(
-                        "View More",
-                        style: TextStyle(
-                          color: ColorConstants.viewMoreText,
-                          fontWeight: FontWeight.w400,
-                          fontSize: 12,
+                      InkWell(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => CategoriesScreen(),
+                              ));
+                        },
+                        child: Text(
+                          "View More",
+                          style: TextStyle(
+                            color: ColorConstants.viewMoreText,
+                            fontWeight: FontWeight.w400,
+                            fontSize: 12,
+                          ),
                         ),
                       ),
                     ],
@@ -193,90 +204,18 @@ class _DashboardState extends State<Dashboard>
                 ),
 
                 // Tab Bar
-                Container(
-                  padding: EdgeInsets.symmetric(
-                      horizontal: ResponsiveHelper.width(10, context)),
-                  height: ResponsiveHelper.height(35, context),
-                  child: TabBar(
-                    tabAlignment: TabAlignment.start,
-                    controller: _tabController,
-                    isScrollable: true,
-                    labelColor: Colors.blue,
-                    unselectedLabelColor: Colors.grey,
-                    labelStyle: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: screenWidth * 0.04,
-                    ),
-                    unselectedLabelStyle: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: screenWidth * 0.04,
-                    ),
-                    indicatorSize: TabBarIndicatorSize.tab,
-                    indicator: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
-                      border: Border.all(
-                        color: Colors.blue,
-                        width: 2,
-                      ),
-                    ),
-                    dividerColor: Colors.transparent,
-                    splashFactory: NoSplash.splashFactory,
-                    overlayColor: WidgetStateProperty.all(Colors.transparent),
-                    onTap: (index) {
-                      setState(() {
-                        _currentIndex = index;
-                      });
-                    },
-                    tabs: [
-                      Tab(
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: ResponsiveHelper.width(12, context),
-                            vertical: ResponsiveHelper.height(7, context),
-                          ),
-                          child: Text("All"),
-                        ),
-                      ),
-                      Tab(
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: ResponsiveHelper.width(12, context),
-                            vertical: ResponsiveHelper.height(7, context),
-                          ),
-                          child: Text("IT"),
-                        ),
-                      ),
-                      Tab(
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: ResponsiveHelper.width(12, context),
-                            vertical: ResponsiveHelper.height(7, context),
-                          ),
-                          child: Text("Local Jobs"),
-                        ),
-                      ),
-                      Tab(
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: ResponsiveHelper.width(12, context),
-                            vertical: ResponsiveHelper.height(7, context),
-                          ),
-                          child: Text("Remote Jobs"),
-                        ),
-                      ),
-                      Tab(
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: ResponsiveHelper.width(12, context),
-                            vertical: ResponsiveHelper.height(7, context),
-                          ),
-                          child: Text("New Jobs"),
-                        ),
-                      ),
-                    ],
-                  ),
+                CustomTabBar(
+                  paddingwidth: 10,
+                  color: Colors.blue,
+                  tabController: _tabController,
+                  onTabChanged: (index) {
+                    setState(() {
+                      _currentIndex = index;
+                    });
+                  },
+                  currentIndex: _currentIndex,
+                  context: context,
                 ),
-
                 SizedBox(height: 28),
                 Padding(
                   padding: EdgeInsets.symmetric(
@@ -349,7 +288,9 @@ class JobCategoryScreen1 extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        JobOffersCard(),
+        JobOffersCard(
+          numOfcards: 5,
+        ),
         SizedBox(
           height: ResponsiveHelper.height(30, context),
         ),
@@ -446,7 +387,9 @@ class JobCategoryScreen2 extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        JobOffersCard(),
+        JobOffersCard(
+          numOfcards: 5,
+        ),
         SizedBox(
           height: 30,
         ),
@@ -542,7 +485,9 @@ class JobCategoryScreen3 extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        JobOffersCard(),
+        JobOffersCard(
+          numOfcards: 5,
+        ),
         SizedBox(
           height: 30,
         ),
@@ -638,7 +583,9 @@ class JobCategoryScreen4 extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        JobOffersCard(),
+        JobOffersCard(
+          numOfcards: 5,
+        ),
         SizedBox(
           height: 30,
         ),
@@ -734,7 +681,9 @@ class JobCategoryScreen5 extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        JobOffersCard(),
+        JobOffersCard(
+          numOfcards: 5,
+        ),
         SizedBox(
           height: 30,
         ),

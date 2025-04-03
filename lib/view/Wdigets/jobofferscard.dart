@@ -4,14 +4,13 @@ import 'package:workwista/view/loginScreens/homeScreens/job_details_screen.dart'
 import 'package:workwista/view/responsive_helper.dart';
 
 class JobOffersCard extends StatelessWidget {
-  const JobOffersCard({
-    super.key,
-  });
+  int numOfcards;
+  JobOffersCard({super.key, required this.numOfcards});
 
   @override
   Widget build(BuildContext context) {
     return Column(
-      children: List.generate(5, (index) {
+      children: List.generate(numOfcards, (index) {
         return InkWell(
           onTap: () {
             Navigator.push(
@@ -42,8 +41,7 @@ class JobOffersCard extends StatelessWidget {
                     ),
                     child: Container(
                       width: ResponsiveHelper.width(373, context),
-                      height:
-                          182, 
+                      height: 182,
                       decoration: BoxDecoration(
                           border: Border.all(
                             color: Colors.black,

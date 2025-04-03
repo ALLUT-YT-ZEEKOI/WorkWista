@@ -1,43 +1,74 @@
 import 'package:flutter/material.dart';
 
-class ResponsiveListScreen extends StatelessWidget {
+class TabBarScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    double screenWidth = MediaQuery.of(context).size.width;
-    double screenHeight = MediaQuery.of(context).size.height;
-
-    return Scaffold(
-      appBar: AppBar(title: Text("Responsive List UI")),
-      body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            double maxWidth = constraints.maxWidth;
-
-            return ListView.builder(
-              itemCount: 10,
-              itemBuilder: (context, index) {
-                return Padding(
-                  padding: EdgeInsets.symmetric(vertical: 8),
-                  child: Container(
-                    width: maxWidth * 0.9, // Adjust width dynamically
-                    height: screenHeight * 0.12, // Adjust height dynamically
-                    decoration: BoxDecoration(
-                      color: Colors.blueAccent,
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Center(
-                      child: Text(
-                        "Item ${index + 1}",
-                        style: TextStyle(fontSize: 18, color: Colors.white),
-                      ),
-                    ),
-                  ),
-                );
-              },
-            );
-          },
+    return DefaultTabController(
+      length: 4, // Number of tabs
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text("Basic TabBar"),
+          bottom: PreferredSize(
+            preferredSize: Size.fromHeight(40), // TabBar height
+            child: Container(
+              height: 40,
+              margin: EdgeInsets.symmetric(horizontal: 0),
+              child: TabBar(
+                isScrollable:
+                    true, // Enables scrolling if tabs exceed screen width
+                indicator: BoxDecoration(
+                  border: Border.all(
+                      color: Colors.black,
+                      width: 1), // Black border for selected tab
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                labelColor: Colors.black, // Selected tab text color
+                unselectedLabelColor: Colors.black, // Unselected tab text color
+                indicatorSize: TabBarIndicatorSize.tab,
+                dividerColor: Colors.transparent,
+                tabs: [
+                  BasicTab(title: "All"),
+                  BasicTab(title: "IT"),
+                  BasicTab(title: "Local Jobs"),
+                  BasicTab(title: "Remote"),
+                ],
+              ),
+            ),
+          ),
         ),
+        body: TabBarView(
+          children: [
+            Center(child: Text("All Content")),
+            Center(child: Text("IT Content")),
+            Center(child: Text("Local Jobs Content")),
+            Center(child: Text("Remote Content")),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class BasicTab extends StatelessWidget {
+  final String title;
+
+  const BasicTab({required this.title});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 35, // Fixed height
+      width: 40,
+      padding:
+          EdgeInsets.symmetric(horizontal: 9), // Padding for equal tab size
+      decoration: BoxDecoration(
+        border: Border.all(
+            color: Colors.black, width: 1), // Black border for all tabs
+        borderRadius: BorderRadius.circular(0),
+      ),
+      child: Align(
+        alignment: Alignment.center,
+        child: Text(title),
       ),
     );
   }
