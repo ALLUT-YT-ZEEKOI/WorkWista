@@ -273,6 +273,9 @@ class _JobDetailsScreenState extends State<JobDetailsScreen> {
                 height: ResponsiveHelper.height(17, context),
               ),
               GradientButton(
+                onPressed: () {
+                  
+                },
                 name: "Apply job",
                 width: 373,
                 height: 44,

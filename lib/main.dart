@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:workwista/view/Common%20Screens/custom_bottom_navbar.dart';
-import 'package:workwista/view/test.dart';
+import 'package:workwista/view/loginScreens/splash_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -17,7 +16,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         fontFamily: 'Poppins',
       ),
-      home: CustomBottomNavbar(),
+      home: SplashScreen(),
     );
   }
 }

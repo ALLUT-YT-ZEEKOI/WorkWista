@@ -56,14 +56,16 @@ class Forgotpassword extends StatelessWidget {
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(33),
                         borderSide: const BorderSide(
-                          color: Color(0xFFBDBDBD), // Gray border color when not focused
+                          color: Color(
+                              0xFFBDBDBD), // Gray border color when not focused
                           width: 1,
                         ),
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(33),
                         borderSide: const BorderSide(
-                          color: Color(0xFF757575), // Slightly darker gray when focused
+                          color: Color(
+                              0xFF757575), // Slightly darker gray when focused
                           width: 1.5,
                         ),
                       ),
@@ -93,8 +95,10 @@ class Forgotpassword extends StatelessWidget {
                   PageTransition(
                     type: PageTransitionType.fade, // Left to Right transition
                     child: const Changepassword(),
-                    childCurrent: const Forgotpassword(), // Optional: For better transition effects
-                    duration: const Duration(milliseconds: 300), // Adjust transition speed if needed
+                    childCurrent:
+                        const Forgotpassword(), // Optional: For better transition effects
+                    duration: const Duration(
+                        milliseconds: 300), // Adjust transition speed if needed
                     reverseDuration: const Duration(milliseconds: 300),
                   ),
                 );
@@ -130,9 +134,12 @@ class Forgotpassword extends StatelessWidget {
                     context,
                     PageTransition(
                       type: PageTransitionType.leftToRight, // Fade transition
-                      child: const Splashscreen(),
-                      childCurrent: const Forgotpassword(), // Optional: For better transition effects
-                      duration: const Duration(milliseconds: 300), // Adjust transition speed if needed
+                      child: const SplashScreen(),
+                      childCurrent:
+                          const Forgotpassword(), // Optional: For better transition effects
+                      duration: const Duration(
+                          milliseconds:
+                              300), // Adjust transition speed if needed
                       reverseDuration: const Duration(milliseconds: 300),
                     ),
                   );

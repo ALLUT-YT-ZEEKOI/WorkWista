@@ -10,7 +10,10 @@ class JobOffersCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
-      children: List.generate(numOfcards, (index) {
+      children: List.generate(
+        
+        numOfcards, (index) {
+          
         return InkWell(
           onTap: () {
             Navigator.push(

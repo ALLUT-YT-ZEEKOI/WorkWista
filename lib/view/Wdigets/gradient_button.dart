@@ -1,4 +1,3 @@
-import 'dart:developer';
 
 
 import 'package:flutter/material.dart';
@@ -8,8 +7,10 @@ class GradientButton extends StatelessWidget {
   String name;
   double height;
   double width;
+  void Function()? onPressed;
   GradientButton({
     required this.name,
+    required this.onPressed,
     required this.height,
     required this.width,
     super.key,
@@ -32,10 +33,7 @@ class GradientButton extends StatelessWidget {
         ),
         padding: WidgetStateProperty.all(EdgeInsets.zero),
       ),
-      onPressed: () {
-        log("pressed");
-        // implement the logic
-      },
+      onPressed:onPressed,
       child: Ink(
         decoration: BoxDecoration(
           gradient: LinearGradient(

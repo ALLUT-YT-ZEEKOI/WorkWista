@@ -9,4 +9,8 @@ class ColorConstants {
   static Color lighttext = Color(0xff4A5E6D);
   static Color indicatorBlue = Color(0xff4498FF);
   static Color descText = Color(0xff92A585);
+  static Color nowOnline = Color(0xff00C639);
+  static Color ProgressBarColor = Color(0xff1E83FF);
+  static Color phonepe = Color(0xff5F259F);
 }
+

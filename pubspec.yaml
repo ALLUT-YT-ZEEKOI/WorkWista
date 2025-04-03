@@ -86,6 +86,12 @@ flutter:
     - assets/briefcase_fill.png
     - assets/categories_nofill.png
     - assets/add.png
+    - assets/upi.png
+    - assets/gpay.png
+    - assets/phonepe.png
+    - assets/paytm.png
+    - assets/bank.png
+    
 
 
 

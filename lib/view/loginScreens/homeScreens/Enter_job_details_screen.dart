@@ -167,6 +167,9 @@ class _EnterJobDetailsScreenState extends State<EnterJobDetailsScreen> {
               ),
               SizedBox(height: ResponsiveHelper.height(20, context)),
               GradientButton(
+                onPressed: () {
+                  
+                },
                 height: 44,
                 width: 373,
                 name: "Next",

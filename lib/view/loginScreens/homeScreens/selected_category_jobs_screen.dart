@@ -18,7 +18,7 @@ class SelectedCategoryJobsScreen extends StatelessWidget {
       body: SingleChildScrollView(
         child: Padding(
           padding: EdgeInsets.symmetric(
-              horizontal: ResponsiveHelper.width(14, context), vertical: 24),
+              horizontal: ResponsiveHelper.width(10, context), vertical: 24),
           child: Column(
             children: [
               JobOffersCard(
