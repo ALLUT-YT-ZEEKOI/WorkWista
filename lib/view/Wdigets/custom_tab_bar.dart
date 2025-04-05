@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:workwista/view/Controllers/jobs_screen_controller.dart';
 import 'package:workwista/view/responsive_helper.dart';
 
-class CustomTabBar extends StatelessWidget {
+class CustomTabBar extends StatefulWidget {
   final TabController tabController;
   final Function(int) onTabChanged;
   final int currentIndex;
@@ -20,19 +22,45 @@ class CustomTabBar extends StatelessWidget {
   });
 
   @override
+  State<CustomTabBar> createState() => _CustomTabBarState();
+}
+
+class _CustomTabBarState extends State<CustomTabBar> {
+  @override
+  void initState() {
+    super.initState();
+    // Fetch categories when the tab bar initializes
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<JobsScreenController>(widget.context, listen: false)
+          .getCategories();
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
+    final controller = Provider.of<JobsScreenController>(context);
+
+    // Show loading indicator while fetching categories
+    if (controller.isloading) {
+      return Center(child: CircularProgressIndicator());
+    }
+
+    // Show error message if no categories available
+    if (controller.categoriesList.isEmpty) {
+      return Center(child: Text("No categories available"));
+    }
 
     return Container(
       padding: EdgeInsets.symmetric(
-        horizontal: ResponsiveHelper.width(paddingwidth, context),
+        horizontal: ResponsiveHelper.width(widget.paddingwidth, context),
       ),
       height: ResponsiveHelper.height(35, context),
       child: TabBar(
         tabAlignment: TabAlignment.start,
-        controller: tabController,
+        controller: widget.tabController,
         isScrollable: true,
-        labelColor: color,
+        labelColor: widget.color,
         unselectedLabelColor: Colors.grey,
         labelStyle: TextStyle(
           fontWeight: FontWeight.bold,
@@ -46,15 +74,16 @@ class CustomTabBar extends StatelessWidget {
         indicator: BoxDecoration(
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
-            color: color,
+            color: widget.color,
             width: 2,
           ),
         ),
         dividerColor: Colors.transparent,
         splashFactory: NoSplash.splashFactory,
         overlayColor: WidgetStateProperty.all(Colors.transparent),
-        onTap: onTabChanged,
+        onTap: widget.onTabChanged,
         tabs: [
+          // "All" tab (optional)
           Tab(
             child: Padding(
               padding: EdgeInsets.symmetric(
@@ -64,42 +93,18 @@ class CustomTabBar extends StatelessWidget {
               child: Text("All"),
             ),
           ),
-          Tab(
-            child: Padding(
-              padding: EdgeInsets.symmetric(
-                horizontal: ResponsiveHelper.width(12, context),
-                vertical: ResponsiveHelper.height(7, context),
+          // Dynamic tabs from categories
+          ...controller.categoriesList.map((category) {
+            return Tab(
+              child: Padding(
+                padding: EdgeInsets.symmetric(
+                  horizontal: ResponsiveHelper.width(12, context),
+                  vertical: ResponsiveHelper.height(7, context),
+                ),
+                child: Text(category.title ?? "Unnamed"),
               ),
-              child: Text("IT"),
-            ),
-          ),
-          Tab(
-            child: Padding(
-              padding: EdgeInsets.symmetric(
-                horizontal: ResponsiveHelper.width(12, context),
-                vertical: ResponsiveHelper.height(7, context),
-              ),
-              child: Text("Local Jobs"),
-            ),
-          ),
-          Tab(
-            child: Padding(
-              padding: EdgeInsets.symmetric(
-                horizontal: ResponsiveHelper.width(12, context),
-                vertical: ResponsiveHelper.height(7, context),
-              ),
-              child: Text("Remote Jobs"),
-            ),
-          ),
-          Tab(
-            child: Padding(
-              padding: EdgeInsets.symmetric(
-                horizontal: ResponsiveHelper.width(12, context),
-                vertical: ResponsiveHelper.height(7, context),
-              ),
-              child: Text("New Jobs"),
-            ),
-          ),
+            );
+          }).toList(),
         ],
       ),
     );
