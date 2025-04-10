@@ -346,9 +346,9 @@ class _MyJobsScreenState extends State<MyJobsScreen> {
               Expanded(
                 child: TabBarView(
                   children: [
-                    SingleChildScrollView(child: JobOffersCard(numOfcards: 5)),
-                    SingleChildScrollView(child: JobOffersCard(numOfcards: 5)),
-                    SingleChildScrollView(child: JobOffersCard(numOfcards: 5)),
+                    SingleChildScrollView(child: JobOffersCard(numOfcards: 5,context: context,)),
+                    SingleChildScrollView(child: JobOffersCard(numOfcards: 5,context: context,)),
+                    SingleChildScrollView(child: JobOffersCard(numOfcards: 5,context: context,)),
                   ],
                 ),
               ),

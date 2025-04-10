@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:workwista/Utils/color_constants.dart';
 import 'package:workwista/view/Wdigets/companiescard.dart';
@@ -7,6 +8,7 @@ import 'package:workwista/view/Wdigets/greencard.dart';
 import 'package:workwista/view/Wdigets/jobofferscard.dart';
 import 'package:workwista/view/Wdigets/search_field.dart';
 import 'package:workwista/view/loginScreens/homeScreens/categories_screen.dart';
+import 'package:workwista/view/loginScreens/sign_in_screen.dart';
 import 'package:workwista/view/responsive_helper.dart';
 
 class Dashboard extends StatefulWidget {
@@ -25,7 +27,7 @@ class _DashboardState extends State<Dashboard>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 5, vsync: this);
+    _tabController = TabController(length: 4, vsync: this);
     // _pageController = PageController(initialPage: _currentIndex);
 
     // Add listener to sync tab controller with page changes
@@ -88,13 +90,28 @@ class _DashboardState extends State<Dashboard>
                             ),
                             Row(
                               children: [
-                                Container(
-                                  margin: EdgeInsets.only(
-                                      right:
-                                          ResponsiveHelper.width(10, context)),
-                                  child: Image(
-                                    image: AssetImage('assets/bell.png'),
-                                    width: ResponsiveHelper.width(30, context),
+                                InkWell(
+                                  onTap: () async {
+    // Clear tokens from SharedPreferences
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString("access", "");
+    await prefs.setString("refresh", "");
+
+    // Navigate to login screen and prevent going back
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => SignInScreen()),
+      (Route<dynamic> route) => false, // Remove all routes
+    );
+  },
+                                  child: Container(
+                                    margin: EdgeInsets.only(
+                                        right:
+                                            ResponsiveHelper.width(10, context)),
+                                    child: Image(
+                                      image: AssetImage('assets/bell.png'),
+                                      width: ResponsiveHelper.width(30, context),
+                                    ),
                                   ),
                                 ),
                                 Container(
@@ -289,6 +306,7 @@ class JobCategoryScreen1 extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         JobOffersCard(
+          context: context,
           numOfcards: 5,
         ),
         SizedBox(
@@ -388,6 +406,7 @@ class JobCategoryScreen2 extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         JobOffersCard(
+          context: context,
           numOfcards: 5,
         ),
         SizedBox(
@@ -486,6 +505,7 @@ class JobCategoryScreen3 extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         JobOffersCard(
+          context: context,
           numOfcards: 5,
         ),
         SizedBox(
@@ -584,6 +604,7 @@ class JobCategoryScreen4 extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         JobOffersCard(
+          context: context,
           numOfcards: 5,
         ),
         SizedBox(
@@ -682,6 +703,7 @@ class JobCategoryScreen5 extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         JobOffersCard(
+          context: context,
           numOfcards: 5,
         ),
         SizedBox(

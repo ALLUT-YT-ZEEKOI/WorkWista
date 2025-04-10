@@ -2,7 +2,7 @@ import 'dart:ui';
 
 class ColorConstants {
   static Color containerBorder = Color(0xffCED7DE);
-  static Color containerwhite = Color(0xffDAE1E7);
+  static Color containerwhite = Color(0xffF6F8FA);
   static Color viewMoreText = Color(0xff4498FF);
   static Color lightred = Color(0xffFFCED3);
   static Color daysleftRed = Color(0xff8C1823);
@@ -13,4 +13,3 @@ class ColorConstants {
   static Color ProgressBarColor = Color(0xff1E83FF);
   static Color phonepe = Color(0xff5F259F);
 }
-

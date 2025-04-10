@@ -13,7 +13,7 @@ class JobsScreenController with ChangeNotifier {
     isloading = true;
     notifyListeners();
 
-    final url = Uri.parse("http://192.168.3.42:8000/job/view/category/");
+    final url = Uri.parse("http://192.168.3.36:8000/job/view/category/");
 
     try {
       final response = await http.get(url);
@@ -34,10 +34,10 @@ class JobsScreenController with ChangeNotifier {
   }
 
  
-
   void _handleApiError(int statusCode) {
     log("API Error: $statusCode");
     categoriesList = [];
     notifyListeners();
   }
+
 }

@@ -1,6 +1,11 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:workwista/view/Common%20Screens/custom_bottom_navbar.dart';
+import 'package:workwista/view/loginScreens/homeScreens/dashboard_screen.dart';
+import 'package:workwista/view/loginScreens/sign_in_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -10,16 +15,27 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-  
   @override
   void initState() {
-    Future.delayed(Duration(seconds: 3)).then(
-      (value) {
-        Navigator.pushReplacement(context,
-            MaterialPageRoute(builder: (context) => CustomBottomNavbar()));
+    super.initState();
+    Timer(
+      Duration(seconds: 3),
+      () async {
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+
+        String access_token = prefs.getString("access") ?? "";
+        String refresh_token = prefs.getString("refresh") ?? "";
+
+        if (access_token.isNotEmpty && refresh_token.isNotEmpty) {
+          Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) => CustomBottomNavbar()));
+        }else{
+Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) => SignInScreen()));
+        }
+        
       },
     );
-    super.initState();
   }
 
   @override

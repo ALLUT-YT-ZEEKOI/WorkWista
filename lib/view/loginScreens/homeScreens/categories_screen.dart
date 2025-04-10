@@ -59,38 +59,55 @@ class _CategoriesScreenState extends State<CategoriesScreen>
               SizedBox(
                 height: 23,
               ),
-              CustomTabBar(
-                  paddingwidth: 0,
-                  color: Colors.orange,
-                  tabController: _CategorytabController,
-                  onTabChanged: (index) {
-                    setState(() {
-                      _currentIndex = index;
-                    });
-                  },
-                  currentIndex: _currentIndex,
-                  context: context),
-              SizedBox(
-                height: 16,
-              ),
-              Builder(
-                builder: (context) {
-                  switch (_currentIndex) {
-                    case 0:
-                      return CategoryAll();
-                    case 1:
-                      return CategoryIT();
-                    case 2:
-                      return CategoryLocalJobs();
-                    case 3:
-                      return CategoryRemoteJobs();
-                    case 4:
-                      return CategoryNewJobs();
-                    default:
-                      return CategoryAll();
-                  }
+               GridView.builder(
+          shrinkWrap: true,
+          physics: NeverScrollableScrollPhysics(),
+          padding: EdgeInsets.all(0),
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+            mainAxisSpacing: 10,
+            crossAxisSpacing: 8,
+            childAspectRatio: 1.31, // Adjust this value for height/width ratio
+          ),
+          itemCount: 21,
+          itemBuilder: (context, index) {
+            return SizedBox(
+              child: InkWell(
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => SelectedCategoryJobsScreen(
+                          selectedCategory: "All",
+                        ),
+                      ));
                 },
+                child: Container(
+                    // Set your custom height here
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                          fit: BoxFit.cover,
+                          image: NetworkImage(
+                              'https://images.pexels.com/photos/159839/office-home-house-desk-159839.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2')),
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    padding: EdgeInsets.all(8),
+                    child: Align(
+                        alignment: Alignment.bottomLeft,
+                        child: Text(
+                          "All",
+                          style: TextStyle(
+                              fontSize: 17,
+                              fontWeight: FontWeight.w700,
+                              color: Colors.white),
+                        ))),
               ),
+            );
+          },
+        )
+              
+            
             ],
           ),
         ),
@@ -99,306 +116,5 @@ class _CategoriesScreenState extends State<CategoriesScreen>
   }
 }
 
-//all category screen contents
-class CategoryAll extends StatelessWidget {
-  const CategoryAll({super.key});
 
-  @override
-  Widget build(BuildContext context) {
-    String categoryName = "All";
-    return Column(
-      children: [
-        GridView.builder(
-          shrinkWrap: true,
-          physics: NeverScrollableScrollPhysics(),
-          padding: EdgeInsets.all(0),
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            mainAxisSpacing: 10,
-            crossAxisSpacing: 8,
-            childAspectRatio: 1.31, // Adjust this value for height/width ratio
-          ),
-          itemCount: 21,
-          itemBuilder: (context, index) {
-            return SizedBox(
-              child: InkWell(
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => SelectedCategoryJobsScreen(
-                          selectedCategory: categoryName,
-                        ),
-                      ));
-                },
-                child: Container(
-                    // Set your custom height here
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                          fit: BoxFit.cover,
-                          image: NetworkImage(
-                              'https://images.pexels.com/photos/159839/office-home-house-desk-159839.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2')),
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    padding: EdgeInsets.all(8),
-                    child: Align(
-                        alignment: Alignment.bottomLeft,
-                        child: Text(
-                          categoryName,
-                          style: TextStyle(
-                              fontSize: 17,
-                              fontWeight: FontWeight.w700,
-                              color: Colors.white),
-                        ))),
-              ),
-            );
-          },
-        )
-      ],
-    );
-  }
-}
 
-//category it contents
-class CategoryIT extends StatelessWidget {
-  const CategoryIT({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    String categoryName = "IT";
-    return Column(
-      children: [
-        GridView.builder(
-          shrinkWrap: true,
-          physics: NeverScrollableScrollPhysics(),
-          padding: EdgeInsets.all(0),
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            mainAxisSpacing: 10,
-            crossAxisSpacing: 8,
-            childAspectRatio: 1.31, // Adjust this value for height/width ratio
-          ),
-          itemCount: 21,
-          itemBuilder: (context, index) {
-            return SizedBox(
-              child: InkWell(
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => SelectedCategoryJobsScreen(
-                          selectedCategory: categoryName,
-                        ),
-                      ));
-                },
-                child: Container(
-                    // Set your custom height here
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                          fit: BoxFit.cover,
-                          image: NetworkImage(
-                              'https://images.pexels.com/photos/159839/office-home-house-desk-159839.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2')),
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    padding: EdgeInsets.all(8),
-                    child: Align(
-                        alignment: Alignment.bottomLeft,
-                        child: Text(
-                          categoryName,
-                          style: TextStyle(
-                              fontSize: 17,
-                              fontWeight: FontWeight.w700,
-                              color: Colors.white),
-                        ))),
-              ),
-            );
-          },
-        )
-      ],
-    );
-  }
-}
-
-//category local jobs contents
-class CategoryLocalJobs extends StatelessWidget {
-  const CategoryLocalJobs({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    String categoryName = "Local jobs";
-    return Column(
-      children: [
-        GridView.builder(
-          shrinkWrap: true,
-          physics: NeverScrollableScrollPhysics(),
-          padding: EdgeInsets.all(0),
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            mainAxisSpacing: 10,
-            crossAxisSpacing: 8,
-            childAspectRatio: 1.31, // Adjust this value for height/width ratio
-          ),
-          itemCount: 21,
-          itemBuilder: (context, index) {
-            return SizedBox(
-              child: InkWell(
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => SelectedCategoryJobsScreen(
-                          selectedCategory: categoryName,
-                        ),
-                      ));
-                },
-                child: Container(
-                    // Set your custom height here
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                          fit: BoxFit.cover,
-                          image: NetworkImage(
-                              'https://images.pexels.com/photos/159839/office-home-house-desk-159839.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2')),
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    padding: EdgeInsets.all(8),
-                    child: Align(
-                        alignment: Alignment.bottomLeft,
-                        child: Text(
-                          categoryName,
-                          style: TextStyle(
-                              fontSize: 17,
-                              fontWeight: FontWeight.w700,
-                              color: Colors.white),
-                        ))),
-              ),
-            );
-          },
-        )
-      ],
-    );
-  }
-}
-
-//category remote jobs contents
-class CategoryRemoteJobs extends StatelessWidget {
-  const CategoryRemoteJobs({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    String categoryName = "Remote Jobs";
-    return Column(
-      children: [
-        GridView.builder(
-          shrinkWrap: true,
-          physics: NeverScrollableScrollPhysics(),
-          padding: EdgeInsets.all(0),
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            mainAxisSpacing: 10,
-            crossAxisSpacing: 8,
-            childAspectRatio: 1.31, // Adjust this value for height/width ratio
-          ),
-          itemCount: 21,
-          itemBuilder: (context, index) {
-            return SizedBox(
-              child: InkWell(
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => SelectedCategoryJobsScreen(
-                          selectedCategory: categoryName,
-                        ),
-                      ));
-                },
-                child: Container(
-                    // Set your custom height here
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                          fit: BoxFit.cover,
-                          image: NetworkImage(
-                              'https://images.pexels.com/photos/159839/office-home-house-desk-159839.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2')),
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    padding: EdgeInsets.all(8),
-                    child: Align(
-                        alignment: Alignment.bottomLeft,
-                        child: Text(
-                          categoryName,
-                          style: TextStyle(
-                              fontSize: 17,
-                              fontWeight: FontWeight.w700,
-                              color: Colors.white),
-                        ))),
-              ),
-            );
-          },
-        )
-      ],
-    );
-  }
-}
-
-//category new jobs contents
-class CategoryNewJobs extends StatelessWidget {
-  const CategoryNewJobs({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    String categoryName = "new jobs";
-    return Column(
-      children: [
-        GridView.builder(
-          shrinkWrap: true,
-          physics: NeverScrollableScrollPhysics(),
-          padding: EdgeInsets.all(0),
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            mainAxisSpacing: 10,
-            crossAxisSpacing: 8,
-            childAspectRatio: 1.31,
-          ),
-          itemCount: 21,
-          itemBuilder: (context, index) {
-            return SizedBox(
-              child: InkWell(
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => SelectedCategoryJobsScreen(
-                          selectedCategory: categoryName,
-                        ),
-                      ));
-                },
-                child: Container(
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                          fit: BoxFit.cover,
-                          image: NetworkImage(
-                              'https://images.pexels.com/photos/159839/office-home-house-desk-159839.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2')),
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    padding: EdgeInsets.all(8),
-                    child: Align(
-                        alignment: Alignment.bottomLeft,
-                        child: Text(
-                          categoryName,
-                          style: TextStyle(
-                              fontSize: 17,
-                              fontWeight: FontWeight.w700,
-                              color: Colors.white),
-                        ))),
-              ),
-            );
-          },
-        )
-      ],
-    );
-  }
-}

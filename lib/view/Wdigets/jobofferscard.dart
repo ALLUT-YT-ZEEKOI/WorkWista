@@ -1,19 +1,51 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:workwista/Utils/color_constants.dart';
+import 'package:workwista/view/Controllers/job_offers_card_controller.dart';
 import 'package:workwista/view/loginScreens/homeScreens/job_details_screen.dart';
 import 'package:workwista/view/responsive_helper.dart';
 
-class JobOffersCard extends StatelessWidget {
+class JobOffersCard extends StatefulWidget {
   int numOfcards;
-  JobOffersCard({super.key, required this.numOfcards});
+  final BuildContext context;
+  JobOffersCard({super.key, required this.context, required this.numOfcards});
+
+  @override
+  State<JobOffersCard> createState() => _JobOffersCardState();
+}
+
+class _JobOffersCardState extends State<JobOffersCard> {
+  @override
+  void initState() {
+    super.initState();
+    // Fetch categories when the tab bar initializes
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<JobOffersCardController>(widget.context, listen: false)
+          .getJobOffersCardDetails();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
+    final controller = Provider.of<JobOffersCardController>(context);
+
+// Show loading indicator while fetching categories
+    if (controller.isloading) {
+      return Center(child: CircularProgressIndicator());
+    }
+
+    // Show error message if no categories available
+    if (controller.JobOffersCardDetailsList.isEmpty) {
+      return Center(child: Text("No jobs available"));
+    }
+    final itemCount =
+        min(widget.numOfcards, controller.JobOffersCardDetailsList.length);
     return Column(
-      children: List.generate(
-        
-        numOfcards, (index) {
-          
+      children: List.generate(itemCount, (index) {
+        // Get the current job offer data
+        final jobOffer = controller.JobOffersCardDetailsList[index];
         return InkWell(
           onTap: () {
             Navigator.push(
@@ -79,15 +111,16 @@ class JobOffersCard extends StatelessWidget {
                                             MainAxisAlignment.spaceBetween,
                                         children: [
                                           Text(
-                                            "Sales",
+                                            overflow: TextOverflow.ellipsis,
+                                            jobOffer.title ?? "no title",
                                             style: TextStyle(
-                                                fontSize: 18,
+                                                fontSize: 15,
                                                 fontWeight: FontWeight.w500),
                                           ),
                                           Text(
-                                            "₹500 - 1500/Day",
+                                            "${jobOffer.salary}/Day",
                                             style: TextStyle(
-                                                fontSize: 16,
+                                                fontSize: 14,
                                                 fontWeight: FontWeight.w500),
                                           ),
                                         ],

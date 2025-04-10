@@ -22,6 +22,7 @@ class SelectedCategoryJobsScreen extends StatelessWidget {
           child: Column(
             children: [
               JobOffersCard(
+                context: context,
                 numOfcards: 10,
               )
             ],
