@@ -11,7 +11,7 @@ class JobDetailsScreenController with ChangeNotifier {
   Future<void> getJobDetails() async {
 SharedPreferences prefs = await SharedPreferences.getInstance();
 
-        String access_toke = prefs.getString("access") ?? "";
+        String access_token = prefs.getString("access") ?? "";
         String refresh_token = prefs.getString("refresh") ?? "";
 
 
