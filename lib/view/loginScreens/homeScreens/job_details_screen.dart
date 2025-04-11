@@ -9,7 +9,8 @@ import 'package:workwista/view/Wdigets/gradient_button.dart';
 import 'package:workwista/view/responsive_helper.dart';
 
 class JobDetailsScreen extends StatefulWidget {
-  const JobDetailsScreen({super.key});
+  String? jobId;
+   JobDetailsScreen({required this.jobId, super.key});
 
   @override
   State<JobDetailsScreen> createState() => _JobDetailsScreenState();
@@ -19,8 +20,10 @@ class _JobDetailsScreenState extends State<JobDetailsScreen> {
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback(
-      (timeStamp) async{
-        await context.read<JobDetailsScreenController>().getJobDetails();
+      (timeStamp) async {
+        await context
+            .read<JobDetailsScreenController>()
+            .getJobDetails(widget.jobId ?? "");
       },
     );
     super.initState();
@@ -28,10 +31,23 @@ class _JobDetailsScreenState extends State<JobDetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final controller = context.watch<JobDetailsScreenController>();
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHight = MediaQuery.of(context).size.width;
     final PageController _controller = PageController();
     final int _numPages = 3;
+
+    // Show loading indicator
+    if (controller.isloading) {
+      return Center(child: CircularProgressIndicator());
+    }
+
+    // Show error if no data
+    if (controller.jobDetails == null) {
+      return Center(child: Text("Failed to load job details"));
+    }
+    final job = controller.jobDetails!.data;
+
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -111,7 +127,7 @@ class _JobDetailsScreenState extends State<JobDetailsScreen> {
               Row(
                 children: [
                   Text(
-                    "₹15000/month",
+                    job?.salary ?? "Salary not specified",
                     style: TextStyle(
                         color: Colors.black,
                         fontSize: 20,

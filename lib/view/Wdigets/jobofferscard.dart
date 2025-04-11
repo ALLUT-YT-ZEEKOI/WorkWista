@@ -51,7 +51,7 @@ class _JobOffersCardState extends State<JobOffersCard> {
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => JobDetailsScreen(),
+                  builder: (context) => JobDetailsScreen(jobId: jobOffer.id,),
                 ));
           },
           child: Container(
