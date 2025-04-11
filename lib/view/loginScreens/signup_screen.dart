@@ -1,11 +1,43 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:workwista/AppTextStyle/app_text_style.dart';
 import 'package:workwista/view/loginScreens/sign_in_screen.dart';
 
-class Signupscreen extends StatelessWidget {
+class Signupscreen extends StatefulWidget {
   const Signupscreen({super.key});
+
+  @override
+  State<Signupscreen> createState() => _SignupscreenState();
+}
+
+class _SignupscreenState extends State<Signupscreen> {
+  TextEditingController _dateController = TextEditingController();
+  TextEditingController _nameController = TextEditingController();
+  TextEditingController _emailController = TextEditingController();
+  TextEditingController _phoneNumberController = TextEditingController();
+  TextEditingController _passwordController = TextEditingController();
+  TextEditingController _CPasswordController = TextEditingController();
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime? pickedDate = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(), // current date
+      firstDate: DateTime(2000), // earliest date
+      lastDate: DateTime(2100), // latest date
+    );
+
+    if (pickedDate != null) {
+      String formattedDate =
+          DateFormat('yyyy-MM-dd').format(pickedDate); // format date
+      setState(() {
+        _dateController.text = formattedDate; // set to TextField
+      });
+
+      // Now you can use the formattedDate string wherever needed
+      print("Selected date: $formattedDate");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +70,28 @@ class Signupscreen extends StatelessWidget {
                   const SizedBox(height: 5),
                   SizedBox(
                     height: 50,
-                    child: TextField(
+                    child: TextFormField(
+                      controller: _nameController,
+                      decoration: InputDecoration(
+                        filled: true,
+                        fillColor: Colors.white,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(33),
+                          borderSide: const BorderSide(
+                            color: Color(0xFFBDBDBD),
+                            width: 1,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  const Text('Email', style: AppTextStyle.labeltext),
+                  const SizedBox(height: 5),
+                  SizedBox(
+                    height: 50,
+                    child: TextFormField(
+                      controller: _emailController,
                       decoration: InputDecoration(
                         filled: true,
                         fillColor: Colors.white,
@@ -55,78 +108,27 @@ class Signupscreen extends StatelessWidget {
                   const SizedBox(height: 20),
                   const Text('Date of Birth', style: AppTextStyle.labeltext),
                   const SizedBox(height: 5),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: SizedBox(
-                          height: 50,
-                          child: TextField(
-                            decoration: InputDecoration(
-                              hintText: "Day",
-                              filled: true,
-                              fillColor: Colors.white,
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(33),
-                                borderSide: const BorderSide(
-                                  color: Color(0xFFBDBDBD),
-                                  width: 1,
-                                ),
-                              ),
-                            ),
-                            keyboardType: TextInputType.number,
-                          ),
+                  TextField(
+                    controller: _dateController,
+                    readOnly: true,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(33),
+                        borderSide: const BorderSide(
+                          color: Color(0xFFBDBDBD),
+                          width: 1,
                         ),
                       ),
-                      const SizedBox(width: 10),
-                      Expanded(
-                        child: SizedBox(
-                          height: 50,
-                          child: TextField(
-                            decoration: InputDecoration(
-                              hintText: "Month",
-                              filled: true,
-                              fillColor: Colors.white,
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(33),
-                                borderSide: const BorderSide(
-                                  color: Color(0xFFBDBDBD),
-                                  width: 1,
-                                ),
-                              ),
-                            ),
-                            keyboardType: TextInputType.number,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 10),
-                      Expanded(
-                        child: SizedBox(
-                          height: 50,
-                          child: TextField(
-                            decoration: InputDecoration(
-                              hintText: "Year",
-                              filled: true,
-                              fillColor: Colors.white,
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(33),
-                                borderSide: const BorderSide(
-                                  color: Color(0xFFBDBDBD),
-                                  width: 1,
-                                ),
-                              ),
-                            ),
-                            keyboardType: TextInputType.number,
-                          ),
-                        ),
-                      ),
-                    ],
+                    ),
+                    onTap: () => _selectDate(context),
                   ),
                   const SizedBox(height: 20),
                   const Text('Phone Number', style: AppTextStyle.labeltext),
                   const SizedBox(height: 5),
                   SizedBox(
                     height: 50,
-                    child: TextField(
+                    child: TextFormField(
+                      controller: _phoneNumberController,
                       decoration: InputDecoration(
                         filled: true,
                         fillColor: Colors.white,
@@ -146,7 +148,8 @@ class Signupscreen extends StatelessWidget {
                   const SizedBox(height: 5),
                   SizedBox(
                     height: 50,
-                    child: TextField(
+                    child: TextFormField(
+                      controller: _passwordController,
                       obscureText: true,
                       decoration: InputDecoration(
                         filled: true,
@@ -166,7 +169,8 @@ class Signupscreen extends StatelessWidget {
                   const SizedBox(height: 5),
                   SizedBox(
                     height: 50,
-                    child: TextField(
+                    child: TextFormField(
+                      controller: _CPasswordController,
                       obscureText: true,
                       decoration: InputDecoration(
                         filled: true,
@@ -230,7 +234,7 @@ class Signupscreen extends StatelessWidget {
                   shadowColor: Colors.transparent,
                 ),
                 onPressed: () {
-                  log("Next button pressed");
+                  
                 },
                 child: Ink(
                   decoration: BoxDecoration(

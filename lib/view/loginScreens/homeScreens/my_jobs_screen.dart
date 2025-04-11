@@ -337,18 +337,30 @@ class _MyJobsScreenState extends State<MyJobsScreen> {
                   indicatorSize: TabBarIndicatorSize.tab,
                   dividerColor: Colors.transparent,
                   tabs: [
-                    TabItem(title: "Recent Jobs", count: "17"),
-                    TabItem(title: "Posted Jobs", count: "5"),
-                    TabItem(title: "Done Jobs", count: "7"),
+                    TabItem(title: "Recent", count: "17"),
+                    TabItem(title: "Posted", count: "5"),
+                    TabItem(title: "Done", count: "7"),
                   ],
                 ),
               ),
               Expanded(
                 child: TabBarView(
                   children: [
-                    SingleChildScrollView(child: JobOffersCard(numOfcards: 5,context: context,)),
-                    SingleChildScrollView(child: JobOffersCard(numOfcards: 5,context: context,)),
-                    SingleChildScrollView(child: JobOffersCard(numOfcards: 5,context: context,)),
+                    SingleChildScrollView(
+                        child: JobOffersCard(
+                      numOfcards: 5,
+                      context: context,
+                    )),
+                    SingleChildScrollView(
+                        child: JobOffersCard(
+                      numOfcards: 5,
+                      context: context,
+                    )),
+                    SingleChildScrollView(
+                        child: JobOffersCard(
+                      numOfcards: 5,
+                      context: context,
+                    )),
                   ],
                 ),
               ),

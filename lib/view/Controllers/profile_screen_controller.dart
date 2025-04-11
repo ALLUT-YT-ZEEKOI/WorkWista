@@ -1,27 +1,30 @@
 import 'dart:convert';
 import 'dart:developer';
-import 'package:http/http.dart' as http;
+
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:workwista/view/Model/job_details_model.dart';
 
-class JobDetailsScreenController with ChangeNotifier {
-  JobDetailsModel? jobDetails;
+import 'package:workwista/view/Model/user_profile_model.dart';
+import 'package:http/http.dart' as http;
+
+class ProfileScreenController with ChangeNotifier {
+  UserProfileModel? ProfileDetails;
+
   bool isloading = false;
   String? errorMessage;
 
-  Future<void> getJobDetails(String jobId) async {
+  Future<void> getProfileDetails() async {
     isloading = true;
     notifyListeners();
+    
 
     try {
-      final prefs = await SharedPreferences.getInstance();
+     final prefs = await SharedPreferences.getInstance();
       String accessToken = prefs.getString("access") ?? "";
-      
-      // First attempt with current access token
-      var response = await _makeJobDetailsRequest(jobId, accessToken);
+     // First attempt with current access token
+      var response = await _makeProfileDetailsRequest(accessToken);
 
-      // If unauthorized (401), try refreshing token
+       // If unauthorized (401), try refreshing token
       if (response.statusCode == 401) {
         log("Access token expired, attempting refresh...");
         final refreshToken = prefs.getString("refresh") ?? "";
@@ -30,34 +33,43 @@ class JobDetailsScreenController with ChangeNotifier {
         final newAccessToken = await _refreshToken(refreshToken);
         if (newAccessToken != null) {
           // Retry with new token
-          response = await _makeJobDetailsRequest(jobId, newAccessToken);
+          response = await _makeProfileDetailsRequest(newAccessToken);
         }
       }
-
-      // Process final response
-      if (response.statusCode == 200) {
-        jobDetails = jobDetailsModelFromJson(response.body);
+       // Process final response
+       if (response.statusCode == 200) {
+        ProfileDetails = userProfileModelFromJson(response.body);
         log("Successfully loaded job details");
-      } else {
+      }else{
         errorMessage = "Failed to load job details (${response.statusCode})";
         _handleApiError(response.statusCode, response.body);
       }
+
     } catch (e) {
       errorMessage = "Error: ${e.toString()}";
       log(errorMessage!);
-    } finally {
+    }finally{
       isloading = false;
       notifyListeners();
     }
   }
 
-  Future<http.Response> _makeJobDetailsRequest(String jobId, String accessToken) async {
-    final url = Uri.parse('http://192.168.3.36:8000/job/view/detail_job/$jobId/');
+
+
+
+    Future<http.Response> _makeProfileDetailsRequest(String accessToken) async {
+    final url = Uri.parse('http://192.168.3.36:8000/job/vew/userprofile/');
     return await http.get(
       url,
       headers: {"Authorization": "Bearer $accessToken"},
     );
   }
+
+
+
+
+
+
 
   Future<String?> _refreshToken(String refreshToken) async {
     try {
@@ -91,7 +103,9 @@ class JobDetailsScreenController with ChangeNotifier {
     }
   }
 
-  void _handleApiError(int statusCode, String responseBody) {
+
+
+    void _handleApiError(int statusCode, String responseBody) {
     log("API Error $statusCode: $responseBody");
     // Additional error handling if needed
   }

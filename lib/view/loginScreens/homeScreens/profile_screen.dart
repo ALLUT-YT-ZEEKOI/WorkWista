@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:workwista/Utils/color_constants.dart';
+import 'package:workwista/view/Controllers/profile_screen_controller.dart';
+import 'package:workwista/view/loginScreens/sign_in_screen.dart';
 import 'package:workwista/view/responsive_helper.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -11,7 +15,34 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback(
+      (timeStamp) async {
+        await context.read<ProfileScreenController>().getProfileDetails();
+      },
+    );
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final controller = context.watch<ProfileScreenController>();
+
+    //show loading
+    if (controller.isloading) {
+      return Center(
+        child: CircularProgressIndicator(),
+      );
+    }
+    //show error if no data
+    if (controller.ProfileDetails == null) {
+      return Center(
+        child: Text("Failed to load profile details"),
+      );
+    }
+
+    final profile = controller.ProfileDetails!.data;
+
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -48,7 +79,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       height: ResponsiveHelper.height(16, context),
                     ),
                     Text(
-                      "David Jhon robert",
+                      profile?.name ?? "not found",
                       style: TextStyle(
                           color: Colors.black,
                           fontSize: 18,
@@ -95,7 +126,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          "davidjhonro@gmail.com",
+                          profile?.email ?? "",
                           style: TextStyle(
                               color: ColorConstants.descText,
                               fontWeight: FontWeight.w400,
@@ -108,7 +139,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           width: ResponsiveHelper.width(10, context),
                         ),
                         Text(
-                          "+91 5688656535",
+                          "+91 ${profile?.phoneNumber ?? ""}",
                           style: TextStyle(
                               color: Colors.grey,
                               fontWeight: FontWeight.w400,
@@ -255,7 +286,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           ),
                           Spacer(),
                           Text(
-                            "26Y/O",
+                            profile?.dob.toString() ?? "",
                             style: TextStyle(
                               fontSize: 13,
                               fontWeight: FontWeight.w400,
@@ -364,36 +395,54 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       Divider(
                         thickness: 2,
                       ),
-                      Row(
-                        children: [
-                          Container(
-                            width: 36,
-                            height: 36,
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(33),
-                                color: ColorConstants.containerwhite),
-                            child: Icon(
-                              Icons.exit_to_app,
-                              size: 22,
-                              color: Colors.grey.shade600,
+                      InkWell(
+                        onTap: () async {
+                          // Clear tokens from SharedPreferences
+                          SharedPreferences prefs =
+                              await SharedPreferences.getInstance();
+                          await prefs.setString("access", "");
+                          await prefs.setString("refresh", "");
+
+                          // Navigate to login screen and prevent going back
+                          Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => SignInScreen()),
+                            (Route<dynamic> route) =>
+                                false, // Remove all routes
+                          );
+                        },
+                        child: Row(
+                          children: [
+                            Container(
+                              width: 36,
+                              height: 36,
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(33),
+                                  color: ColorConstants.containerwhite),
+                              child: Icon(
+                                Icons.exit_to_app,
+                                size: 22,
+                                color: Colors.grey.shade600,
+                              ),
                             ),
-                          ),
-                          SizedBox(
-                            width: 10,
-                          ),
-                          Text(
-                            "Logout",
-                            style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 16,
-                                fontWeight: FontWeight.w500),
-                          ),
-                          Spacer(),
-                          Icon(
-                            Icons.arrow_forward_ios,
-                            size: 20,
-                          )
-                        ],
+                            SizedBox(
+                              width: 10,
+                            ),
+                            Text(
+                              "Logout",
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500),
+                            ),
+                            Spacer(),
+                            Icon(
+                              Icons.arrow_forward_ios,
+                              size: 20,
+                            )
+                          ],
+                        ),
                       ),
                     ],
                   )),

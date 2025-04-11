@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:workwista/view/Common%20Screens/custom_bottom_navbar.dart';
 import 'package:workwista/view/Model/login_model.dart';
 import 'package:workwista/view/loginScreens/homeScreens/dashboard_screen.dart';
 
@@ -36,7 +37,7 @@ class LoginScreenController with ChangeNotifier {
           Navigator.pushReplacement(
               context,
               MaterialPageRoute(
-                builder: (context) => Dashboard(),
+                builder: (context) => CustomBottomNavbar(),
               ));
         } else {
           errorMessage = "Invalid token received";

@@ -90,28 +90,13 @@ class _DashboardState extends State<Dashboard>
                             ),
                             Row(
                               children: [
-                                InkWell(
-                                  onTap: () async {
-    // Clear tokens from SharedPreferences
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setString("access", "");
-    await prefs.setString("refresh", "");
-
-    // Navigate to login screen and prevent going back
-    Navigator.pushAndRemoveUntil(
-      context,
-      MaterialPageRoute(builder: (context) => SignInScreen()),
-      (Route<dynamic> route) => false, // Remove all routes
-    );
-  },
-                                  child: Container(
-                                    margin: EdgeInsets.only(
-                                        right:
-                                            ResponsiveHelper.width(10, context)),
-                                    child: Image(
-                                      image: AssetImage('assets/bell.png'),
-                                      width: ResponsiveHelper.width(30, context),
-                                    ),
+                                Container(
+                                  margin: EdgeInsets.only(
+                                      right:
+                                          ResponsiveHelper.width(10, context)),
+                                  child: Image(
+                                    image: AssetImage('assets/bell.png'),
+                                    width: ResponsiveHelper.width(30, context),
                                   ),
                                 ),
                                 Container(
