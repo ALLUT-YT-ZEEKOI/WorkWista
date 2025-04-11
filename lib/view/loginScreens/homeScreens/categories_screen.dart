@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:workwista/view/Controllers/jobs_screen_controller.dart';
 
 import 'package:workwista/view/Wdigets/search_field.dart';
 import 'package:workwista/view/loginScreens/homeScreens/selected_category_jobs_screen.dart';
@@ -19,10 +21,10 @@ class _CategoriesScreenState extends State<CategoriesScreen>
   @override
   void initState() {
     super.initState();
-    _CategorytabController = TabController(length: 5, vsync: this);
-
-    // Add listener to sync tab controller with page changes
-    _CategorytabController.addListener(_handleTabSelection);
+    // Fetch categories when screen initializes
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<JobsScreenController>(context, listen: false).getCategories();
+    });
   }
 
   void _handleTabSelection() {
@@ -43,6 +45,7 @@ class _CategoriesScreenState extends State<CategoriesScreen>
 
   @override
   Widget build(BuildContext context) {
+    final controller = Provider.of<JobsScreenController>(context);
     return Scaffold(
       appBar: AppBar(
         titleTextStyle: TextStyle(
@@ -59,55 +62,64 @@ class _CategoriesScreenState extends State<CategoriesScreen>
               SizedBox(
                 height: 23,
               ),
-               GridView.builder(
-          shrinkWrap: true,
-          physics: NeverScrollableScrollPhysics(),
-          padding: EdgeInsets.all(0),
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            mainAxisSpacing: 10,
-            crossAxisSpacing: 8,
-            childAspectRatio: 1.31, // Adjust this value for height/width ratio
-          ),
-          itemCount: 21,
-          itemBuilder: (context, index) {
-            return SizedBox(
-              child: InkWell(
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => SelectedCategoryJobsScreen(
-                          selectedCategory: "All",
-                        ),
-                      ));
-                },
-                child: Container(
-                    // Set your custom height here
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                          fit: BoxFit.cover,
-                          image: NetworkImage(
-                              'https://images.pexels.com/photos/159839/office-home-house-desk-159839.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2')),
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(8),
+              // Show loading indicator while fetching
+              if (controller.isloading)
+                const Center(child: CircularProgressIndicator()),
+              // Show error message if no categories available
+              if (!controller.isloading && controller.categoriesList.isEmpty)
+                const Center(child: Text("No categories available")),
+              // Show grid when categories are loaded
+              if (!controller.isloading && controller.categoriesList.isNotEmpty)
+              GridView.builder(
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
+                padding: EdgeInsets.all(0),
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  mainAxisSpacing: 10,
+                  crossAxisSpacing: 8,
+                  childAspectRatio:
+                      1.31, // Adjust this value for height/width ratio
+                ),
+                itemCount: controller.categoriesList.length,
+                itemBuilder: (context, index) {
+                  final category = controller.categoriesList[index];
+                  return SizedBox(
+                    
+                    child: InkWell(
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => SelectedCategoryJobsScreen(
+                                selectedCategory: category.title ?? "unNamed",
+                              ),
+                            ));
+                      },
+                      child: Container(
+                          // Set your custom height here
+                          decoration: BoxDecoration(
+                            image: DecorationImage(
+                                fit: BoxFit.cover,
+                                image: NetworkImage(
+                                    'https://images.pexels.com/photos/159839/office-home-house-desk-159839.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2')),
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          padding: EdgeInsets.all(8),
+                          child: Align(
+                              alignment: Alignment.bottomLeft,
+                              child: Text(
+                                category.title ?? "UnNamed",
+                                style: TextStyle(
+                                    fontSize: 17,
+                                    fontWeight: FontWeight.w700,
+                                    color: Colors.white),
+                              ))),
                     ),
-                    padding: EdgeInsets.all(8),
-                    child: Align(
-                        alignment: Alignment.bottomLeft,
-                        child: Text(
-                          "All",
-                          style: TextStyle(
-                              fontSize: 17,
-                              fontWeight: FontWeight.w700,
-                              color: Colors.white),
-                        ))),
-              ),
-            );
-          },
-        )
-              
-            
+                  );
+                },
+              )
             ],
           ),
         ),
@@ -115,6 +127,3 @@ class _CategoriesScreenState extends State<CategoriesScreen>
     );
   }
 }
-
-
-

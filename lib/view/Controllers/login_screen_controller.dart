@@ -1,4 +1,6 @@
+import 'dart:convert';
 import 'dart:developer';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -9,6 +11,62 @@ import 'package:workwista/view/loginScreens/homeScreens/dashboard_screen.dart';
 class LoginScreenController with ChangeNotifier {
   bool isloading = false;
   String? errorMessage;
+
+
+
+
+final GoogleSignIn _googleSignIn = GoogleSignIn();
+
+Future<void> signInWithGoogle(BuildContext context) async {
+  try {
+    final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+
+    if (googleUser == null) {
+      // User cancelled the sign-in
+      return;
+    }
+
+    final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+
+    // Send ID token or email to your backend
+    final response = await http.post(
+      Uri.parse('http://192.168.3.36:8000/auth/google/'),
+      body: {
+        'email': googleUser.email,
+        'name': googleUser.displayName ?? '',
+        'profile_picture_google': googleUser.photoUrl ?? '',
+        // Send token if required by your backend
+        // 'id_token': googleAuth.idToken,
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      final accessToken = data['access_token'];
+      final refreshToken = data['refresh_token'];
+
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setString('access', accessToken);
+      await prefs.setString('refresh', refreshToken);
+
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => CustomBottomNavbar()),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Google login failed')),
+      );
+    }
+  } catch (e) {
+    log('Google sign-in error: $e');
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Error: ${e.toString()}')),
+    );
+  }
+}
+
+
 
   Future<bool> onLogin(
       {required String email,

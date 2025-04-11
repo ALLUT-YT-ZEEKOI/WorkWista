@@ -5,6 +5,7 @@ import 'package:workwista/view/Controllers/job_offers_card_controller.dart';
 import 'package:workwista/view/Controllers/jobs_screen_controller.dart';
 import 'package:workwista/view/Controllers/login_screen_controller.dart';
 import 'package:workwista/view/Controllers/profile_screen_controller.dart';
+import 'package:workwista/view/Controllers/register_screen_controller.dart';
 import 'package:workwista/view/loginScreens/splash_screen.dart';
 
 void main() {
@@ -26,6 +27,9 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider(
           create: (context) => LoginScreenController(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => RegisterScreenController(),
         ),
         ChangeNotifierProvider(
           create: (context) => JobDetailsScreenController(),

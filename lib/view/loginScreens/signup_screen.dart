@@ -2,7 +2,9 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import 'package:workwista/AppTextStyle/app_text_style.dart';
+import 'package:workwista/view/Controllers/register_screen_controller.dart';
 import 'package:workwista/view/loginScreens/sign_in_screen.dart';
 
 class Signupscreen extends StatefulWidget {
@@ -37,6 +39,18 @@ class _SignupscreenState extends State<Signupscreen> {
       // Now you can use the formattedDate string wherever needed
       print("Selected date: $formattedDate");
     }
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _dateController.dispose();
+    _CPasswordController.dispose();
+    _emailController.dispose();
+    _phoneNumberController.dispose();
+
+    _passwordController.dispose();
+    super.dispose();
   }
 
   @override
@@ -233,8 +247,27 @@ class _SignupscreenState extends State<Signupscreen> {
                   elevation: 0,
                   shadowColor: Colors.transparent,
                 ),
-                onPressed: () {
-                  
+                onPressed: () async {
+                  if (_nameController.text.isNotEmpty &&
+                      _emailController.text.isNotEmpty &&
+                      _dateController.text.isNotEmpty &&
+                      _phoneNumberController.text.isNotEmpty &&
+                      _passwordController.text.isNotEmpty &&
+                      _CPasswordController.text.isNotEmpty) {
+                    await context.read<RegisterScreenController>().onRegister(
+                        name: _nameController.text,
+                        context: context,
+                        email: _emailController.text,
+                        phone_number: _phoneNumberController.text,
+                        DOB: _dateController.text,
+                        password: _passwordController.text,
+                        confirm_pass: _CPasswordController.text);
+                  }else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text("Please enter all details")),
+                    );
+                  }
                 },
                 child: Ink(
                   decoration: BoxDecoration(
