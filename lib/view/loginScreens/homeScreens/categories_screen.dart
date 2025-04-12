@@ -15,7 +15,7 @@ class CategoriesScreen extends StatefulWidget {
 
 class _CategoriesScreenState extends State<CategoriesScreen>
     with SingleTickerProviderStateMixin {
-  late TabController _CategorytabController;
+
   int _currentIndex = 0;
 
   @override
@@ -27,18 +27,11 @@ class _CategoriesScreenState extends State<CategoriesScreen>
     });
   }
 
-  void _handleTabSelection() {
-    if (_CategorytabController.indexIsChanging) {
-      setState(() {
-        _currentIndex = _CategorytabController.index;
-      });
-    }
-  }
+ 
 
   @override
   void dispose() {
-    _CategorytabController.removeListener(_handleTabSelection);
-    _CategorytabController.dispose();
+    
 
     super.dispose();
   }
@@ -93,6 +86,7 @@ class _CategoriesScreenState extends State<CategoriesScreen>
                             MaterialPageRoute(
                               builder: (context) => SelectedCategoryJobsScreen(
                                 selectedCategory: category.title ?? "unNamed",
+                                categoryId: category.id, // Pass the category ID
                               ),
                             ));
                       },

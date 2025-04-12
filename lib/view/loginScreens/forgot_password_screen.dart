@@ -20,13 +20,13 @@ class Forgotpassword extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             const SizedBox(height: 80),
-            const Text(
+             Text(
               'Forgot Password',
               textAlign: TextAlign.center,
               style: AppTextStyle.heading,
             ),
             const SizedBox(height: 10),
-            const Text(
+             Text(
               'Don’t miss the opportunity to easily find jobs and hire workers.',
               textAlign: TextAlign.center,
               style: AppTextStyle.loginsubhead,
@@ -37,7 +37,7 @@ class Forgotpassword extends StatelessWidget {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text('Emali or phone', style: AppTextStyle.labeltext),
+                 Text('Emali or phone', style: AppTextStyle.labeltext),
                 const SizedBox(height: 5),
                 const SizedBox(height: 5),
                 SizedBox(
@@ -144,7 +144,7 @@ class Forgotpassword extends StatelessWidget {
                     ),
                   );
                 },
-                child: const Text('Back', style: AppTextStyle.labeltext)),
+                child:  Text('Back', style: AppTextStyle.labeltext)),
           ],
         ),
       ),

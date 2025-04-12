@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -6,7 +7,6 @@ import 'package:provider/provider.dart';
 import 'package:workwista/AppTextStyle/app_text_style.dart';
 import 'package:workwista/view/Controllers/register_screen_controller.dart';
 import 'package:workwista/view/loginScreens/sign_in_screen.dart';
-
 class Signupscreen extends StatefulWidget {
   const Signupscreen({super.key});
 
@@ -21,6 +21,10 @@ class _SignupscreenState extends State<Signupscreen> {
   TextEditingController _phoneNumberController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
   TextEditingController _CPasswordController = TextEditingController();
+
+
+
+
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? pickedDate = await showDatePicker(
       context: context,
@@ -63,13 +67,13 @@ class _SignupscreenState extends State<Signupscreen> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               const SizedBox(height: 45),
-              const Text(
+               Text(
                 'Sign up for an account now!',
                 textAlign: TextAlign.center,
                 style: AppTextStyle.heading,
               ),
               const SizedBox(height: 10),
-              const Text(
+               Text(
                 'Join us for job opportunities!',
                 textAlign: TextAlign.center,
                 style: AppTextStyle.loginsubhead,
@@ -80,7 +84,7 @@ class _SignupscreenState extends State<Signupscreen> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text('Your name', style: AppTextStyle.labeltext),
+                   Text('Your name', style: AppTextStyle.labeltext),
                   const SizedBox(height: 5),
                   SizedBox(
                     height: 50,
@@ -100,7 +104,7 @@ class _SignupscreenState extends State<Signupscreen> {
                     ),
                   ),
                   const SizedBox(height: 20),
-                  const Text('Email', style: AppTextStyle.labeltext),
+                   Text('Email', style: AppTextStyle.labeltext),
                   const SizedBox(height: 5),
                   SizedBox(
                     height: 50,
@@ -120,7 +124,7 @@ class _SignupscreenState extends State<Signupscreen> {
                     ),
                   ),
                   const SizedBox(height: 20),
-                  const Text('Date of Birth', style: AppTextStyle.labeltext),
+                   Text('Date of Birth', style: AppTextStyle.labeltext),
                   const SizedBox(height: 5),
                   TextField(
                     controller: _dateController,
@@ -137,7 +141,7 @@ class _SignupscreenState extends State<Signupscreen> {
                     onTap: () => _selectDate(context),
                   ),
                   const SizedBox(height: 20),
-                  const Text('Phone Number', style: AppTextStyle.labeltext),
+                   Text('Phone Number', style: AppTextStyle.labeltext),
                   const SizedBox(height: 5),
                   SizedBox(
                     height: 50,
@@ -158,7 +162,7 @@ class _SignupscreenState extends State<Signupscreen> {
                     ),
                   ),
                   const SizedBox(height: 20),
-                  const Text('Password', style: AppTextStyle.labeltext),
+                   Text('Password', style: AppTextStyle.labeltext),
                   const SizedBox(height: 5),
                   SizedBox(
                     height: 50,
@@ -179,7 +183,7 @@ class _SignupscreenState extends State<Signupscreen> {
                     ),
                   ),
                   const SizedBox(height: 20),
-                  const Text('Confirm Password', style: AppTextStyle.labeltext),
+                   Text('Confirm Password', style: AppTextStyle.labeltext),
                   const SizedBox(height: 5),
                   SizedBox(
                     height: 50,
@@ -203,7 +207,7 @@ class _SignupscreenState extends State<Signupscreen> {
               ),
 
               const SizedBox(height: 30),
-              const Text.rich(
+               Text.rich(
                 TextSpan(
                   children: [
                     TextSpan(
@@ -302,7 +306,7 @@ class _SignupscreenState extends State<Signupscreen> {
                         builder: (context) => SignInScreen(),
                       ));
                 },
-                child: const Text.rich(
+                child:  Text.rich(
                   TextSpan(
                     children: [
                       TextSpan(

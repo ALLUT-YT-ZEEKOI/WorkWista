@@ -1,50 +1,93 @@
 import 'dart:developer';
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
 import 'package:workwista/Utils/color_constants.dart';
+import 'package:workwista/main.dart';
+import 'package:workwista/view/Controllers/add_job_controller.dart';
 import 'package:workwista/view/Wdigets/button_without_gradient.dart';
 import 'package:workwista/view/Wdigets/gradient_button.dart';
 import 'package:workwista/view/responsive_helper.dart';
 
 class EnterJobDetailsScreen extends StatefulWidget {
-  const EnterJobDetailsScreen({super.key});
+  String? category_id;
+  EnterJobDetailsScreen({required this.category_id, super.key});
 
   @override
   State<EnterJobDetailsScreen> createState() => _EnterJobDetailsScreenState();
 }
 
 class _EnterJobDetailsScreenState extends State<EnterJobDetailsScreen> {
+  File? _selectedImage;
+  final ImagePicker _picker = ImagePicker();
+
   int? _selectedJobType; // For job type selection
   int? _selectedWorkMode; // For work mode selection
   TextEditingController _jobTitleController = TextEditingController();
-  TextEditingController _titleController = TextEditingController();
-  TextEditingController _skillsController = TextEditingController();
-  TextEditingController _salaryPeriodController = TextEditingController();
-  TextEditingController _positionController = TextEditingController();
-  TextEditingController _salaryFromController = TextEditingController();
-  TextEditingController _salaryToController = TextEditingController();
+  TextEditingController _descriptionController = TextEditingController();
+  TextEditingController _jobdateController = TextEditingController();
+  TextEditingController _salaryController = TextEditingController();
+  TextEditingController _longitudeController = TextEditingController();
+  TextEditingController _latitudeController = TextEditingController();
+  TextEditingController _jobtypeController = TextEditingController();
   TextEditingController _dateFromController = TextEditingController();
   TextEditingController _dateToController = TextEditingController();
   TextEditingController _startTimeController = TextEditingController();
   TextEditingController _endTimeController = TextEditingController();
   final List<Map<String, dynamic>> _jobTypes = [
-    {'label': 'Fulltime', 'value': 1},
-    {'label': 'Parttime', 'value': 2},
-    {'label': 'Permanent', 'value': 3},
+    {
+      'label': 'Fulltime',
+      'value': 1,
+      'keyword': '16c2da6b-6a84-4b84-bae5-c9c9aa165623'
+    },
+    {
+      'label': 'Parttime',
+      'value': 2,
+      'keyword': '10548fac-0b67-4da2-80be-2543729ef987'
+    },
+    {'label': 'Permanent', 'value': 3, 'keyword': 'cd'},
   ];
 
   final List<Map<String, dynamic>> _workModes = [
-    {'label': 'Onsite', 'value': 1},
-    {'label': 'Work from home', 'value': 2},
+    {'label': 'Onsite', 'value': 1, 'keyword': 'xy'},
+    {'label': 'Work from home', 'value': 2, 'keyword': 'yz'},
   ];
 
   @override
   Widget build(BuildContext context) {
+    Future<void> _pickImage() async {
+      final XFile? pickedFile =
+          await _picker.pickImage(source: ImageSource.gallery); // or camera
+
+      if (pickedFile != null) {
+        setState(() {
+          _selectedImage = File(pickedFile.path);
+        });
+      }
+    }
+
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: Text(
-          "Enter some details",
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
+        title: InkWell(
+          onTap: () {
+            final selectedJobType = _jobTypes.firstWhere(
+              (e) => e['value'] == _selectedJobType,
+              orElse: () => {},
+            );
+            final selectedWorkMode = _workModes.firstWhere(
+              (e) => e['value'] == _selectedWorkMode,
+              orElse: () => {},
+            );
+
+            log("Selected Job Type Keyword: ${selectedJobType['keyword'] ?? 'None'}");
+            log("Selected Work Mode Keyword: ${selectedWorkMode['keyword'] ?? 'None'}");
+          },
+          child: Text(
+            "Enter some details",
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
+          ),
         ),
       ),
       body: Padding(
@@ -57,7 +100,7 @@ class _EnterJobDetailsScreenState extends State<EnterJobDetailsScreen> {
             children: [
               // Image Upload Section
               InkWell(
-                onTap: () => log("add a photo"),
+                onTap: () => _pickImage(),
                 child: Container(
                   width: double.infinity,
                   height: ResponsiveHelper.height(179, context),
@@ -69,19 +112,27 @@ class _EnterJobDetailsScreenState extends State<EnterJobDetailsScreen> {
                     borderRadius: BorderRadius.circular(24),
                     color: Colors.white,
                   ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(Icons.add_photo_alternate, size: 26),
-                      Text(
-                        "Upload more images",
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
+                  child: _selectedImage == null
+                      ? Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: const [
+                            Icon(Icons.add_photo_alternate, size: 26),
+                            Text(
+                              "Upload more images",
+                              style: TextStyle(
+                                  fontSize: 14, fontWeight: FontWeight.w500),
+                            ),
+                          ],
+                        )
+                      : ClipRRect(
+                          borderRadius: BorderRadius.circular(24),
+                          child: Image.file(
+                            _selectedImage!,
+                            fit: BoxFit.cover,
+                            width: double.infinity,
+                            height: double.infinity,
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
                 ),
               ),
 
@@ -131,44 +182,70 @@ class _EnterJobDetailsScreenState extends State<EnterJobDetailsScreen> {
                 ),
               ),
               SizedBox(height: ResponsiveHelper.height(12, context)),
-              _textFields(context, double.infinity, "Describe your Job role*",
-                  _jobTitleController),
+              _textFields(
+                  context, double.infinity, "title*", _jobTitleController),
+              SizedBox(height: ResponsiveHelper.height(12, context)),
+              _textFields(context, double.infinity, "description",
+                  _descriptionController),
               SizedBox(height: ResponsiveHelper.height(12, context)),
               _textFields(
-                  context, double.infinity, "Ad Title*", _titleController),
+                  context, double.infinity, "Job date*", _jobdateController),
               SizedBox(height: ResponsiveHelper.height(12, context)),
               _textFields(
-                  context, double.infinity, "Skills*", _skillsController),
-              SizedBox(height: ResponsiveHelper.height(12, context)),
-              _textFields(context, double.infinity, "Salary Period*",
-                  _salaryPeriodController),
-              SizedBox(height: ResponsiveHelper.height(12, context)),
-              _textFields(context, double.infinity, "Position type*",
-                  _positionController),
-              SizedBox(height: ResponsiveHelper.height(12, context)),
-              _textFields(context, double.infinity, "Salary From*",
-                  _salaryFromController),
+                  context, double.infinity, "Salary*", _salaryController),
               SizedBox(height: ResponsiveHelper.height(12, context)),
               _textFields(
-                  context, double.infinity, "Salary To*", _salaryToController),
+                  context, double.infinity, "longitude", _longitudeController),
               SizedBox(height: ResponsiveHelper.height(12, context)),
               _textFields(
-                  context, double.infinity, "Date From*", _dateFromController),
+                  context, double.infinity, "latitude", _latitudeController),
               SizedBox(height: ResponsiveHelper.height(12, context)),
               _textFields(
-                  context, double.infinity, "Date To*", _dateToController),
-              SizedBox(height: ResponsiveHelper.height(20, context)),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  _textFields(context, 175, "00: 00*", _startTimeController),
-                  _textFields(context, 175, "00: 00*", _endTimeController),
-                ],
-              ),
+                  context, double.infinity, "job_type", _jobtypeController),
+              SizedBox(height: ResponsiveHelper.height(12, context)),
+              // _textFields(
+              //     context, double.infinity, "Date From*", _dateFromController),
+              // SizedBox(height: ResponsiveHelper.height(12, context)),
+              // _textFields(
+              //     context, double.infinity, "Date To*", _dateToController),
+              // SizedBox(height: ResponsiveHelper.height(20, context)),
+              // Row(
+              //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //   children: [
+              //     _textFields(context, 175, "00: 00*", _startTimeController),
+              //     _textFields(context, 175, "00: 00*", _endTimeController),
+              //   ],
+              // ),
               SizedBox(height: ResponsiveHelper.height(20, context)),
               GradientButton(
-                onPressed: () {
+                onPressed: () async {
+                  final selectedJobType = _jobTypes.firstWhere(
+                    (e) => e['value'] == _selectedJobType,
+                    orElse: () => {},
+                  );
                   
+
+                  log("Selected Job Type Keyword: ${selectedJobType['keyword'] ?? 'None'}");
+                  // log("Selected Work Mode Keyword: ${selectedWorkMode['keyword'] ?? 'None'}");
+
+                  if (_jobTitleController.text.isNotEmpty &&
+                      _descriptionController.text.isNotEmpty &&
+                      _jobdateController.text.isNotEmpty &&
+                      _salaryController.text.isNotEmpty &&
+                      _longitudeController.text.isNotEmpty &&
+                      _latitudeController.text.isNotEmpty) {
+                    await context.read<AddJobController>().onAddJob(
+                        title: _jobTitleController.text,
+                        description: _descriptionController.text,
+                        job_date: _jobdateController.text,
+                        context: context,
+                        job_image: _selectedImage,
+                        salary: _salaryController.text,
+                        longitude: _longitudeController.text,
+                        latitude: _latitudeController.text,
+                        job_category: widget.category_id,
+                        job_type: selectedJobType['keyword'] ?? 'None');
+                  }
                 },
                 height: 44,
                 width: 373,

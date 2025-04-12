@@ -9,6 +9,22 @@ class JobOffersCardController with ChangeNotifier {
 
   bool isloading = false;
 
+
+
+// Add this to JobOffersCardController class
+List<JobOfferCardDetails> getFilteredJobs(String? categoryId) {
+  if (categoryId == null || categoryId.isEmpty) {
+    // Return all jobs if no category is selected
+    return JobOffersCardDetailsList;
+  }
+  
+  // Filter jobs by category ID
+  return JobOffersCardDetailsList.where((job) => 
+    job.jobCategory?.id == categoryId
+  ).toList();
+}
+
+
   Future<void> getJobOffersCardDetails() async {
     isloading = true;
     notifyListeners();
@@ -23,6 +39,10 @@ class JobOffersCardController with ChangeNotifier {
             jobOfferCardDetailsModelFromJson(response.body);
 
         JobOffersCardDetailsList = alljobofferslistmodelobj.data ?? [];
+         // Debug: print all jobs and their categories
+      for (var job in JobOffersCardDetailsList) {
+        print("Job: ${job.title}, Category: ${job.jobCategory?.title}, Category ID: ${job.jobCategory?.id}");
+      }
       } else {
         _handleApiError(response.statusCode);
       }

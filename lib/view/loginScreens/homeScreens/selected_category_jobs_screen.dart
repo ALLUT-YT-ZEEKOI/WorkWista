@@ -4,7 +4,8 @@ import 'package:workwista/view/responsive_helper.dart';
 
 class SelectedCategoryJobsScreen extends StatelessWidget {
   String selectedCategory;
-  SelectedCategoryJobsScreen({super.key, required this.selectedCategory});
+  final String? categoryId; // Add categoryId parameter
+  SelectedCategoryJobsScreen({super.key, required this.selectedCategory,this.categoryId});
 
   @override
   Widget build(BuildContext context) {
@@ -24,6 +25,7 @@ class SelectedCategoryJobsScreen extends StatelessWidget {
               JobOffersCard(
                 context: context,
                 numOfcards: 10,
+                  categoryId: categoryId, // Pass the categoryId to JobOffersCard
               )
             ],
           ),

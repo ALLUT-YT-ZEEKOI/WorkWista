@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:workwista/view/Controllers/jobs_screen_controller.dart';
 import 'package:workwista/view/Wdigets/search_field.dart';
 import 'package:workwista/view/loginScreens/homeScreens/Enter_job_details_screen.dart';
 import 'package:workwista/view/responsive_helper.dart';
@@ -12,7 +14,17 @@ class AddJobScreen extends StatefulWidget {
 
 class _AddJobScreenState extends State<AddJobScreen> {
   @override
+  void initState() {
+    super.initState();
+    // Fetch categories when the screen initializes
+    final controller =
+        Provider.of<JobsScreenController>(context, listen: false);
+    controller.getCategories();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final controller = Provider.of<JobsScreenController>(context);
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -38,36 +50,41 @@ class _AddJobScreenState extends State<AddJobScreen> {
                 horizontal: ResponsiveHelper.width(25, context),
                 vertical: 35,
               ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: List.generate(
-                  20,
-                  (index) {
-                    return InkWell(
-                      onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => EnterJobDetailsScreen(),
-                            ));
-                      },
-                      child: Container(
-                          margin: EdgeInsets.only(
-                              bottom: ResponsiveHelper.height(
-                                  20, context)), // Vertical gap
-                          padding: EdgeInsets.all(ResponsiveHelper.width(
-                              12, context)), // Inner padding
-                          decoration:
-                              BoxDecoration(color: Colors.white, boxShadow: []),
-                          child: Text(
-                            "Grass cutting",
-                            style: TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.w400),
-                          )),
-                    );
-                  },
-                ),
-              ),
+              child: controller.isloading
+                  ? CircularProgressIndicator()
+                  : Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: controller.categoriesList.map((category) {
+                        return InkWell(
+                          splashColor: Colors.transparent,
+                          highlightColor: Colors.transparent,
+                          hoverColor: Colors.transparent,
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => EnterJobDetailsScreen(category_id: category.id,),
+                                ));
+                          },
+                          child: Container(
+                            margin: EdgeInsets.only(
+                                bottom: ResponsiveHelper.height(1, context)),
+                            padding: EdgeInsets.all(
+                                ResponsiveHelper.width(12, context)),
+                            decoration: BoxDecoration(
+                              color: Colors.transparent,
+                              boxShadow: [],
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Text(
+                              category.title ?? 'Unnamed Category',
+                              style: TextStyle(
+                                  fontSize: 16, fontWeight: FontWeight.w400),
+                            ),
+                          ),
+                        );
+                      }).toList(),
+                    ),
             )
           ],
         ),

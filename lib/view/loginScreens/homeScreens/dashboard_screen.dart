@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:provider/provider.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:workwista/Utils/color_constants.dart';
+import 'package:workwista/view/Controllers/jobs_screen_controller.dart';
 import 'package:workwista/view/Wdigets/companiescard.dart';
 import 'package:workwista/view/Wdigets/custom_tab_bar.dart';
 import 'package:workwista/view/Wdigets/greencard.dart';
 import 'package:workwista/view/Wdigets/jobofferscard.dart';
 import 'package:workwista/view/Wdigets/search_field.dart';
 import 'package:workwista/view/loginScreens/homeScreens/categories_screen.dart';
-import 'package:workwista/view/loginScreens/sign_in_screen.dart';
+import 'package:workwista/view/loginScreens/homeScreens/job_category_screen.dart';
 import 'package:workwista/view/responsive_helper.dart';
 
 class Dashboard extends StatefulWidget {
@@ -250,24 +251,25 @@ class _DashboardState extends State<Dashboard>
                   height: ResponsiveHelper.height(12, context),
                 ),
                 // Tab content based on selected tab
-                Builder(
-                  builder: (context) {
-                    switch (_currentIndex) {
-                      case 0:
-                        return JobCategoryScreen1();
-                      case 1:
-                        return JobCategoryScreen2();
-                      case 2:
-                        return JobCategoryScreen3();
-                      case 3:
-                        return JobCategoryScreen4();
-                      case 4:
-                        return JobCategoryScreen5();
-                      default:
-                        return JobCategoryScreen1();
-                    }
-                  },
-                ),
+              Builder(
+  builder: (context) {
+    // Get the selected category ID (null for "All" tab)
+    String? selectedCategoryId;
+    if (_currentIndex > 0) {
+      // Make sure we're not accessing out of bounds
+      final categories = Provider.of<JobsScreenController>(context).categoriesList;
+      if (_currentIndex - 1 < categories.length) {
+        selectedCategoryId = categories[_currentIndex - 1].id;
+        print("Selected tab index: $_currentIndex, Category ID: $selectedCategoryId");
+      }
+    } else {
+      print("Selected 'All' tab, category ID is null");
+    }
+    
+    // Pass the selected category ID to the JobCategoryScreen
+    return JobCategoryScreen(categoryId: selectedCategoryId);
+  },
+),
               ],
             ),
           ),

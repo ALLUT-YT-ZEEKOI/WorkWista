@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:workwista/Utils/color_constants.dart';
-import 'package:workwista/main.dart';
 import 'package:workwista/view/Controllers/job_details_screen_controller.dart';
 import 'package:workwista/view/Wdigets/button_without_gradient.dart';
 import 'package:workwista/view/Wdigets/gradient_button.dart';

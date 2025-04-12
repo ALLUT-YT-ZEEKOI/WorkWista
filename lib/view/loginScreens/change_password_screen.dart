@@ -19,13 +19,13 @@ class Changepassword extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             const SizedBox(height: 20),
-            const Text(
+             Text(
               'Enter new password',
               textAlign: TextAlign.center,
               style: AppTextStyle.heading,
             ),
             const SizedBox(height: 10),
-            const Text(
+             Text(
               'Don’t miss the opportunity to easily find jobs and hire workers.',
               textAlign: TextAlign.center,
               style: AppTextStyle.loginsubhead,
@@ -36,7 +36,7 @@ class Changepassword extends StatelessWidget {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text('Password', style: AppTextStyle.labeltext),
+                 Text('Password', style: AppTextStyle.labeltext),
                 const SizedBox(height: 5),
                 const SizedBox(height: 5),
                 SizedBox(
@@ -69,7 +69,7 @@ class Changepassword extends StatelessWidget {
                     ),
                   ),
                 ),
-                const Text('Confirm Password', style: AppTextStyle.labeltext),
+                 Text('Confirm Password', style: AppTextStyle.labeltext),
                 const SizedBox(height: 5),
                 const SizedBox(height: 5),
                 SizedBox(
@@ -167,7 +167,7 @@ class Changepassword extends StatelessWidget {
                     ),
                   );
                 },
-                child: const Text('Back', style: AppTextStyle.labeltext)),
+                child:  Text('Back', style: AppTextStyle.labeltext)),
           ],
         ),
       ),
