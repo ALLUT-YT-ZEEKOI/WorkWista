@@ -5,7 +5,9 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:workwista/view/Common%20Screens/custom_bottom_navbar.dart';
 import 'package:workwista/view/Model/add_job_model.dart';
+import 'package:workwista/view/loginScreens/homeScreens/add_job_screen.dart';
 
 class AddJobController with ChangeNotifier {
   bool islaoding = false;
@@ -67,6 +69,14 @@ class AddJobController with ChangeNotifier {
       if (response.statusCode == 201) {
         AddJobModel addJobModel = addJobModelFromJson(response.body);
         log("Job posted successfully");
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("posted!")),
+        );
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => CustomBottomNavbar()),
+          (Route<dynamic> route) => false, // Remove all previous routes
+        );
         log(addJobModel.message.toString());
       } else {
         errorMessage = "Failed to post job (${response.statusCode})";

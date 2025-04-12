@@ -1,10 +1,11 @@
+import 'dart:developer' as dev;
 import 'dart:math';
-import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:workwista/Utils/color_constants.dart';
 import 'package:workwista/view/Controllers/job_offers_card_controller.dart';
+import 'package:workwista/view/Model/job_offers_card_details_model.dart';
 import 'package:workwista/view/loginScreens/homeScreens/job_details_screen.dart';
 import 'package:workwista/view/responsive_helper.dart';
 
@@ -12,13 +13,11 @@ class JobOffersCard extends StatefulWidget {
   int numOfcards;
   final BuildContext context;
   final String? categoryId;
-  
-  JobOffersCard({
-    super.key, 
-    required this.context,
-    this.categoryId, 
-    required this.numOfcards
-  });
+  JobOffersCard(
+      {super.key,
+      required this.context,
+      this.categoryId,
+      required this.numOfcards});
 
   @override
   State<JobOffersCard> createState() => _JobOffersCardState();
@@ -28,6 +27,7 @@ class _JobOffersCardState extends State<JobOffersCard> {
   @override
   void initState() {
     super.initState();
+    // Fetch categories when the tab bar initializes
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Provider.of<JobOffersCardController>(widget.context, listen: false)
           .getJobOffersCardDetails();
@@ -45,8 +45,8 @@ class _JobOffersCardState extends State<JobOffersCard> {
     // Get filtered jobs
     final filteredJobs = widget.categoryId == null || widget.categoryId!.isEmpty
         ? controller.JobOffersCardDetailsList
-        : controller.JobOffersCardDetailsList.where((job) => 
-            job.jobCategory?.id == widget.categoryId).toList();
+        : controller.JobOffersCardDetailsList.where(
+            (job) => job.jobCategory?.id == widget.categoryId).toList();
 
     if (filteredJobs.isEmpty) {
       return Center(child: Text("No jobs available in this category"));
@@ -54,7 +54,7 @@ class _JobOffersCardState extends State<JobOffersCard> {
 
     // Use filteredJobs instead of controller.JobOffersCardDetailsList
     final itemCount = min(widget.numOfcards, filteredJobs.length);
-    
+
     return Column(
       children: List.generate(itemCount, (index) {
         // Get the current job offer data from filteredJobs
@@ -62,10 +62,10 @@ class _JobOffersCardState extends State<JobOffersCard> {
         return InkWell(
           onTap: () {
             Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => JobDetailsScreen(jobId: jobOffer.id),
-              ));
+                context,
+                MaterialPageRoute(
+                  builder: (context) => JobDetailsScreen(jobId: jobOffer.id),
+                ));
           },
           child: Container(
             height: 232,
@@ -402,77 +402,3 @@ class _JobOffersCardState extends State<JobOffersCard> {
     );
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
