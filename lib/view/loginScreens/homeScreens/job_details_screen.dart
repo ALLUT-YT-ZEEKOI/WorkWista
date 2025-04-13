@@ -7,6 +7,7 @@ import 'package:workwista/view/Wdigets/button_without_gradient.dart';
 import 'package:workwista/view/Wdigets/gradient_button.dart';
 import 'package:workwista/view/responsive_helper.dart';
 
+// ignore: must_be_immutable
 class JobDetailsScreen extends StatefulWidget {
   String? jobId;
    JobDetailsScreen({required this.jobId, super.key});

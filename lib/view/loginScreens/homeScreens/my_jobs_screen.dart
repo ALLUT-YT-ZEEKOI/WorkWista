@@ -1,7 +1,10 @@
 import 'dart:developer';
-
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:workwista/Utils/color_constants.dart';
+
+import 'package:workwista/view/Controllers/jobs_screen_controller.dart';
+import 'package:workwista/view/Model/job_item_model.dart';
 import 'package:workwista/view/Wdigets/gradient_button.dart';
 import 'package:workwista/view/Wdigets/jobofferscard.dart';
 import 'package:workwista/view/responsive_helper.dart';
@@ -15,358 +18,390 @@ class MyJobsScreen extends StatefulWidget {
 
 class _MyJobsScreenState extends State<MyJobsScreen> {
   @override
+  void initState() {
+    super.initState();
+    // Fetch jobs when screen loads
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<JobsScreenController>(context, listen: false).getJobs();
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-      length: 3,
-      child: Scaffold(
-        appBar: AppBar(
-          titleTextStyle: TextStyle(
-              color: Colors.black, fontSize: 24, fontWeight: FontWeight.w700),
-          title: Text("My jobs"),
-          actions: [
-            IconButton(
-                onPressed: () {
-                  log("pressed");
-                },
-                icon: Icon(
-                  Icons.more_vert,
-                  size: 26,
-                ))
-          ],
-        ),
-        body: Padding(
-          padding: EdgeInsets.symmetric(
-              horizontal: ResponsiveHelper.width(10, context),
-              vertical: ResponsiveHelper.height(24, context)),
-          child: Column(
-            children: [
-              Container(
-                padding: EdgeInsets.only(
-                    right: ResponsiveHelper.width(16, context),
-                    left: ResponsiveHelper.width(17, context),
-                    top: ResponsiveHelper.height(21, context),
-                    bottom: ResponsiveHelper.height(19, context)),
-                width: ResponsiveHelper.width(373, context),
-                height: 240,
-                decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(13),
-                    border: Border.all(
-                        color: ColorConstants.containerBorder, width: 1)),
-                child: Column(
-                  children: [
-                    Row(
+    return Consumer<JobsScreenController>(
+      builder: (context, controller, child) {
+        return DefaultTabController(
+          length: 3,
+          child: Scaffold(
+            appBar: AppBar(
+              titleTextStyle: const TextStyle(
+                  color: Colors.black,
+                  fontSize: 24,
+                  fontWeight: FontWeight.w700),
+              title: const Text("My jobs"),
+              actions: [
+                IconButton(
+                    onPressed: () {
+                      log("pressed");
+                    },
+                    icon: const Icon(
+                      Icons.more_vert,
+                      size: 26,
+                    ))
+              ],
+            ),
+            body: Padding(
+              padding: EdgeInsets.symmetric(
+                  horizontal: ResponsiveHelper.width(10, context),
+                  vertical: ResponsiveHelper.height(24, context)),
+              child: Column(
+                children: [
+                  // Your existing profile card
+                  Container(
+                    padding: EdgeInsets.only(
+                        right: ResponsiveHelper.width(16, context),
+                        left: ResponsiveHelper.width(17, context),
+                        top: ResponsiveHelper.height(21, context),
+                        bottom: ResponsiveHelper.height(19, context)),
+                    width: ResponsiveHelper.width(373, context),
+                    height: 240,
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(13),
+                        border: Border.all(
+                            color: ColorConstants.containerBorder, width: 1)),
+                    child: Column(
                       children: [
-                        CircleAvatar(
-                          backgroundColor: Colors.black,
-                          radius: 24,
-                        ),
-                        SizedBox(
-                          width: ResponsiveHelper.width(14, context),
-                        ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                        Row(
                           children: [
-                            Text(
-                              "Joseph",
-                              style: TextStyle(
-                                  fontSize: 14, fontWeight: FontWeight.w500),
+                            const CircleAvatar(
+                              backgroundColor: Colors.black,
+                              radius: 24,
                             ),
-                            Text(
-                              "plumbing Work",
-                              style: TextStyle(
-                                  fontSize: 12, fontWeight: FontWeight.w400),
+                            SizedBox(
+                              width: ResponsiveHelper.width(14, context),
                             ),
-                          ],
-                        ),
-                        Spacer(),
-                        Column(
-                          children: [
-                            Row(
+                            const Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                CircleAvatar(
-                                  radius: 4,
-                                  backgroundColor: ColorConstants.nowOnline,
-                                ),
-                                SizedBox(
-                                  width: ResponsiveHelper.width(9, context),
+                                Text(
+                                  "Joseph",
+                                  style: TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w500),
                                 ),
                                 Text(
-                                  "Online",
+                                  "plumbing Work",
+                                  style: TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w400),
+                                ),
+                              ],
+                            ),
+                            const Spacer(),
+                            Column(
+                              children: [
+                                Row(
+                                  children: [
+                                    CircleAvatar(
+                                      radius: 4,
+                                      backgroundColor: ColorConstants.nowOnline,
+                                    ),
+                                    SizedBox(
+                                      width: ResponsiveHelper.width(9, context),
+                                    ),
+                                    const Text(
+                                      "Online",
+                                      style: TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w500),
+                                    )
+                                  ],
+                                ),
+                                const Text(
+                                  "06/09/2025",
                                   style: TextStyle(
                                       color: Colors.black,
-                                      fontSize: 12,
+                                      fontSize: 10,
                                       fontWeight: FontWeight.w500),
                                 )
                               ],
-                            ),
-                            Text(
-                              "06/09/2025",
-                              style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 10,
-                                  fontWeight: FontWeight.w500),
                             )
                           ],
-                        )
-                      ],
-                    ),
-                    SizedBox(
-                      height: 23,
-                    ),
-                    Row(
-                      children: [
-                        Text(
-                          "Ongoing",
-                          style: TextStyle(
-                              fontSize: 12, fontWeight: FontWeight.w500),
                         ),
-                        Spacer(),
-                        Text(
-                          "Owner",
-                          style: TextStyle(
-                              fontSize: 12, fontWeight: FontWeight.w500),
+                        const SizedBox(
+                          height: 23,
                         ),
-                      ],
-                    ),
-                    SizedBox(
-                      height: 14,
-                    ),
-                    Container(
-                      width: ResponsiveHelper.width(
-                          double.infinity, context), // Set  width
-                      height: 8, // Set  thickness
-                      decoration: BoxDecoration(
-                        color: Colors.blue[100],
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(10),
-                        child: LinearProgressIndicator(
-                          value: 0.1, // Progress percentage (90% filled)
-                          backgroundColor:
-                              Colors.transparent, // Remove default background
-                          valueColor: AlwaysStoppedAnimation<Color>(
-                              ColorConstants
-                                  .ProgressBarColor), // Progress bar color
+                        const Row(
+                          children: [
+                            Text(
+                              "Ongoing",
+                              style: TextStyle(
+                                  fontSize: 12, fontWeight: FontWeight.w500),
+                            ),
+                            Spacer(),
+                            Text(
+                              "Owner",
+                              style: TextStyle(
+                                  fontSize: 12, fontWeight: FontWeight.w500),
+                            ),
+                          ],
                         ),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 14,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Text(
-                          "9:00 AM",
-                          style: TextStyle(
-                              fontSize: 10, fontWeight: FontWeight.w500),
+                        const SizedBox(
+                          height: 14,
                         ),
-                        Spacer(),
-                        Text(
-                          "6:00 PM",
-                          style: TextStyle(
-                              fontSize: 10, fontWeight: FontWeight.w500),
+                        Container(
+                          width:
+                              ResponsiveHelper.width(double.infinity, context),
+                          height: 8,
+                          decoration: BoxDecoration(
+                            color: Colors.blue[100],
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(10),
+                            child: LinearProgressIndicator(
+                              value: 0.1,
+                              backgroundColor: Colors.transparent,
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                  ColorConstants.ProgressBarColor),
+                            ),
+                          ),
                         ),
-                        Spacer(),
-                        Text(
-                          "pay",
-                          style: TextStyle(
-                              fontSize: 10, fontWeight: FontWeight.w500),
+                        const SizedBox(
+                          height: 14,
                         ),
-                      ],
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    InkWell(
-                      onTap: () {},
-                      child: GradientButton(
-                          onPressed: () {
-                            log("showing payment window");
-                            showModalBottomSheet(
-                              isScrollControlled: true,
-                              context: context,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.vertical(
-                                    top: Radius.circular(20)),
-                              ),
-                              backgroundColor: Colors.white,
-                              builder: (context) {
-                                return Padding(
-                                  padding: EdgeInsets.only(
-                                      bottom: MediaQuery.of(context)
-                                          .viewInsets
-                                          .bottom),
-                                  child: Container(
-                                    height:
-                                        ResponsiveHelper.height(270, context),
-                                    padding: EdgeInsets.all(16),
-                                    child: Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        Container(
-                                          width: 40,
-                                          height: 4,
-                                          decoration: BoxDecoration(
-                                            color: Colors.black26,
-                                            borderRadius:
-                                                BorderRadius.circular(10),
-                                          ),
-                                        ),
-                                        SizedBox(height: 16),
-                                        // Payment Icons Row
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceEvenly,
+                        const Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Text(
+                              "9:00 AM",
+                              style: TextStyle(
+                                  fontSize: 10, fontWeight: FontWeight.w500),
+                            ),
+                            Spacer(),
+                            Text(
+                              "6:00 PM",
+                              style: TextStyle(
+                                  fontSize: 10, fontWeight: FontWeight.w500),
+                            ),
+                            Spacer(),
+                            Text(
+                              "pay",
+                              style: TextStyle(
+                                  fontSize: 10, fontWeight: FontWeight.w500),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        InkWell(
+                          onTap: () {},
+                          child: GradientButton(
+                              onPressed: () {
+                                log("showing payment window");
+                                showModalBottomSheet(
+                                  isScrollControlled: true,
+                                  context: context,
+                                  shape: const RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.vertical(
+                                        top: Radius.circular(20)),
+                                  ),
+                                  backgroundColor: Colors.white,
+                                  builder: (context) {
+                                    return Padding(
+                                      padding: EdgeInsets.only(
+                                          bottom: MediaQuery.of(context)
+                                              .viewInsets
+                                              .bottom),
+                                      child: Container(
+                                        height: ResponsiveHelper.height(
+                                            270, context),
+                                        padding: const EdgeInsets.all(16),
+                                        child: Column(
+                                          mainAxisSize: MainAxisSize.min,
                                           children: [
-                                            CircleAvatar(
-                                                radius: 25,
-                                                backgroundColor: ColorConstants
-                                                    .indicatorBlue,
-                                                child: CircleAvatar(
-                                                  backgroundColor: Colors.white,
-                                                  radius: 24,
-                                                  child: Image.asset(
-                                                      "assets/upi.png"),
-                                                )),
-                                            CircleAvatar(
-                                                radius: 25,
-                                                backgroundColor: ColorConstants
-                                                    .indicatorBlue,
-                                                child: CircleAvatar(
-                                                  backgroundColor: Colors.white,
-                                                  radius: 24,
-                                                  child: Image.asset(
-                                                      "assets/gpay.png"),
-                                                )),
-                                            CircleAvatar(
-                                                radius: 25,
-                                                backgroundColor: ColorConstants
-                                                    .indicatorBlue,
-                                                child: CircleAvatar(
-                                                  backgroundColor:
-                                                      ColorConstants.phonepe,
-                                                  radius: 24,
-                                                  child: Image.asset(
-                                                      "assets/phonepe.png"),
-                                                )),
-                                            CircleAvatar(
-                                                radius: 25,
-                                                backgroundColor: ColorConstants
-                                                    .indicatorBlue,
-                                                child: CircleAvatar(
-                                                  backgroundColor: Colors.white,
-                                                  radius: 24,
-                                                  child: Image.asset(
-                                                      "assets/paytm.png"),
-                                                )),
-                                            CircleAvatar(
-                                                radius: 25,
-                                                backgroundColor: ColorConstants
-                                                    .indicatorBlue,
-                                                child: CircleAvatar(
-                                                  backgroundColor: Colors.white,
-                                                  radius: 24,
-                                                  child: Image.asset(
-                                                      "assets/bank.png"),
-                                                )),
-                                          ],
-                                        ),
-                                        SizedBox(height: 20),
-                                        // TextField for UPI ID
-                                        SizedBox(
-                                          height: ResponsiveHelper.height(
-                                              50, context),
-                                          child: TextFormField(
-                                            decoration: InputDecoration(
-                                              hintText: "Enter upi id",
-                                              filled: true,
-                                              fillColor: Colors.white,
-                                              border: OutlineInputBorder(
+                                            Container(
+                                              width: 40,
+                                              height: 4,
+                                              decoration: BoxDecoration(
+                                                color: Colors.black26,
                                                 borderRadius:
-                                                    BorderRadius.circular(15.0),
-                                                borderSide: BorderSide(
-                                                  color: ColorConstants
-                                                      .containerBorder
-                                                      .withOpacity(0.1),
+                                                    BorderRadius.circular(10),
+                                              ),
+                                            ),
+                                            const SizedBox(height: 16),
+                                            // Payment Icons Row
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.spaceEvenly,
+                                              children: [
+                                                CircleAvatar(
+                                                    radius: 25,
+                                                    backgroundColor:
+                                                        ColorConstants
+                                                            .indicatorBlue,
+                                                    child: CircleAvatar(
+                                                      backgroundColor:
+                                                          Colors.white,
+                                                      radius: 24,
+                                                      child: Image.asset(
+                                                          "assets/upi.png"),
+                                                    )),
+                                                CircleAvatar(
+                                                    radius: 25,
+                                                    backgroundColor:
+                                                        ColorConstants
+                                                            .indicatorBlue,
+                                                    child: CircleAvatar(
+                                                      backgroundColor:
+                                                          Colors.white,
+                                                      radius: 24,
+                                                      child: Image.asset(
+                                                          "assets/gpay.png"),
+                                                    )),
+                                                CircleAvatar(
+                                                    radius: 25,
+                                                    backgroundColor:
+                                                        ColorConstants
+                                                            .indicatorBlue,
+                                                    child: CircleAvatar(
+                                                      backgroundColor:
+                                                          ColorConstants
+                                                              .phonepe,
+                                                      radius: 24,
+                                                      child: Image.asset(
+                                                          "assets/phonepe.png"),
+                                                    )),
+                                                CircleAvatar(
+                                                    radius: 25,
+                                                    backgroundColor:
+                                                        ColorConstants
+                                                            .indicatorBlue,
+                                                    child: CircleAvatar(
+                                                      backgroundColor:
+                                                          Colors.white,
+                                                      radius: 24,
+                                                      child: Image.asset(
+                                                          "assets/paytm.png"),
+                                                    )),
+                                                CircleAvatar(
+                                                    radius: 25,
+                                                    backgroundColor:
+                                                        ColorConstants
+                                                            .indicatorBlue,
+                                                    child: CircleAvatar(
+                                                      backgroundColor:
+                                                          Colors.white,
+                                                      radius: 24,
+                                                      child: Image.asset(
+                                                          "assets/bank.png"),
+                                                    )),
+                                              ],
+                                            ),
+                                            const SizedBox(height: 20),
+                                            // TextField for UPI ID
+                                            SizedBox(
+                                              height: ResponsiveHelper.height(
+                                                  50, context),
+                                              child: TextFormField(
+                                                decoration: InputDecoration(
+                                                  hintText: "Enter upi id",
+                                                  filled: true,
+                                                  fillColor: Colors.white,
+                                                  border: OutlineInputBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            15.0),
+                                                    borderSide: BorderSide(
+                                                      color: ColorConstants
+                                                          .containerBorder
+                                                          .withOpacity(0.1),
+                                                    ),
+                                                  ),
                                                 ),
                                               ),
                                             ),
-                                          ),
+                                            const SizedBox(height: 20),
+                                            // Next Button
+                                            GradientButton(
+                                                name: "Next",
+                                                onPressed: () {
+                                                  log("add payment logic");
+                                                },
+                                                height: 45,
+                                                width: ResponsiveHelper.width(
+                                                    double.infinity, context))
+                                          ],
                                         ),
-                                        SizedBox(height: 20),
-                                        // Next Button
-                                        GradientButton(
-                                            name: "Next",
-                                            onPressed: () {
-                                              log("add payment logic");
-                                            },
-                                            height: 45,
-                                            width: ResponsiveHelper.width(
-                                                double.infinity, context))
-                                      ],
-                                    ),
-                                  ),
+                                      ),
+                                    );
+                                  },
                                 );
                               },
-                            );
-                          },
-                          name: "Pay",
-                          height: 38,
-                          width:
-                              ResponsiveHelper.width(double.infinity, context)),
-                    )
-                  ],
-                ),
-              ),
-              SizedBox(
-                height: ResponsiveHelper.height(14, context),
-              ),
-              Container(
-                height: 70, // Fixed height for TabBar
-                color: Colors.white, // Background color
-                child: TabBar(
-                  indicator: BoxDecoration(
-                    color:
-                        Colors.grey[200], // Background color for selected tab
+                              name: "Pay",
+                              height: 38,
+                              width: ResponsiveHelper.width(
+                                  double.infinity, context)),
+                        )
+                      ],
+                    ),
                   ),
-                  labelColor: Colors.black, // Selected text color
-                  unselectedLabelColor: Colors.black54, // Unselected text color
-                  indicatorSize: TabBarIndicatorSize.tab,
-                  dividerColor: Colors.transparent,
-                  tabs: [
-                    TabItem(title: "Recent", count: "17"),
-                    TabItem(title: "Posted", count: "5"),
-                    TabItem(title: "Done", count: "7"),
-                  ],
-                ),
+                  const SizedBox(
+                    height: 14,
+                  ),
+                  Container(
+                    height: 70,
+                    color: Colors.white,
+                    child: TabBar(
+                      indicator: BoxDecoration(
+                        color: Colors.grey[200],
+                      ),
+                      labelColor: Colors.black,
+                      unselectedLabelColor: Colors.black54,
+                      indicatorSize: TabBarIndicatorSize.tab,
+                      dividerColor: Colors.transparent,
+                      tabs: const [
+                        TabItem(title: "Recent", count: "17"),
+                        TabItem(title: "Posted", count: "5"),
+                        TabItem(title: "Done", count: "7"),
+                      ],
+                    ),
+                  ),
+                  Expanded(
+                    child: TabBarView(
+                      children: [
+                        // Recent Tab
+                        _buildJobList(controller.jobsList),
+                        // Posted Tab (filter as needed)
+
+                        _buildJobList(controller.jobsList),
+
+                        // Done Tab (filter as needed)
+
+                        _buildJobList(controller.jobsList),
+                      ],
+                    ),
+                  ),
+                ],
               ),
-              Expanded(
-                child: TabBarView(
-                  children: [
-                    SingleChildScrollView(
-                        child: JobOffersCard(
-                      numOfcards: 5,
-                      context: context,
-                    )),
-                    SingleChildScrollView(
-                        child: JobOffersCard(
-                      numOfcards: 5,
-                      context: context,
-                    )),
-                    SingleChildScrollView(
-                        child: JobOffersCard(
-                      numOfcards: 5,
-                      context: context,
-                    )),
-                  ],
-                ),
-              ),
-            ],
+            ),
           ),
-        ),
+        );
+      },
+    );
+  }
+
+  Widget _buildJobList(List<JobItem> jobs) {
+    if (jobs.isEmpty) {
+      return const Center(child: Text("No jobs found"));
+    }
+
+    return SingleChildScrollView(
+      child: Column(
+        children: jobs.map((job) => JobOffersCard(jobItem: job)).toList(),
       ),
     );
   }
@@ -381,17 +416,19 @@ class TabItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 124, // Fixed width
-      height: 70, // Fixed height
+      width: 124,
+      height: 70,
       alignment: Alignment.center,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(count,
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
-          SizedBox(height: 5),
+              style:
+                  const TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
+          const SizedBox(height: 5),
           Text(title,
-              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
+              style:
+                  const TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
         ],
       ),
     );

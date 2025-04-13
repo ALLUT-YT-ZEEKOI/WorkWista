@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:workwista/view/Common%20Screens/custom_bottom_navbar.dart';
-import 'package:workwista/view/loginScreens/homeScreens/dashboard_screen.dart';
 import 'package:workwista/view/loginScreens/sign_in_screen.dart';
 
 class SplashScreen extends StatefulWidget {

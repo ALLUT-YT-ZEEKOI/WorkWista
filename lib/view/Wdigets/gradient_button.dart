@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:workwista/view/responsive_helper.dart';
 
+// ignore: must_be_immutable
 class GradientButton extends StatelessWidget {
   String name;
   double height;

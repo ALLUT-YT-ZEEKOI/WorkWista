@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:workwista/view/Common%20Screens/custom_bottom_navbar.dart';
 import 'package:workwista/view/Model/add_job_model.dart';
-import 'package:workwista/view/loginScreens/homeScreens/add_job_screen.dart';
 
 class AddJobController with ChangeNotifier {
   bool islaoding = false;

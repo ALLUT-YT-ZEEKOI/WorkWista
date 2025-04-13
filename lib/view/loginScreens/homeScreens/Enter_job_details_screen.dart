@@ -4,12 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:workwista/Utils/color_constants.dart';
-import 'package:workwista/main.dart';
 import 'package:workwista/view/Controllers/add_job_controller.dart';
 import 'package:workwista/view/Wdigets/button_without_gradient.dart';
 import 'package:workwista/view/Wdigets/gradient_button.dart';
 import 'package:workwista/view/responsive_helper.dart';
 
+// ignore: must_be_immutable
 class EnterJobDetailsScreen extends StatefulWidget {
   String? category_id;
   EnterJobDetailsScreen({required this.category_id, super.key});
@@ -31,10 +31,10 @@ class _EnterJobDetailsScreenState extends State<EnterJobDetailsScreen> {
   TextEditingController _longitudeController = TextEditingController();
   TextEditingController _latitudeController = TextEditingController();
   TextEditingController _jobtypeController = TextEditingController();
-  TextEditingController _dateFromController = TextEditingController();
-  TextEditingController _dateToController = TextEditingController();
-  TextEditingController _startTimeController = TextEditingController();
-  TextEditingController _endTimeController = TextEditingController();
+  // TextEditingController _dateFromController = TextEditingController();
+  // TextEditingController _dateToController = TextEditingController();
+  // TextEditingController _startTimeController = TextEditingController();
+  // TextEditingController _endTimeController = TextEditingController();
   final List<Map<String, dynamic>> _jobTypes = [
     {
       'label': 'Fulltime',

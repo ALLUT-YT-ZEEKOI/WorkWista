@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:workwista/Utils/color_constants.dart';
 import 'package:workwista/view/responsive_helper.dart';
 
+// ignore: must_be_immutable
 class ButtonWithoutGradient extends StatelessWidget {
   String name;
   ButtonWithoutGradient({

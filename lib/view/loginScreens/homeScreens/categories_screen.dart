@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+
 import 'package:provider/provider.dart';
 import 'package:workwista/view/Controllers/jobs_screen_controller.dart';
-
 import 'package:workwista/view/Wdigets/search_field.dart';
 import 'package:workwista/view/loginScreens/homeScreens/selected_category_jobs_screen.dart';
 import 'package:workwista/view/responsive_helper.dart';
@@ -15,8 +15,7 @@ class CategoriesScreen extends StatefulWidget {
 
 class _CategoriesScreenState extends State<CategoriesScreen>
     with SingleTickerProviderStateMixin {
-
-  int _currentIndex = 0;
+  // int _currentIndex = 0;
 
   @override
   void initState() {
@@ -27,12 +26,8 @@ class _CategoriesScreenState extends State<CategoriesScreen>
     });
   }
 
- 
-
   @override
   void dispose() {
-    
-
     super.dispose();
   }
 
@@ -63,57 +58,58 @@ class _CategoriesScreenState extends State<CategoriesScreen>
                 const Center(child: Text("No categories available")),
               // Show grid when categories are loaded
               if (!controller.isloading && controller.categoriesList.isNotEmpty)
-              GridView.builder(
-                shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
-                padding: EdgeInsets.all(0),
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  mainAxisSpacing: 10,
-                  crossAxisSpacing: 8,
-                  childAspectRatio:
-                      1.31, // Adjust this value for height/width ratio
-                ),
-                itemCount: controller.categoriesList.length,
-                itemBuilder: (context, index) {
-                  final category = controller.categoriesList[index];
-                  return SizedBox(
-                    
-                    child: InkWell(
-                      onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => SelectedCategoryJobsScreen(
-                                selectedCategory: category.title ?? "unNamed",
-                                categoryId: category.id, // Pass the category ID
-                              ),
-                            ));
-                      },
-                      child: Container(
-                          // Set your custom height here
-                          decoration: BoxDecoration(
-                            image: DecorationImage(
-                                fit: BoxFit.cover,
-                                image: NetworkImage(
-                                    'https://images.pexels.com/photos/159839/office-home-house-desk-159839.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2')),
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          padding: EdgeInsets.all(8),
-                          child: Align(
-                              alignment: Alignment.bottomLeft,
-                              child: Text(
-                                category.title ?? "UnNamed",
-                                style: TextStyle(
-                                    fontSize: 17,
-                                    fontWeight: FontWeight.w700,
-                                    color: Colors.white),
-                              ))),
-                    ),
-                  );
-                },
-              )
+                GridView.builder(
+                  shrinkWrap: true,
+                  physics: NeverScrollableScrollPhysics(),
+                  padding: EdgeInsets.all(0),
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    mainAxisSpacing: 10,
+                    crossAxisSpacing: 8,
+                    childAspectRatio:
+                        1.31, // Adjust this value for height/width ratio
+                  ),
+                  itemCount: controller.categoriesList.length,
+                  itemBuilder: (context, index) {
+                    final category = controller.categoriesList[index];
+                    return SizedBox(
+                      child: InkWell(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    SelectedCategoryJobsScreen(
+                                  selectedCategory: category.title ?? "unNamed",
+                                  categoryId:
+                                      category.id, // Pass the category ID
+                                ),
+                              ));
+                        },
+                        child: Container(
+                            // Set your custom height here
+                            decoration: BoxDecoration(
+                              image: DecorationImage(
+                                  fit: BoxFit.cover,
+                                  image: NetworkImage(
+                                      'https://images.pexels.com/photos/159839/office-home-house-desk-159839.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2')),
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            padding: EdgeInsets.all(8),
+                            child: Align(
+                                alignment: Alignment.bottomLeft,
+                                child: Text(
+                                  category.title ?? "UnNamed",
+                                  style: TextStyle(
+                                      fontSize: 17,
+                                      fontWeight: FontWeight.w700,
+                                      color: Colors.white),
+                                ))),
+                      ),
+                    );
+                  },
+                )
             ],
           ),
         ),

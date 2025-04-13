@@ -4,12 +4,13 @@ import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:workwista/Utils/color_constants.dart';
 import 'package:workwista/view/Controllers/jobs_screen_controller.dart';
 import 'package:workwista/view/Wdigets/companiescard.dart';
-import 'package:workwista/view/Wdigets/custom_tab_bar.dart';
+
 import 'package:workwista/view/Wdigets/greencard.dart';
 import 'package:workwista/view/Wdigets/jobofferscard.dart';
 import 'package:workwista/view/Wdigets/search_field.dart';
 import 'package:workwista/view/loginScreens/homeScreens/categories_screen.dart';
-import 'package:workwista/view/loginScreens/homeScreens/job_category_screen.dart';
+import 'package:workwista/view/loginScreens/homeScreens/job_details_screen.dart';
+
 import 'package:workwista/view/responsive_helper.dart';
 
 class Dashboard extends StatefulWidget {
@@ -21,51 +22,42 @@ class Dashboard extends StatefulWidget {
 
 class _DashboardState extends State<Dashboard>
     with SingleTickerProviderStateMixin {
-  late TabController _tabController;
+  // late TabController _tabController;
   // late PageController _pageController;
-  int _currentIndex = 0;
+  // int _currentIndex = 0;
 
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 4, vsync: this);
-    // _pageController = PageController(initialPage: _currentIndex);
+    WidgetsBinding.instance.addPostFrameCallback((timestamp) async {
+      // Select 'All' categroy by default
 
-    // Add listener to sync tab controller with page changes
-    _tabController.addListener(_handleTabSelection);
-  }
+      final jobsController = context.read<JobsScreenController>();
+      await jobsController.getCategories(); // Fetch categories first
+      await jobsController.getJobs(); // Then fetch all jobs
+    });
 
-  void _handleTabSelection() {
-    if (_tabController.indexIsChanging) {
-      // _pageController.jumpToPage(_tabController.index);
-      setState(() {
-        _currentIndex = _tabController.index;
-      });
-    }
-  }
-
-  @override
-  void dispose() {
-    _tabController.removeListener(_handleTabSelection);
-    _tabController.dispose();
-    // _pageController.dispose();
-    super.dispose();
+    WidgetsBinding.instance.addPostFrameCallback((timestamp) {
+      context
+          .read<JobsScreenController>()
+          .getCategories(); // Select 'All' categroy by default
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    // final screenWidth = MediaQuery.of(context).size.width;
-    // final screenHeight = MediaQuery.of(context).size.height;
-
-    return Scaffold(
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: EdgeInsets.symmetric(
-                horizontal: ResponsiveHelper.width(10, context)),
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHight = MediaQuery.of(context).size.width;
+    final PageController _controller = PageController();
+    final int _numPages = 3;
+    // final controller = Provider.of<JobsScreenController>(context);
+    return SafeArea(
+      child: Consumer<JobsScreenController>(
+        builder: (context, jobsScreenControllerObj, child) {
+          return SingleChildScrollView(
             child: Column(
               children: [
-                // App bar content
+                // App bar content (unchanged)
                 Container(
                   decoration: const BoxDecoration(
                     gradient: LinearGradient(
@@ -167,8 +159,6 @@ class _DashboardState extends State<Dashboard>
                     ],
                   ),
                 ),
-
-                // Discover Jobs heading
                 Padding(
                   padding: EdgeInsets.symmetric(
                     horizontal: ResponsiveHelper.width(10, context),
@@ -206,24 +196,66 @@ class _DashboardState extends State<Dashboard>
                   ),
                 ),
 
-                // Tab Bar
-                CustomTabBar(
-                  paddingwidth: 10,
-                  color: Colors.blue,
-                  tabController: _tabController,
-                  onTabChanged: (index) {
-                    setState(() {
-                      _currentIndex = index;
-                    });
-                  },
-                  currentIndex: _currentIndex,
-                  context: context,
+                // Categories horizontal scroll (unchanged)
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: List.generate(
+                      jobsScreenControllerObj.categoriesList.length + 1,
+                      (index) {
+                        final isAll = index == 0;
+                        final isSelected =
+                            jobsScreenControllerObj.selectedCategoryIndex ==
+                                index;
+                        final categoryTitle = isAll
+                            ? "All"
+                            : jobsScreenControllerObj
+                                    .categoriesList[index - 1].title ??
+                                "Unnamed";
+                        return Padding(
+                          padding: const EdgeInsets.all(8),
+                          child: InkWell(
+                            onTap: () {
+                              jobsScreenControllerObj.onCategorySelected(index);
+                              // No need for additional calls here since onCategorySelected now handles it
+                            },
+                            child: Container(
+                              constraints: BoxConstraints(
+                                  minWidth: 70,
+                                  minHeight: 32), // 👈 Ensures a minimum size
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 16),
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                  color: isSelected
+                                      ? Colors.blue
+                                      : Colors.grey.shade400,
+                                ),
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(24),
+                              ),
+                              alignment: Alignment.center,
+                              child: Text(
+                                categoryTitle,
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w500,
+                                  color: isSelected
+                                      ? Colors.blue
+                                      : Colors.grey.shade500,
+                                ),
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
                 ),
                 SizedBox(height: 28),
                 Padding(
                   padding: EdgeInsets.symmetric(
                     horizontal: ResponsiveHelper.width(10, context),
-                    // vertical: ResponsiveHelper.height(18, context),
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -247,530 +279,147 @@ class _DashboardState extends State<Dashboard>
                     ],
                   ),
                 ),
-                SizedBox(
-                  height: ResponsiveHelper.height(12, context),
-                ),
-                // Tab content based on selected tab
-              Builder(
-  builder: (context) {
-    // Get the selected category ID (null for "All" tab)
-    String? selectedCategoryId;
-    if (_currentIndex > 0) {
-      // Make sure we're not accessing out of bounds
-      final categories = Provider.of<JobsScreenController>(context).categoriesList;
-      if (_currentIndex - 1 < categories.length) {
-        selectedCategoryId = categories[_currentIndex - 1].id;
-        print("Selected tab index: $_currentIndex, Category ID: $selectedCategoryId");
-      }
-    } else {
-      print("Selected 'All' tab, category ID is null");
-    }
-    
-    // Pass the selected category ID to the JobCategoryScreen
-    return JobCategoryScreen(categoryId: selectedCategoryId);
-  },
-),
+                SizedBox(height: ResponsiveHelper.height(12, context)),
+
+                // Job List
+                jobsScreenControllerObj.isloading
+                    ? const Center(child: CircularProgressIndicator())
+                    : jobsScreenControllerObj.jobsList.isEmpty
+                        ? Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.work_outline,
+                                  size: 64,
+                                  color: Colors.grey[400],
+                                ),
+                                const SizedBox(height: 16),
+                                Text(
+                                  "No jobs available",
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    color: Colors.grey[600],
+                                  ),
+                                ),
+                                if (jobsScreenControllerObj
+                                        .selectedCategoryIndex !=
+                                    0)
+                                  Text(
+                                    "for this category",
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      color: Colors.grey[500],
+                                    ),
+                                  ),
+                              ],
+                            ),
+                          )
+                        : Column(
+                            children: List.generate(
+                              jobsScreenControllerObj.jobsList.length,
+                              (index) {
+                                final jobItem =
+                                    jobsScreenControllerObj.jobsList[index];
+                                return InkWell(
+                                  onTap: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              JobDetailsScreen(
+                                                  jobId: jobItem.id),
+                                        ));
+                                  },
+                                  child: JobOffersCard(jobItem: jobItem),
+                                );
+                              },
+                            ),
+                          ),
+                Padding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: ResponsiveHelper.width(10, context),
+                  ),
+                  child: Column(
+                    children: [
+                      Row(
+                        children: [
+                          Text(
+                            "Companies nearby",
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 18,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                          Spacer(),
+                          Text(
+                            "View More",
+                            style: TextStyle(
+                              color: ColorConstants.viewMoreText,
+                              fontSize: 12,
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: ResponsiveHelper.height(18, context)),
+                      SizedBox(
+                        height: 150,
+                        child: ListView.separated(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: 5,
+                          padding: EdgeInsets.symmetric(
+                            horizontal: ResponsiveHelper.width(10, context),
+                          ),
+                          separatorBuilder: (context, index) => SizedBox(
+                            width: ResponsiveHelper.width(10, context),
+                          ),
+                          itemBuilder: (context, index) {
+                            return Material(
+                              child: CompaniesCard(),
+                            );
+                          },
+                        ),
+                      ),
+                      SizedBox(height: ResponsiveHelper.height(22, context)),
+                      SizedBox(
+                        height: 200,
+                        child: PageView(
+                          controller: _controller,
+                          children: [
+                            GreenCard(),
+                            GreenCard(),
+                            GreenCard(),
+                          ],
+                        ),
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Center(
+                        child: SmoothPageIndicator(
+                          controller: _controller,
+                          count: _numPages,
+                          effect: WormEffect(
+                            dotHeight: screenHight * 0.020,
+                            dotWidth: screenWidth * 0.016,
+                            activeDotColor: Colors.black,
+                            dotColor: Colors.black,
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 50,
+                      )
+                    ],
+                  ),
+                )
               ],
             ),
-          ),
-        ),
+          );
+        },
       ),
-    );
-  }
-}
-
-class JobCategoryScreen1 extends StatelessWidget {
-  const JobCategoryScreen1({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final PageController _controller = PageController();
-    final int _numPages = 3;
-    final screenWidth = MediaQuery.of(context).size.width;
-    final screenHight = MediaQuery.of(context).size.width;
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        JobOffersCard(
-          context: context,
-          numOfcards: 5,
-        ),
-        SizedBox(
-          height: ResponsiveHelper.height(30, context),
-        ),
-        Row(
-          children: [
-            Text(
-              "Companies nearby",
-              style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 18,
-                  fontWeight: FontWeight.w700),
-            ),
-            Spacer(),
-            Text(
-              "View More",
-              style: TextStyle(
-                  color: ColorConstants.viewMoreText,
-                  fontSize: 12,
-                  fontWeight: FontWeight.w400),
-            ),
-          ],
-        ),
-        SizedBox(
-          height: ResponsiveHelper.height(18, context),
-        ),
-        Row(
-          children: [
-            Expanded(
-              child: SizedBox(
-                height: 150,
-                child: ListView.separated(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: 5,
-                  separatorBuilder: (context, index) => Container(
-                    width: ResponsiveHelper.width(
-                        5, context), // Height of the separator
-                    color: Colors.transparent, // Color of the separator
-                  ),
-                  itemBuilder: (context, index) {
-                    return CompaniesCard();
-                  },
-                ),
-              ),
-            )
-          ],
-        ),
-        SizedBox(
-          height: ResponsiveHelper.height(22, context),
-        ),
-        SizedBox(
-          height: 200,
-          child: PageView(
-            controller: _controller,
-            children: [
-              GreenCard(),
-              GreenCard(),
-              GreenCard(),
-            ],
-          ),
-        ),
-        SizedBox(
-          height: ResponsiveHelper.height(10, context),
-        ),
-        Center(
-          child: SmoothPageIndicator(
-            controller: _controller,
-            count: _numPages,
-            effect: WormEffect(
-              dotHeight: screenHight * 0.020,
-              dotWidth: screenWidth * 0.016,
-              activeDotColor: Colors.black,
-              dotColor: Colors.black,
-            ),
-          ),
-        ),
-        SizedBox(
-          height: 50,
-        )
-      ],
-    );
-  }
-}
-
-class JobCategoryScreen2 extends StatelessWidget {
-  const JobCategoryScreen2({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final PageController _controller = PageController();
-    final int _numPages = 3;
-    final screenWidth = MediaQuery.of(context).size.width;
-    final screenHight = MediaQuery.of(context).size.width;
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        JobOffersCard(
-          context: context,
-          numOfcards: 5,
-        ),
-        SizedBox(
-          height: 30,
-        ),
-        Row(
-          children: [
-            Text(
-              "Companies nearby",
-              style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 18,
-                  fontWeight: FontWeight.w700),
-            ),
-            Spacer(),
-            Text(
-              "View More",
-              style: TextStyle(
-                  color: ColorConstants.viewMoreText,
-                  fontSize: 12,
-                  fontWeight: FontWeight.w400),
-            ),
-          ],
-        ),
-        SizedBox(
-          height: 18,
-        ),
-        Row(
-          children: [
-            Expanded(
-              child: SizedBox(
-                height: 150,
-                child: ListView.separated(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: 5,
-                  separatorBuilder: (context, index) => Container(
-                    width: 5, // Height of the separator
-                    color: Colors.transparent, // Color of the separator
-                  ),
-                  itemBuilder: (context, index) {
-                    return CompaniesCard();
-                  },
-                ),
-              ),
-            )
-          ],
-        ),
-        SizedBox(
-          height: 22,
-        ),
-        SizedBox(
-          height: 200,
-          child: PageView(
-            controller: _controller,
-            children: [
-              GreenCard(),
-              GreenCard(),
-              GreenCard(),
-            ],
-          ),
-        ),
-        SizedBox(
-          height: 10,
-        ),
-        Center(
-          child: SmoothPageIndicator(
-            controller: _controller,
-            count: _numPages,
-            effect: WormEffect(
-              dotHeight: screenHight * 0.020,
-              dotWidth: screenWidth * 0.016,
-              activeDotColor: Colors.black,
-              dotColor: Colors.black,
-            ),
-          ),
-        ),
-        SizedBox(
-          height: 50,
-        )
-      ],
-    );
-  }
-}
-
-class JobCategoryScreen3 extends StatelessWidget {
-  const JobCategoryScreen3({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final PageController _controller = PageController();
-    final int _numPages = 3;
-    final screenWidth = MediaQuery.of(context).size.width;
-    final screenHight = MediaQuery.of(context).size.width;
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        JobOffersCard(
-          context: context,
-          numOfcards: 5,
-        ),
-        SizedBox(
-          height: 30,
-        ),
-        Row(
-          children: [
-            Text(
-              "Companies nearby",
-              style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 18,
-                  fontWeight: FontWeight.w700),
-            ),
-            Spacer(),
-            Text(
-              "View More",
-              style: TextStyle(
-                  color: ColorConstants.viewMoreText,
-                  fontSize: 12,
-                  fontWeight: FontWeight.w400),
-            ),
-          ],
-        ),
-        SizedBox(
-          height: 18,
-        ),
-        Row(
-          children: [
-            Expanded(
-              child: SizedBox(
-                height: 150,
-                child: ListView.separated(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: 5,
-                  separatorBuilder: (context, index) => Container(
-                    width: 5, // Height of the separator
-                    color: Colors.transparent, // Color of the separator
-                  ),
-                  itemBuilder: (context, index) {
-                    return CompaniesCard();
-                  },
-                ),
-              ),
-            )
-          ],
-        ),
-        SizedBox(
-          height: 22,
-        ),
-        SizedBox(
-          height: 200,
-          child: PageView(
-            controller: _controller,
-            children: [
-              GreenCard(),
-              GreenCard(),
-              GreenCard(),
-            ],
-          ),
-        ),
-        SizedBox(
-          height: 10,
-        ),
-        Center(
-          child: SmoothPageIndicator(
-            controller: _controller,
-            count: _numPages,
-            effect: WormEffect(
-              dotHeight: screenHight * 0.020,
-              dotWidth: screenWidth * 0.016,
-              activeDotColor: Colors.black,
-              dotColor: Colors.black,
-            ),
-          ),
-        ),
-        SizedBox(
-          height: 50,
-        )
-      ],
-    );
-  }
-}
-
-class JobCategoryScreen4 extends StatelessWidget {
-  const JobCategoryScreen4({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final PageController _controller = PageController();
-    final int _numPages = 3;
-    final screenWidth = MediaQuery.of(context).size.width;
-    final screenHight = MediaQuery.of(context).size.width;
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        JobOffersCard(
-          context: context,
-          numOfcards: 5,
-        ),
-        SizedBox(
-          height: 30,
-        ),
-        Row(
-          children: [
-            Text(
-              "Companies nearby",
-              style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 18,
-                  fontWeight: FontWeight.w700),
-            ),
-            Spacer(),
-            Text(
-              "View More",
-              style: TextStyle(
-                  color: ColorConstants.viewMoreText,
-                  fontSize: 12,
-                  fontWeight: FontWeight.w400),
-            ),
-          ],
-        ),
-        SizedBox(
-          height: 18,
-        ),
-        Row(
-          children: [
-            Expanded(
-              child: SizedBox(
-                height: 150,
-                child: ListView.separated(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: 5,
-                  separatorBuilder: (context, index) => Container(
-                    width: 5, // Height of the separator
-                    color: Colors.transparent, // Color of the separator
-                  ),
-                  itemBuilder: (context, index) {
-                    return CompaniesCard();
-                  },
-                ),
-              ),
-            )
-          ],
-        ),
-        SizedBox(
-          height: 22,
-        ),
-        SizedBox(
-          height: 200,
-          child: PageView(
-            controller: _controller,
-            children: [
-              GreenCard(),
-              GreenCard(),
-              GreenCard(),
-            ],
-          ),
-        ),
-        SizedBox(
-          height: 10,
-        ),
-        Center(
-          child: SmoothPageIndicator(
-            controller: _controller,
-            count: _numPages,
-            effect: WormEffect(
-              dotHeight: screenHight * 0.020,
-              dotWidth: screenWidth * 0.016,
-              activeDotColor: Colors.black,
-              dotColor: Colors.black,
-            ),
-          ),
-        ),
-        SizedBox(
-          height: 50,
-        )
-      ],
-    );
-  }
-}
-
-class JobCategoryScreen5 extends StatelessWidget {
-  const JobCategoryScreen5({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final PageController _controller = PageController();
-    final int _numPages = 3;
-    final screenWidth = MediaQuery.of(context).size.width;
-    final screenHight = MediaQuery.of(context).size.width;
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        JobOffersCard(
-          context: context,
-          numOfcards: 5,
-        ),
-        SizedBox(
-          height: 30,
-        ),
-        Row(
-          children: [
-            Text(
-              "Companies nearby",
-              style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 18,
-                  fontWeight: FontWeight.w700),
-            ),
-            Spacer(),
-            Text(
-              "View More",
-              style: TextStyle(
-                  color: ColorConstants.viewMoreText,
-                  fontSize: 12,
-                  fontWeight: FontWeight.w400),
-            ),
-          ],
-        ),
-        SizedBox(
-          height: 18,
-        ),
-        Row(
-          children: [
-            Expanded(
-              child: SizedBox(
-                height: 150,
-                child: ListView.separated(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: 5,
-                  separatorBuilder: (context, index) => Container(
-                    width: 5, // Height of the separator
-                    color: Colors.transparent, // Color of the separator
-                  ),
-                  itemBuilder: (context, index) {
-                    return CompaniesCard();
-                  },
-                ),
-              ),
-            )
-          ],
-        ),
-        SizedBox(
-          height: 22,
-        ),
-        SizedBox(
-          height: 200,
-          child: PageView(
-            controller: _controller,
-            children: [
-              GreenCard(),
-              GreenCard(),
-              GreenCard(),
-            ],
-          ),
-        ),
-        SizedBox(
-          height: 10,
-        ),
-        Center(
-          child: SmoothPageIndicator(
-            controller: _controller,
-            count: _numPages,
-            effect: WormEffect(
-              dotHeight: screenHight * 0.020,
-              dotWidth: screenWidth * 0.016,
-              activeDotColor: Colors.black,
-              dotColor: Colors.black,
-            ),
-          ),
-        ),
-        SizedBox(
-          height: 50,
-        )
-      ],
     );
   }
 }

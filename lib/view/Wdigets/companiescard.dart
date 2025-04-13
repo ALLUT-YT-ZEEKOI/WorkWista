@@ -1,27 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:workwista/Utils/color_constants.dart';
+
 import 'package:workwista/view/responsive_helper.dart';
 
 class CompaniesCard extends StatelessWidget {
-  const CompaniesCard({
-    super.key,
-  });
+  const CompaniesCard({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Container(
+      margin: EdgeInsets.symmetric(
+        horizontal: ResponsiveHelper.width(5, context),
+      ),
       padding: EdgeInsets.symmetric(
-          horizontal: ResponsiveHelper.width(10, context),
-          vertical: ResponsiveHelper.height(14, context)),
+        horizontal: ResponsiveHelper.width(10, context),
+        vertical: ResponsiveHelper.height(14, context),
+      ),
       height: 150,
       width: ResponsiveHelper.width(250, context),
       decoration: BoxDecoration(
-          border: Border.all(
-            color: ColorConstants.containerBorder,
-            width: 2,
-          ),
-          borderRadius: BorderRadius.circular(15),
-          color: Colors.white),
+        border: Border.all(
+          color: ColorConstants.containerBorder,
+          width: 2,
+        ),
+        borderRadius: BorderRadius.circular(15),
+        color: Colors.white,
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -70,7 +74,7 @@ class CompaniesCard extends StatelessWidget {
               ),
               Text("Full-Time")
             ],
-          )
+          ),
         ],
       ),
     );
