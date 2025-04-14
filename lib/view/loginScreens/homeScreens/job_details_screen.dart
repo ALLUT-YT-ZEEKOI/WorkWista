@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:workwista/Utils/color_constants.dart';
+import 'package:workwista/view/Controllers/apply_job_controller.dart';
 import 'package:workwista/view/Controllers/job_details_screen_controller.dart';
 import 'package:workwista/view/Wdigets/button_without_gradient.dart';
 import 'package:workwista/view/Wdigets/gradient_button.dart';
@@ -10,7 +11,7 @@ import 'package:workwista/view/responsive_helper.dart';
 // ignore: must_be_immutable
 class JobDetailsScreen extends StatefulWidget {
   String? jobId;
-   JobDetailsScreen({required this.jobId, super.key});
+  JobDetailsScreen({required this.jobId, super.key});
 
   @override
   State<JobDetailsScreen> createState() => _JobDetailsScreenState();
@@ -300,7 +301,12 @@ class _JobDetailsScreenState extends State<JobDetailsScreen> {
                 height: ResponsiveHelper.height(17, context),
               ),
               GradientButton(
-                onPressed: () {},
+                onPressed: () async {
+                  await context.read<ApplyJobController>().onApplyJob(
+                        context: context,
+                        Jobid: job?.id ?? "id not found",
+                      );
+                },
                 name: "Apply job",
                 width: 373,
                 height: 44,

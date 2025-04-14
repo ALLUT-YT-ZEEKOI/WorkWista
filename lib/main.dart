@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:workwista/view/Controllers/add_job_controller.dart';
+import 'package:workwista/view/Controllers/apply_job_controller.dart';
 import 'package:workwista/view/Controllers/job_details_screen_controller.dart';
 import 'package:workwista/view/Controllers/jobs_screen_controller.dart';
 import 'package:workwista/view/Controllers/login_screen_controller.dart';
@@ -21,6 +22,9 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(
           create: (context) => AddJobController(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => ApplyJobController(),
         ),
         ChangeNotifierProvider(
           create: (context) => JobsScreenController(),

@@ -51,7 +51,8 @@ class RegisterScreenController with ChangeNotifier {
               MaterialPageRoute(
                 builder: (context) => CustomBottomNavbar(),
               ));
-        }else{
+        }
+        else{
           erroMessage = "Invalid token received";
         }
 

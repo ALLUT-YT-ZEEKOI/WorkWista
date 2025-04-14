@@ -67,7 +67,7 @@ class _CategoriesScreenState extends State<CategoriesScreen>
                     mainAxisSpacing: 10,
                     crossAxisSpacing: 8,
                     childAspectRatio:
-                        1.31, // Adjust this value for height/width ratio
+                        1.30, // Adjust this value for height/width ratio
                   ),
                   itemCount: controller.categoriesList.length,
                   itemBuilder: (context, index) {
