@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:workwista/Utils/color_constants.dart';
 import 'package:workwista/view/Controllers/jobs_screen_controller.dart';
@@ -10,6 +11,8 @@ import 'package:workwista/view/Wdigets/jobofferscard.dart';
 import 'package:workwista/view/Wdigets/search_field.dart';
 import 'package:workwista/view/loginScreens/homeScreens/categories_screen.dart';
 import 'package:workwista/view/loginScreens/homeScreens/job_details_screen.dart';
+import 'package:workwista/view/loginScreens/homeScreens/search_screen.dart';
+import 'package:workwista/view/loginScreens/sign_in_screen.dart';
 
 import 'package:workwista/view/responsive_helper.dart';
 
@@ -83,13 +86,31 @@ class _DashboardState extends State<Dashboard>
                             ),
                             Row(
                               children: [
-                                Container(
-                                  margin: EdgeInsets.only(
-                                      right:
-                                          ResponsiveHelper.width(10, context)),
-                                  child: Image(
-                                    image: AssetImage('assets/bell.png'),
-                                    width: ResponsiveHelper.width(30, context),
+                                InkWell(
+                                  onTap: () async{
+                                      // Clear tokens from SharedPreferences
+                          SharedPreferences prefs =
+                              await SharedPreferences.getInstance();
+                          await prefs.setString("access", "");
+                          await prefs.setString("refresh", "");
+
+                          // Navigate to login screen and prevent going back
+                          Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => SignInScreen()),
+                            (Route<dynamic> route) =>
+                                false, // Remove all routes
+                          );
+                                  },
+                                  child: Container(
+                                    margin: EdgeInsets.only(
+                                        right:
+                                            ResponsiveHelper.width(10, context)),
+                                    child: Image(
+                                      image: AssetImage('assets/bell.png'),
+                                      width: ResponsiveHelper.width(30, context),
+                                    ),
                                   ),
                                 ),
                                 Container(
@@ -117,8 +138,17 @@ class _DashboardState extends State<Dashboard>
                         child: Row(
                           children: [
                             Expanded(
-                              child: searchField(
-                                height: 50,
+                              child: InkWell(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => SearchScreen()),
+                                  );
+                                },
+                                child: IgnorePointer(
+                                  child: SearchField(height: 50),
+                                ),
                               ),
                             ),
                             SizedBox(width: ResponsiveHelper.width(5, context)),

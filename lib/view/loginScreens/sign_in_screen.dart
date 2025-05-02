@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:workwista/view/Controllers/login_screen_controller.dart';
 import 'package:workwista/view/loginScreens/forgot_password_screen.dart';
+import 'package:workwista/view/loginScreens/homeScreens/google_auth_webview.dart';
 import 'package:workwista/view/loginScreens/signup_screen.dart';
 
 class SignInScreen extends StatefulWidget {
@@ -69,36 +70,33 @@ class _SignInScreenState extends State<SignInScreen> {
               
               // Google sign-in button
               InkWell(
-                onTap: () {
-                  context.read<LoginScreenController>().signInWithGoogle(context);
-                },
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(35),
-                    border: Border.all(color: const Color(0xFFBDBDBD), width: 1),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Image.asset(
-                        'assets/flat-color-icons_google.png',
-                        width: screenWidth * 0.07
-                      ),
-                      const SizedBox(width: 10),
-                      const Text(
-                        'Sign up with Google',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
-                        )
-                      ),
-                    ],
-                  ),
-                ),
-              ),
+  onTap: () => GoogleAuthService.signInWithGoogle(context),
+  child: Container(
+    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+    decoration: BoxDecoration(
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(35),
+      border: Border.all(color: const Color(0xFFBDBDBD), width: 1),
+    ),
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Image.asset(
+          'assets/flat-color-icons_google.png',
+          width: screenWidth * 0.07
+        ),
+        const SizedBox(width: 10),
+        const Text(
+          'Sign up with Google',
+          style: TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.w500,
+          )
+        ),
+      ],
+    ),
+  ),
+),
               const SizedBox(height: 20),
 
               // OR Divider

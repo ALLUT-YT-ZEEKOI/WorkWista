@@ -1,9 +1,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <application
+        android:networkSecurityConfig="@xml/network_security_config"
         android:label="workwista"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
+            
             android:name=".MainActivity"
             android:exported="true"
             android:launchMode="singleTop"
@@ -23,6 +25,7 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
+                <data android:scheme="ya" /> <!-- Must match your callbackScheme in Dart -->
             </intent-filter>
         </activity>
         <!-- Don't delete the meta-data below.

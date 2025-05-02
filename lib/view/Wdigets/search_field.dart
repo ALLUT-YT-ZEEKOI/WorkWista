@@ -2,11 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:workwista/Utils/color_constants.dart';
 import 'package:workwista/view/responsive_helper.dart';
 
-// ignore: must_be_immutable
-class searchField extends StatelessWidget {
-  double height;
-   searchField({
+class SearchField extends StatelessWidget {
+  final double height;
+  final TextEditingController? controller;
+  final FocusNode? focusNode;
+  final Function(String)? onChanged;
+  final Function(String)? onSubmitted;
+  final String? hintText;
+
+  const SearchField({
     required this.height,
+    this.controller,
+    this.focusNode,
+    this.onChanged,
+    this.onSubmitted,
+    this.hintText = "Search...",
     super.key,
   });
 
@@ -15,9 +25,13 @@ class searchField extends StatelessWidget {
     return SizedBox(
       height: ResponsiveHelper.height(height, context),
       child: TextFormField(
+        controller: controller,
+        focusNode: focusNode,
+        onChanged: onChanged,
+        onFieldSubmitted: onSubmitted,
         decoration: InputDecoration(
-          hintText: "Search...",
-          prefixIcon: Icon(Icons.search, color: Colors.grey),
+          hintText: hintText,
+          prefixIcon: const Icon(Icons.search, color: Colors.grey),
           filled: true,
           fillColor: Colors.white,
           border: OutlineInputBorder(

@@ -6,13 +6,29 @@ import 'package:workwista/view/loginScreens/homeScreens/my_jobs_screen.dart';
 import 'package:workwista/view/loginScreens/homeScreens/profile_screen.dart';
 
 class CustomBottomNavbar extends StatefulWidget {
-  const CustomBottomNavbar({super.key});
+  final String? successMessage;
+  const CustomBottomNavbar({this.successMessage,super.key});
 
   @override
   State<CustomBottomNavbar> createState() => _CustomBottomNavbarState();
 }
 
 class _CustomBottomNavbarState extends State<CustomBottomNavbar> {
+
+ @override
+  void initState() {
+    super.initState();
+    if (widget.successMessage != null) {
+      // Show SnackBar after widget builds
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(widget.successMessage!)),
+        );
+      });
+    }
+  }
+
+
   int _currentIndex = 0; // Track the currently selected tab
 
   // List of screens to display based on the selected index

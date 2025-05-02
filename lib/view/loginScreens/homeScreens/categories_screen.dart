@@ -46,7 +46,7 @@ class _CategoriesScreenState extends State<CategoriesScreen>
         child: SingleChildScrollView(
           child: Column(
             children: [
-              searchField(height: 50),
+              SearchField(height: 50),
               SizedBox(
                 height: 23,
               ),

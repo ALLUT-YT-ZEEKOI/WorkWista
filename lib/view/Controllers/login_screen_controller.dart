@@ -1,72 +1,142 @@
 import 'dart:convert';
 import 'dart:developer';
-import 'package:google_sign_in/google_sign_in.dart';
+
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:workwista/view/Common%20Screens/custom_bottom_navbar.dart';
 import 'package:workwista/view/Model/login_model.dart';
 
-
 class LoginScreenController with ChangeNotifier {
   bool isloading = false;
   String? errorMessage;
+// No GoogleSignIn needed anymore - we'll use WebView
 
-
-
-
-final GoogleSignIn _googleSignIn = GoogleSignIn();
-
-Future<void> signInWithGoogle(BuildContext context) async {
+  // Only need to update the handleGoogleAuthCallback method
+ Future<void> handleGoogleAuthCallback(Uri uri, BuildContext context) async {
   try {
-    final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
-
-    if (googleUser == null) {
-      // User cancelled the sign-in
-      return;
+    final code = uri.queryParameters['code'];
+    
+    if (code == null) {
+      throw Exception('No authorization code received');
     }
 
-    final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+    log("Exchanging code for tokens...");
+    
+    // Extract the full callback URL that failed to load
+    final failedCallbackUrl = uri.toString();
+    log("Failed callback URL: $failedCallbackUrl");
 
-    // Send ID token or email to your backend
+    // Parse the code from the URL
+    final extractedCode = Uri.parse(failedCallbackUrl).queryParameters['code'];
+    
+    if (extractedCode == null) {
+      throw Exception('Could not extract code from callback URL');
+    }
+
+    // Manually call your backend callback endpoint
     final response = await http.post(
-      Uri.parse('http://192.168.3.36:8000/auth/google/'),
+      Uri.parse('http://192.168.3.36:8000/auth/google/callback/'),
       body: {
-        'email': googleUser.email,
-        'name': googleUser.displayName ?? '',
-        'profile_picture_google': googleUser.photoUrl ?? '',
-        // Send token if required by your backend
-        // 'id_token': googleAuth.idToken,
+        'code': extractedCode,
+        'grant_type': 'authorization_code',
       },
     );
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
-      final accessToken = data['access_token'];
-      final refreshToken = data['refresh_token'];
-
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      await prefs.setString('access', accessToken);
-      await prefs.setString('refresh', refreshToken);
-
+      await _storeAuthData(data);
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => CustomBottomNavbar()),
       );
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Google login failed')),
-      );
+      throw Exception('Failed to exchange code for tokens: ${response.body}');
     }
   } catch (e) {
-    log('Google sign-in error: $e');
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Error: ${e.toString()}')),
-    );
+    log('Google auth error: $e');
+    _showError(context, 'Authentication failed: ${e.toString()}');
+    
+    // Optional: Add a retry button in the error message
+    if (context.mounted) {
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text("Authentication Error"),
+          content: Text("Would you like to try again?"),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text("Cancel"),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+                // signInWithGoogle(context);
+              },
+              child: Text("Retry"),
+            ),
+          ],
+        ),
+      );
+    }
   }
 }
 
 
+
+
+
+
+Future<void> handleGoogleAuthCode(String code, BuildContext context) async {
+  try {
+    log("Exchanging code for tokens...");
+    final response = await http.post(
+      Uri.parse('http://192.168.3.36:8000/auth/google/callback/'),
+      body: {
+        'code': code,
+        'grant_type': 'authorization_code',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      await _storeAuthData(data);
+      if (context.mounted) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => CustomBottomNavbar()),
+        );
+      }
+    } else {
+      throw Exception('Failed to exchange code: ${response.body}');
+    }
+  } catch (e) {
+    log('Google auth error: $e');
+    if (context.mounted) {
+      _showError(context, 'Authentication failed: ${e.toString()}');
+    }
+  }
+}
+
+  Future<void> _storeAuthData(Map<String, dynamic> data) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('access', data['access_token']);
+    log("✅ Saved Access Token: ${prefs.getString('access')}");
+    await prefs.setString('refresh', data['refresh_token']);
+    await prefs.setString('user_email', data['user']['email'] ?? '');
+    await prefs.setString('user_name', data['user']['name'] ?? '');
+    await prefs.setString(
+        'user_avatar', data['user']['profile_picture_google'] ?? '');
+  }
+
+  void _showError(BuildContext context, String message) {
+    if (context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(message)),
+      );
+    }
+  }
 
   Future<bool> onLogin(
       {required String email,

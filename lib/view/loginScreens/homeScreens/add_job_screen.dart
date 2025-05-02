@@ -43,7 +43,7 @@ class _AddJobScreenState extends State<AddJobScreen> {
             Center(
               child: SizedBox(
                   width: ResponsiveHelper.width(365, context),
-                  child: searchField(height: 50)),
+                  child: SearchField(height: 50)),
             ),
             Padding(
               padding: EdgeInsets.symmetric(
