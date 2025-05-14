@@ -16,19 +16,18 @@ class ProfileScreenController with ChangeNotifier {
   Future<void> getProfileDetails() async {
     isloading = true;
     notifyListeners();
-    
 
     try {
-     final prefs = await SharedPreferences.getInstance();
+      final prefs = await SharedPreferences.getInstance();
       String accessToken = prefs.getString("access") ?? "";
-     // First attempt with current access token
+      // First attempt with current access token
       var response = await _makeProfileDetailsRequest(accessToken);
 
-       // If unauthorized (401), try refreshing token
+      // If unauthorized (401), try refreshing token
       if (response.statusCode == 401) {
         log("Access token expired, attempting refresh...");
         final refreshToken = prefs.getString("refresh") ?? "";
-        
+
         // Refresh the token
         final newAccessToken = await _refreshToken(refreshToken);
         if (newAccessToken != null) {
@@ -36,44 +35,35 @@ class ProfileScreenController with ChangeNotifier {
           response = await _makeProfileDetailsRequest(newAccessToken);
         }
       }
-       // Process final response
-       if (response.statusCode == 200) {
+      // Process final response
+      if (response.statusCode == 200) {
         ProfileDetails = userProfileModelFromJson(response.body);
         log("Successfully loaded job details");
-      }else{
+      } else {
         errorMessage = "Failed to load job details (${response.statusCode})";
         _handleApiError(response.statusCode, response.body);
       }
-
     } catch (e) {
       errorMessage = "Error: ${e.toString()}";
       log(errorMessage!);
-    }finally{
+    } finally {
       isloading = false;
       notifyListeners();
     }
   }
 
-
-
-
-    Future<http.Response> _makeProfileDetailsRequest(String accessToken) async {
-    final url = Uri.parse('http://192.168.3.36:8000/job/vew/userprofile/');
+  Future<http.Response> _makeProfileDetailsRequest(String accessToken) async {
+    final url = Uri.parse('https://workwista.com/job/vew/userprofile/');
     return await http.get(
       url,
       headers: {"Authorization": "Bearer $accessToken"},
     );
   }
 
-
-
-
-
-
-
   Future<String?> _refreshToken(String refreshToken) async {
     try {
-      final url = Uri.parse('http://192.168.3.36:8000/users/api/token/refresh/');
+      final url =
+          Uri.parse('http://192.168.3.36:8000/users/api/token/refresh/');
       final response = await http.post(
         url,
         body: {'refresh': refreshToken},
@@ -82,11 +72,11 @@ class ProfileScreenController with ChangeNotifier {
       if (response.statusCode == 200) {
         final newTokens = jsonDecode(response.body);
         final newAccessToken = newTokens['access'];
-        
+
         // Save new access token
         final prefs = await SharedPreferences.getInstance();
         await prefs.setString("access", newAccessToken);
-        
+
         log("Successfully refreshed access token");
         return newAccessToken;
       } else {
@@ -103,9 +93,7 @@ class ProfileScreenController with ChangeNotifier {
     }
   }
 
-
-
-    void _handleApiError(int statusCode, String responseBody) {
+  void _handleApiError(int statusCode, String responseBody) {
     log("API Error $statusCode: $responseBody");
     // Additional error handling if needed
   }

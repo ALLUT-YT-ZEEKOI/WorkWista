@@ -52,7 +52,7 @@ class JobDetailsScreenController with ChangeNotifier {
   }
 
   Future<http.Response> _makeJobDetailsRequest(String jobId, String accessToken) async {
-    final url = Uri.parse('http://192.168.3.36:8000/job/view/detail_job/$jobId/');
+    final url = Uri.parse('https://workwista.com/job/view/detail_job/$jobId/');
     return await http.get(
       url,
       headers: {"Authorization": "Bearer $accessToken"},
@@ -61,7 +61,7 @@ class JobDetailsScreenController with ChangeNotifier {
 
   Future<String?> _refreshToken(String refreshToken) async {
     try {
-      final url = Uri.parse('http://192.168.3.36:8000/users/api/token/refresh/');
+      final url = Uri.parse('https://workwista.com/users/api/token/refresh/');
       final response = await http.post(
         url,
         body: {'refresh': refreshToken},

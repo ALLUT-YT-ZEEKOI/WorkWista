@@ -19,7 +19,7 @@ class RegisterScreenController with ChangeNotifier {
       required String DOB,
       required String password,
       required String confirm_pass}) async {
-    final url = Uri.parse("http://192.168.3.36:8000/users/register/");
+    final url = Uri.parse("https://workwista.com/users/register/");
     isloading = true;
     erroMessage = null;
     notifyListeners();

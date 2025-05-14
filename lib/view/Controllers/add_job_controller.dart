@@ -107,7 +107,7 @@ class AddJobController with ChangeNotifier {
     String? job_category,
     String job_type,
   ) async {
-    final url = Uri.parse("http://192.168.3.36:8000/job/create/");
+    final url = Uri.parse("https://workwista.com/job/create/");
     var request = http.MultipartRequest('POST', url);
 
     request.fields['title'] = title;
@@ -135,7 +135,7 @@ class AddJobController with ChangeNotifier {
   Future<String?> _refreshToken(String refreshToken) async {
     try {
       final url =
-          Uri.parse('http://192.168.3.36:8000/users/api/token/refresh/');
+          Uri.parse('https://workwista.com/users/api/token/refresh/');
       final response = await http.post(
         url,
         body: {'refresh': refreshToken},

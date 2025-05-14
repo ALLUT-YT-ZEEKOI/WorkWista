@@ -18,74 +18,74 @@ class JobsScreenController with ChangeNotifier {
   int selectedCategoryIndex = 0;
   List<PostedItem> postedJobsList = []; // List for posted jobs
   String? errorMessage;
-    JobRequestsModel? jobRequests;
- 
+  JobRequestsModel? jobRequests;
 
-
-Future<void> respondToRequest(String requestId, String action) async {
-  isloading = true;
-  notifyListeners();
-
-  try {
-    final prefs = await SharedPreferences.getInstance();
-    String accessToken = prefs.getString("access") ?? "";
-    final url = Uri.parse("http://192.168.3.36:8000/job/manage/applicant/$requestId/");
-
-    Map<String, String> headers = {
-      "Authorization": "Bearer $accessToken",
-      "Content-Type": "application/json",
-    };
-
-    Map<String, String> body = {
-      "action": action, // "accept" or "decline"
-    };
-
-    var response = await http.post(
-      url,
-      headers: headers,
-      body: jsonEncode(body),
-    );
-
-    if (response.statusCode == 401) {
-      final refreshToken = prefs.getString("refresh") ?? "";
-      final newAccessToken = await _refreshToken(refreshToken);
-      if (newAccessToken != null) {
-        headers["Authorization"] = "Bearer $newAccessToken";
-        response = await http.post(
-          url,
-          headers: headers,
-          body: jsonEncode(body),
-        );
-      }
-    }
-
-    if (response.statusCode == 200) {
-      await getPostedJobs();
-    } else {
-      errorMessage = "Failed to $action request: ${response.statusCode}";
-      _handleApiError(response.statusCode);
-    }
-  } catch (e) {
-    errorMessage = "Error on $action request: ${e.toString()}";
-    log(errorMessage!);
-  } finally {
-    isloading = false;
-    notifyListeners();
-  }
-}
-
-
-    // Fetch job requests for a specific job
-  Future<void> getJobRequests(String jobId) async {  // Accept jobId as parameter
+  Future<void> respondToRequest(String requestId, String action) async {
     isloading = true;
     notifyListeners();
-
-    final url = Uri.parse("http://192.168.3.36:8000/job/view/applicant/$jobId/");
 
     try {
       final prefs = await SharedPreferences.getInstance();
       String accessToken = prefs.getString("access") ?? "";
-      
+      final url =
+          Uri.parse("https://workwista.com/job/manage/applicant/$requestId/");
+
+      Map<String, String> headers = {
+        "Authorization": "Bearer $accessToken",
+        "Content-Type": "application/json",
+      };
+
+      Map<String, String> body = {
+        "action": action, // "accept" or "decline"
+      };
+
+      var response = await http.post(
+        url,
+        headers: headers,
+        body: jsonEncode(body),
+      );
+
+      if (response.statusCode == 401) {
+        final refreshToken = prefs.getString("refresh") ?? "";
+        final newAccessToken = await _refreshToken(refreshToken);
+        if (newAccessToken != null) {
+          headers["Authorization"] = "Bearer $newAccessToken";
+          response = await http.post(
+            url,
+            headers: headers,
+            body: jsonEncode(body),
+          );
+        }
+      }
+
+      if (response.statusCode == 200) {
+        await getPostedJobs();
+      } else {
+        errorMessage = "Failed to $action request: ${response.statusCode}";
+        _handleApiError(response.statusCode);
+      }
+    } catch (e) {
+      errorMessage = "Error on $action request: ${e.toString()}";
+      log(errorMessage!);
+    } finally {
+      isloading = false;
+      notifyListeners();
+    }
+  }
+
+  // Fetch job requests for a specific job
+  Future<void> getJobRequests(String jobId) async {
+    // Accept jobId as parameter
+    isloading = true;
+    notifyListeners();
+
+    final url =
+        Uri.parse("https://workwista.com/job/view/applicant/$jobId/");
+
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      String accessToken = prefs.getString("access") ?? "";
+
       // First attempt with current access token
       var response = await http.get(
         url,
@@ -119,9 +119,9 @@ Future<void> respondToRequest(String requestId, String action) async {
     }
   }
 
-
-   // Helper method for authenticated requests
-  Future<http.Response> _makeAuthenticatedRequest(Uri url, String accessToken) async {
+  // Helper method for authenticated requests
+  Future<http.Response> _makeAuthenticatedRequest(
+      Uri url, String accessToken) async {
     return await http.get(
       url,
       headers: {
@@ -131,7 +131,7 @@ Future<void> respondToRequest(String requestId, String action) async {
     );
   }
 
- Future<void> getPostedJobs() async {
+  Future<void> getPostedJobs() async {
     isloading = true;
     errorMessage = null;
     notifyListeners();
@@ -139,7 +139,7 @@ Future<void> respondToRequest(String requestId, String action) async {
     try {
       final prefs = await SharedPreferences.getInstance();
       String accessToken = prefs.getString("access") ?? "";
-      
+
       // First attempt with current access token
       var response = await _makePostedJobsRequest(accessToken);
 
@@ -147,7 +147,7 @@ Future<void> respondToRequest(String requestId, String action) async {
       if (response.statusCode == 401) {
         log("Access token expired, attempting refresh...");
         final refreshToken = prefs.getString("refresh") ?? "";
-        
+
         // Refresh the token
         final newAccessToken = await _refreshToken(refreshToken);
         if (newAccessToken != null) {
@@ -155,10 +155,11 @@ Future<void> respondToRequest(String requestId, String action) async {
           response = await _makePostedJobsRequest(newAccessToken);
         }
       }
-      
+
       // Process final response
       if (response.statusCode == 200) {
-        final PostedJobsModel postedJobsModel = postedJobsModelFromJson(response.body);
+        final PostedJobsModel postedJobsModel =
+            postedJobsModelFromJson(response.body);
         postedJobsList = postedJobsModel.data ?? [];
         log("Successfully loaded posted jobs");
       } else {
@@ -176,7 +177,7 @@ Future<void> respondToRequest(String requestId, String action) async {
   }
 
   Future<http.Response> _makePostedJobsRequest(String accessToken) async {
-    final url = Uri.parse("http://192.168.3.36:8000/job/list/user/postedjob/");
+    final url = Uri.parse("https://workwista.com/job/list/user/postedjob/");
     return await http.get(
       url,
       headers: {"Authorization": "Bearer $accessToken"},
@@ -185,7 +186,8 @@ Future<void> respondToRequest(String requestId, String action) async {
 
   Future<String?> _refreshToken(String refreshToken) async {
     try {
-      final url = Uri.parse('http://192.168.3.36:8000/users/api/token/refresh/');
+      final url =
+          Uri.parse('https://workwista.com/users/api/token/refresh/');
       final response = await http.post(
         url,
         body: {'refresh': refreshToken},
@@ -194,11 +196,11 @@ Future<void> respondToRequest(String requestId, String action) async {
       if (response.statusCode == 200) {
         final newTokens = jsonDecode(response.body);
         final newAccessToken = newTokens['access'];
-        
+
         // Save new access token
         final prefs = await SharedPreferences.getInstance();
         await prefs.setString("access", newAccessToken);
-        
+
         log("Successfully refreshed access token");
         return newAccessToken;
       } else {
@@ -218,7 +220,7 @@ Future<void> respondToRequest(String requestId, String action) async {
     notifyListeners();
 
     final url =
-        Uri.parse("http://192.168.3.36:8000/job/view/joblist/?title=$query");
+        Uri.parse("https://workwista.com/job/view/joblist/?title=$query");
 
     try {
       final response = await http.get(url);
@@ -242,7 +244,7 @@ Future<void> respondToRequest(String requestId, String action) async {
     notifyListeners();
 
     final url =
-        Uri.parse("http://192.168.3.36:8000/job/category/job/$categoryId/");
+        Uri.parse("https://workwista.com/job/category/job/$categoryId/");
 
     try {
       final response = await http.get(url);
@@ -280,7 +282,7 @@ Future<void> respondToRequest(String requestId, String action) async {
     isloading = true;
     notifyListeners();
 
-    final url = Uri.parse("http://192.168.3.36:8000/job/view/category/");
+    final url = Uri.parse("https://workwista.com/job/view/category/");
 
     try {
       final response = await http.get(url);
@@ -304,7 +306,7 @@ Future<void> respondToRequest(String requestId, String action) async {
     isloading = true;
     notifyListeners();
 
-    final url = Uri.parse("http://192.168.3.36:8000/job/view/joblist/");
+    final url = Uri.parse("https://workwista.com/job/view/joblist/");
 
     try {
       final response = await http.get(url);

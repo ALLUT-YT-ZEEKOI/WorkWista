@@ -40,11 +40,6 @@ class _AddJobScreenState extends State<AddJobScreen> {
             SizedBox(
               height: 25,
             ),
-            Center(
-              child: SizedBox(
-                  width: ResponsiveHelper.width(365, context),
-                  child: SearchField(height: 50)),
-            ),
             Padding(
               padding: EdgeInsets.symmetric(
                 horizontal: ResponsiveHelper.width(25, context),
@@ -63,7 +58,9 @@ class _AddJobScreenState extends State<AddJobScreen> {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => EnterJobDetailsScreen(category_id: category.id,),
+                                  builder: (context) => EnterJobDetailsScreen(
+                                    category_id: category.id,
+                                  ),
                                 ));
                           },
                           child: Container(

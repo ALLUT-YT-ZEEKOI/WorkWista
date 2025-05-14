@@ -39,12 +39,12 @@ class _EnterJobDetailsScreenState extends State<EnterJobDetailsScreen> {
     {
       'label': 'Fulltime',
       'value': 1,
-      'keyword': '16c2da6b-6a84-4b84-bae5-c9c9aa165623'
+      'keyword': '859b783d-e7f6-44b7-b0b9-b41baf332d40'
     },
     {
       'label': 'Parttime',
       'value': 2,
-      'keyword': '10548fac-0b67-4da2-80be-2543729ef987'
+      'keyword': 'e6b64677-da17-4eb9-89d0-f3bc7963ebb6'
     },
     {'label': 'Permanent', 'value': 3, 'keyword': 'cd'},
   ];
@@ -223,7 +223,6 @@ class _EnterJobDetailsScreenState extends State<EnterJobDetailsScreen> {
                     (e) => e['value'] == _selectedJobType,
                     orElse: () => {},
                   );
-                  
 
                   log("Selected Job Type Keyword: ${selectedJobType['keyword'] ?? 'None'}");
                   // log("Selected Work Mode Keyword: ${selectedWorkMode['keyword'] ?? 'None'}");

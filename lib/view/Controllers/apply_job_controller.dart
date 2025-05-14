@@ -15,7 +15,7 @@ class ApplyJobController with ChangeNotifier {
     required BuildContext context,
     required String Jobid,
   }) async {
-    final url = Uri.parse("http://192.168.3.36:8000/job/request/take/$Jobid/");
+    final url = Uri.parse("https://workwista.com/job/request/take/$Jobid/");
     isloading = true;
     errorMessage = null;
     notifyListeners();

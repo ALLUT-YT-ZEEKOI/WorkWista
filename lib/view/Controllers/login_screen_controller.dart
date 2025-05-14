@@ -13,94 +13,8 @@ class LoginScreenController with ChangeNotifier {
 // No GoogleSignIn needed anymore - we'll use WebView
 
   // Only need to update the handleGoogleAuthCallback method
- Future<void> handleGoogleAuthCallback(Uri uri, BuildContext context) async {
-  try {
-    final code = uri.queryParameters['code'];
-    
-    if (code == null) {
-      throw Exception('No authorization code received');
-    }
-
-    log("Exchanging code for tokens...");
-    
-    // Extract the full callback URL that failed to load
-    final failedCallbackUrl = uri.toString();
-    log("Failed callback URL: $failedCallbackUrl");
-
-    // Parse the code from the URL
-    final extractedCode = Uri.parse(failedCallbackUrl).queryParameters['code'];
-    
-    if (extractedCode == null) {
-      throw Exception('Could not extract code from callback URL');
-    }
-
-    // Manually call your backend callback endpoint
-    final response = await http.post(
-      Uri.parse('http://192.168.3.36:8000/auth/google/callback/'),
-      body: {
-        'code': extractedCode,
-        'grant_type': 'authorization_code',
-      },
-    );
-
-    if (response.statusCode == 200) {
-      final data = jsonDecode(response.body);
-      await _storeAuthData(data);
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => CustomBottomNavbar()),
-      );
-    } else {
-      throw Exception('Failed to exchange code for tokens: ${response.body}');
-    }
-  } catch (e) {
-    log('Google auth error: $e');
-    _showError(context, 'Authentication failed: ${e.toString()}');
-    
-    // Optional: Add a retry button in the error message
-    if (context.mounted) {
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: Text("Authentication Error"),
-          content: Text("Would you like to try again?"),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: Text("Cancel"),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-                // signInWithGoogle(context);
-              },
-              child: Text("Retry"),
-            ),
-          ],
-        ),
-      );
-    }
-  }
-}
-
-
-
-
-
-
-Future<void> handleGoogleAuthCode(String code, BuildContext context) async {
-  try {
-    log("Exchanging code for tokens...");
-    final response = await http.post(
-      Uri.parse('http://192.168.3.36:8000/auth/google/callback/'),
-      body: {
-        'code': code,
-        'grant_type': 'authorization_code',
-      },
-    );
-
-    if (response.statusCode == 200) {
-      final data = jsonDecode(response.body);
+ Future<void> handleLoginResponse(Map<String, dynamic> data, BuildContext context) async {
+    try {
       await _storeAuthData(data);
       if (context.mounted) {
         Navigator.pushReplacement(
@@ -108,17 +22,14 @@ Future<void> handleGoogleAuthCode(String code, BuildContext context) async {
           MaterialPageRoute(builder: (context) => CustomBottomNavbar()),
         );
       }
-    } else {
-      throw Exception('Failed to exchange code: ${response.body}');
-    }
-  } catch (e) {
-    log('Google auth error: $e');
-    if (context.mounted) {
-      _showError(context, 'Authentication failed: ${e.toString()}');
+    } catch (e) {
+      log('handleLoginResponse error: $e');
+      if (context.mounted) {
+        _showError(context, 'Login failed: ${e.toString()}');
+      }
     }
   }
-}
-
+  
   Future<void> _storeAuthData(Map<String, dynamic> data) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('access', data['access_token']);
@@ -142,7 +53,7 @@ Future<void> handleGoogleAuthCode(String code, BuildContext context) async {
       {required String email,
       required String password,
       required BuildContext context}) async {
-    final url = Uri.parse("http://192.168.3.36:8000/users/api/token/");
+    final url = Uri.parse("https://workwista.com/users/api/token/");
     isloading = true;
     errorMessage = null;
     notifyListeners();
