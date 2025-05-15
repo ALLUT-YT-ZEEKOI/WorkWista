@@ -320,6 +320,24 @@
       "languageVersion": "3.0"
     },
     {
+      "name": "location",
+      "rootUri": "file:///C:/Users/Hamad/AppData/Local/Pub/Cache/hosted/pub.dev/location-7.0.1",
+      "packageUri": "lib/",
+      "languageVersion": "3.4"
+    },
+    {
+      "name": "location_platform_interface",
+      "rootUri": "file:///C:/Users/Hamad/AppData/Local/Pub/Cache/hosted/pub.dev/location_platform_interface-5.0.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.4"
+    },
+    {
+      "name": "location_web",
+      "rootUri": "file:///C:/Users/Hamad/AppData/Local/Pub/Cache/hosted/pub.dev/location_web-5.0.4",
+      "packageUri": "lib/",
+      "languageVersion": "3.4"
+    },
+    {
       "name": "matcher",
       "rootUri": "file:///C:/Users/Hamad/AppData/Local/Pub/Cache/hosted/pub.dev/matcher-0.12.16+1",
       "packageUri": "lib/",
@@ -620,7 +638,7 @@
       "languageVersion": "3.4"
     }
   ],
-  "generated": "2025-04-23T06:05:22.687336Z",
+  "generated": "2025-05-15T10:50:23.831907Z",
   "generator": "pub",
   "generatorVersion": "3.5.4",
   "flutterRoot": "file:///D:/flutter",

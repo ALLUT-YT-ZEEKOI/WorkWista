@@ -1,10 +1,14 @@
 import 'dart:developer';
 import 'dart:io';
 import 'package:flutter/material.dart';
+
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
+import 'package:location/location.dart';
 import 'package:provider/provider.dart';
 import 'package:workwista/Utils/color_constants.dart';
 import 'package:workwista/view/Controllers/add_job_controller.dart';
+import 'package:workwista/view/Controllers/jobs_screen_controller.dart';
 import 'package:workwista/view/Wdigets/button_without_gradient.dart';
 import 'package:workwista/view/Wdigets/gradient_button.dart';
 import 'package:workwista/view/responsive_helper.dart';
@@ -19,47 +23,150 @@ class EnterJobDetailsScreen extends StatefulWidget {
 }
 
 class _EnterJobDetailsScreenState extends State<EnterJobDetailsScreen> {
+
+String _trimLastDecimal(String input) {
+  if (input.contains('.')) {
+    List<String> parts = input.split('.');
+    if (parts.length == 2 && parts[1].length > 1) {
+      // Trim last digit of the decimal part
+      String trimmedDecimal = parts[1].substring(0, parts[1].length - 1);
+      return '${parts[0]}.$trimmedDecimal';
+    }
+  }
+  return input; // Return original if no trimming is possible
+}
+
+
+
   File? _selectedImage;
   final ImagePicker _picker = ImagePicker();
+  String locationText = "Press the button to get location";
+  Location location = Location();
 
-  int? _selectedJobType; // For job type selection
-  int? _selectedWorkMode; // For work mode selection
-  TextEditingController _jobTitleController = TextEditingController();
-  TextEditingController _descriptionController = TextEditingController();
-  TextEditingController _jobdateController = TextEditingController();
-  TextEditingController _salaryController = TextEditingController();
-  TextEditingController _longitudeController = TextEditingController();
-  TextEditingController _latitudeController = TextEditingController();
-  TextEditingController _jobtypeController = TextEditingController();
-  // TextEditingController _dateFromController = TextEditingController();
-  // TextEditingController _dateToController = TextEditingController();
-  // TextEditingController _startTimeController = TextEditingController();
-  // TextEditingController _endTimeController = TextEditingController();
-  final List<Map<String, dynamic>> _jobTypes = [
-    {
-      'label': 'Fulltime',
-      'value': 1,
-      'keyword': '859b783d-e7f6-44b7-b0b9-b41baf332d40'
-    },
-    {
-      'label': 'Parttime',
-      'value': 2,
-      'keyword': 'e6b64677-da17-4eb9-89d0-f3bc7963ebb6'
-    },
-    {'label': 'Permanent', 'value': 3, 'keyword': 'cd'},
-  ];
+  String _location = 'Unknown';
+  String? _selectedJobTypeId; // Changed to String for job type ID
+  String? _selectedWorkMode; // Changed to String for work mode
+  final TextEditingController _jobTitleController = TextEditingController();
+  final TextEditingController _descriptionController = TextEditingController();
+  final TextEditingController _jobdateController = TextEditingController();
+  final TextEditingController _salaryController = TextEditingController();
+  final TextEditingController _longitudeController = TextEditingController();
+  final TextEditingController _latitudeController = TextEditingController();
 
+  Future<void> _getLocation() async {
+    bool _serviceEnabled;
+    PermissionStatus _permissionGranted;
+    LocationData _locationData;
+
+    // Check if location service is enabled
+    _serviceEnabled = await location.serviceEnabled();
+    if (!_serviceEnabled) {
+      _serviceEnabled = await location.requestService();
+      if (!_serviceEnabled) {
+        setState(() {
+          _location = 'Location service disabled';
+        });
+        return;
+      }
+    }
+
+    // Check permission
+    _permissionGranted = await location.hasPermission();
+    if (_permissionGranted == PermissionStatus.denied) {
+      _permissionGranted = await location.requestPermission();
+      if (_permissionGranted != PermissionStatus.granted) {
+        setState(() {
+          _location = 'Location permission denied';
+        });
+        return;
+      }
+    }
+
+    // Get location
+    _locationData = await location.getLocation();
+
+    setState(() {
+      log(_locationData.latitude.toString());
+      _location =
+          'Lat: ${_locationData.latitude}, Lon: ${_locationData.longitude}';
+      _latitudeController.text = _locationData.latitude.toString();
+      _longitudeController.text = _locationData.longitude.toString();
+    });
+  }
+
+//  Future<void> _getLocation() async {
+//   bool serviceEnabled;
+//   LocationPermission permission;
+
+//   // Check if location services are enabled
+//   serviceEnabled = await Geolocator.isLocationServiceEnabled();
+//   if (!serviceEnabled) {
+//     return Future.error('Location services are disabled.');
+//   }
+
+//   // Check location permission
+//   permission = await Geolocator.checkPermission();
+//   if (permission == LocationPermission.denied) {
+//     permission = await Geolocator.requestPermission();
+//     if (permission == LocationPermission.denied) {
+//       return Future.error('Location permissions are denied');
+//     }
+//   }
+
+//   if (permission == LocationPermission.deniedForever) {
+//     return Future.error(
+//         'Location permissions are permanently denied, we cannot request permissions.');
+//   }
+
+//   // When permissions are granted, get position
+//   Position position = await Geolocator.getCurrentPosition(
+//       desiredAccuracy: LocationAccuracy.high);
+
+//   setState(() {
+//     _latitudeController.text = position.latitude.toString();
+//     _longitudeController.text = position.longitude.toString();
+//   });
+// }
+
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime? pickedDate = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(), // current date
+      firstDate: DateTime(2000), // earliest date
+      lastDate: DateTime(2100), // latest date
+    );
+
+    if (pickedDate != null) {
+      String formattedDate =
+          DateFormat('yyyy-MM-dd').format(pickedDate); // format date
+      setState(() {
+        _jobdateController.text = formattedDate; // set to TextField
+      });
+
+      // Now you can use the formattedDate string wherever needed
+      print("Selected date: $formattedDate");
+    }
+  }
+
+  // Updated work modes to use String values
   final List<Map<String, dynamic>> _workModes = [
-    {'label': 'Onsite', 'value': 1, 'keyword': 'xy'},
-    {'label': 'Work from home', 'value': 2, 'keyword': 'yz'},
+    {'label': 'Onsite', 'value': '1', 'keyword': 'xy'},
+    {'label': 'Work from home', 'value': '2', 'keyword': 'yz'},
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timestamp) async {
+      await context.read<JobsScreenController>().getJobTypes();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     Future<void> _pickImage() async {
       final XFile? pickedFile =
-          await _picker.pickImage(source: ImageSource.gallery); // or camera
-
+          await _picker.pickImage(source: ImageSource.gallery);
       if (pickedFile != null) {
         setState(() {
           _selectedImage = File(pickedFile.path);
@@ -72,19 +179,10 @@ class _EnterJobDetailsScreenState extends State<EnterJobDetailsScreen> {
         centerTitle: true,
         title: InkWell(
           onTap: () {
-            final selectedJobType = _jobTypes.firstWhere(
-              (e) => e['value'] == _selectedJobType,
-              orElse: () => {},
-            );
-            final selectedWorkMode = _workModes.firstWhere(
-              (e) => e['value'] == _selectedWorkMode,
-              orElse: () => {},
-            );
-
-            log("Selected Job Type Keyword: ${selectedJobType['keyword'] ?? 'None'}");
-            log("Selected Work Mode Keyword: ${selectedWorkMode['keyword'] ?? 'None'}");
+            log("Selected Job Type ID: $_selectedJobTypeId");
+            log("Selected Work Mode: $_selectedWorkMode");
           },
-          child: Text(
+          child: const Text(
             "Enter some details",
             style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
           ),
@@ -100,7 +198,7 @@ class _EnterJobDetailsScreenState extends State<EnterJobDetailsScreen> {
             children: [
               // Image Upload Section
               InkWell(
-                onTap: () => _pickImage(),
+                onTap: _pickImage,
                 child: Container(
                   width: double.infinity,
                   height: ResponsiveHelper.height(179, context),
@@ -113,9 +211,9 @@ class _EnterJobDetailsScreenState extends State<EnterJobDetailsScreen> {
                     color: Colors.white,
                   ),
                   child: _selectedImage == null
-                      ? Column(
+                      ? const Column(
                           mainAxisAlignment: MainAxisAlignment.center,
-                          children: const [
+                          children: [
                             Icon(Icons.add_photo_alternate, size: 26),
                             Text(
                               "Upload more images",
@@ -138,33 +236,44 @@ class _EnterJobDetailsScreenState extends State<EnterJobDetailsScreen> {
 
               SizedBox(height: ResponsiveHelper.height(12, context)),
 
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: _jobTypes.map((jobType) {
-                  return _buildSelectionContainer(
-                    context: context,
-                    label: jobType['label'],
-                    value: jobType['value'],
-                    groupValue: _selectedJobType,
-                    onChanged: (value) {
-                      setState(() {
-                        _selectedJobType = value;
-                        log("Selected Job Type: ${jobType['label']}");
-                      });
-                    },
+              // Job Types from API
+              Consumer<JobsScreenController>(
+                builder: (context, jobsController, child) {
+                  if (jobsController.jobtypeslist.isEmpty) {
+                    return const CircularProgressIndicator();
+                  }
+
+                  return Row(
+                    children: jobsController.jobtypeslist.map((jobType) {
+                      return Padding(
+                        padding: const EdgeInsets.only(right: 10),
+                        child: _buildSelectionContainer(
+                          context: context,
+                          label: jobType.title ?? 'Unknown',
+                          value: jobType.id ?? '', // Ensure non-null value
+                          groupValue: _selectedJobTypeId,
+                          onChanged: (value) {
+                            setState(() {
+                              _selectedJobTypeId = value;
+                            });
+                          },
+                        ),
+                      );
+                    }).toList(),
                   );
-                }).toList(),
+                },
               ),
 
               SizedBox(height: ResponsiveHelper.height(12, context)),
 
+              // Work Modes
               Padding(
                 padding: EdgeInsets.symmetric(
-                    horizontal: ResponsiveHelper.width(10, context)),
+                    horizontal: ResponsiveHelper.width(0, context)),
                 child: Row(
                   children: _workModes.map((workMode) {
                     return Padding(
-                      padding: EdgeInsets.only(right: 10),
+                      padding: const EdgeInsets.only(right: 10),
                       child: _buildSelectionContainer(
                         context: context,
                         label: workMode['label'],
@@ -173,7 +282,6 @@ class _EnterJobDetailsScreenState extends State<EnterJobDetailsScreen> {
                         onChanged: (value) {
                           setState(() {
                             _selectedWorkMode = value;
-                            log("Selected Work Mode: ${workMode['label']}");
                           });
                         },
                       ),
@@ -184,25 +292,47 @@ class _EnterJobDetailsScreenState extends State<EnterJobDetailsScreen> {
               SizedBox(height: ResponsiveHelper.height(12, context)),
               _textFields(
                   context, double.infinity, "title*", _jobTitleController),
-              SizedBox(height: ResponsiveHelper.height(12, context)),
+              SizedBox(
+                height: ResponsiveHelper.height(12, context),
+              ),
               _textFields(context, double.infinity, "description",
                   _descriptionController),
               SizedBox(height: ResponsiveHelper.height(12, context)),
               _textFields(
-                  context, double.infinity, "Job date*", _jobdateController),
-              SizedBox(height: ResponsiveHelper.height(12, context)),
+                  context, double.infinity, "Job date*", _jobdateController,
+                  ontap: () => _selectDate(context)),
+              SizedBox(
+                height: ResponsiveHelper.height(12, context),
+              ),
               _textFields(
                   context, double.infinity, "Salary*", _salaryController),
               SizedBox(height: ResponsiveHelper.height(12, context)),
-              _textFields(
-                  context, double.infinity, "longitude", _longitudeController),
+              Row(
+                children: [
+                  Expanded(
+                    flex: 2,
+                    child: Column(
+                      children: [
+                        _textFields(context, double.infinity, "longitude",
+                            _longitudeController),
+                        SizedBox(height: ResponsiveHelper.height(12, context)),
+                        _textFields(context, double.infinity, "latitude",
+                            _latitudeController),
+                      ],
+                    ),
+                  ),
+                  Expanded(
+                    flex: 1,
+                    child: ElevatedButton(
+                      onPressed: _getLocation,
+                      child: const Text("Get Current Location"),
+                    ),
+                  ),
+                ],
+              ),
+
               SizedBox(height: ResponsiveHelper.height(12, context)),
-              _textFields(
-                  context, double.infinity, "latitude", _latitudeController),
-              SizedBox(height: ResponsiveHelper.height(12, context)),
-              _textFields(
-                  context, double.infinity, "job_type", _jobtypeController),
-              SizedBox(height: ResponsiveHelper.height(12, context)),
+
               // _textFields(
               //     context, double.infinity, "Date From*", _dateFromController),
               // SizedBox(height: ResponsiveHelper.height(12, context)),
@@ -219,62 +349,33 @@ class _EnterJobDetailsScreenState extends State<EnterJobDetailsScreen> {
               SizedBox(height: ResponsiveHelper.height(20, context)),
               GradientButton(
                 onPressed: () async {
-                  final selectedJobType = _jobTypes.firstWhere(
-                    (e) => e['value'] == _selectedJobType,
-                    orElse: () => {},
-                  );
-
-                  log("Selected Job Type Keyword: ${selectedJobType['keyword'] ?? 'None'}");
-                  // log("Selected Work Mode Keyword: ${selectedWorkMode['keyword'] ?? 'None'}");
-
                   if (_jobTitleController.text.isNotEmpty &&
                       _descriptionController.text.isNotEmpty &&
                       _jobdateController.text.isNotEmpty &&
                       _salaryController.text.isNotEmpty &&
                       _longitudeController.text.isNotEmpty &&
-                      _latitudeController.text.isNotEmpty) {
+                      _latitudeController.text.isNotEmpty &&
+                      _selectedJobTypeId != null) {
                     await context.read<AddJobController>().onAddJob(
-                        title: _jobTitleController.text,
-                        description: _descriptionController.text,
-                        job_date: _jobdateController.text,
-                        context: context,
-                        job_image: _selectedImage,
-                        salary: _salaryController.text,
-                        longitude: _longitudeController.text,
-                        latitude: _latitudeController.text,
-                        job_category: widget.category_id,
-                        job_type: selectedJobType['keyword'] ?? 'None');
+                          title: _jobTitleController.text,
+                          description: _descriptionController.text,
+                          job_date: _jobdateController.text,
+                          context: context,
+                          job_image: _selectedImage,
+                          salary: _salaryController.text,
+                         longitude: _trimLastDecimal(_longitudeController.text),
+latitude: _trimLastDecimal(_latitudeController.text),
+                          job_category: widget.category_id,
+                          job_type: _selectedJobTypeId!,
+                        );
                   }
                 },
                 height: 44,
                 width: 373,
                 name: "Next",
               ),
-              ButtonWithoutGradient(name: "Backk")
+              ButtonWithoutGradient(name: "Back")
             ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  SizedBox _textFields(BuildContext context, double width, String hint,
-      TextEditingController controller) {
-    return SizedBox(
-      width: ResponsiveHelper.width(width, context),
-      height: ResponsiveHelper.height(50, context),
-      child: TextFormField(
-        controller: controller,
-        decoration: InputDecoration(
-          hintText: hint,
-          hintStyle: TextStyle(color: ColorConstants.descText),
-          filled: true,
-          fillColor: Colors.white,
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: BorderSide(
-              color: ColorConstants.containerBorder.withOpacity(0.1),
-            ),
           ),
         ),
       ),
@@ -284,9 +385,9 @@ class _EnterJobDetailsScreenState extends State<EnterJobDetailsScreen> {
   Widget _buildSelectionContainer({
     required BuildContext context,
     required String label,
-    required int value,
-    required int? groupValue,
-    required ValueChanged<int?> onChanged,
+    required String value,
+    required String? groupValue,
+    required ValueChanged<String?> onChanged,
   }) {
     return GestureDetector(
       onTap: () => onChanged(value),
@@ -312,7 +413,7 @@ class _EnterJobDetailsScreenState extends State<EnterJobDetailsScreen> {
             SizedBox(
               width: 20,
               height: 20,
-              child: Radio<int>(
+              child: Radio<String>(
                 value: value,
                 groupValue: groupValue,
                 onChanged: onChanged,
@@ -331,6 +432,35 @@ class _EnterJobDetailsScreenState extends State<EnterJobDetailsScreen> {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  SizedBox _textFields(
+    BuildContext context,
+    double width,
+    String hint,
+    TextEditingController controller, {
+    VoidCallback? ontap,
+  }) {
+    return SizedBox(
+      width: ResponsiveHelper.width(width, context),
+      height: ResponsiveHelper.height(50, context),
+      child: TextFormField(
+        controller: controller,
+        decoration: InputDecoration(
+          hintText: hint,
+          hintStyle: TextStyle(color: ColorConstants.descText),
+          filled: true,
+          fillColor: Colors.white,
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(
+              color: ColorConstants.containerBorder.withOpacity(0.1),
+            ),
+          ),
+        ),
+        onTap: ontap,
       ),
     );
   }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:workwista/view/Controllers/jobs_screen_controller.dart';
-import 'package:workwista/view/Wdigets/search_field.dart';
+
 import 'package:workwista/view/loginScreens/homeScreens/Enter_job_details_screen.dart';
 import 'package:workwista/view/responsive_helper.dart';
 

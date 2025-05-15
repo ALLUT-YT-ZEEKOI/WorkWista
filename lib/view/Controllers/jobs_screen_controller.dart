@@ -8,12 +8,14 @@ import 'package:workwista/view/Model/all_category_listing_model.dart';
 import 'package:workwista/view/Model/all_jobs_listing_model.dart';
 import 'package:workwista/view/Model/job_item_model.dart';
 import 'package:workwista/view/Model/job_requests_model.dart';
+import 'package:workwista/view/Model/job_types_model.dart';
 import 'package:workwista/view/Model/jobs_by_category_model.dart';
 import 'package:workwista/view/Model/posted_jobs_model.dart';
 
 class JobsScreenController with ChangeNotifier {
   List<JobItem> jobsList = [];
   List<AllCategories> categoriesList = [];
+  List<AllJobTypes> jobtypeslist = [];
   bool isloading = false;
   int selectedCategoryIndex = 0;
   List<PostedItem> postedJobsList = []; // List for posted jobs
@@ -79,8 +81,7 @@ class JobsScreenController with ChangeNotifier {
     isloading = true;
     notifyListeners();
 
-    final url =
-        Uri.parse("https://workwista.com/job/view/applicant/$jobId/");
+    final url = Uri.parse("https://workwista.com/job/view/applicant/$jobId/");
 
     try {
       final prefs = await SharedPreferences.getInstance();
@@ -186,8 +187,7 @@ class JobsScreenController with ChangeNotifier {
 
   Future<String?> _refreshToken(String refreshToken) async {
     try {
-      final url =
-          Uri.parse('https://workwista.com/users/api/token/refresh/');
+      final url = Uri.parse('https://workwista.com/users/api/token/refresh/');
       final response = await http.post(
         url,
         body: {'refresh': refreshToken},
@@ -278,6 +278,30 @@ class JobsScreenController with ChangeNotifier {
     }
   }
 
+  Future<void> getJobTypes() async {
+    isloading = true;
+    notifyListeners();
+
+    final url = Uri.parse("https://workwista.com/job/view/jobtypes/");
+
+    try {
+      final response = await http.get(url);
+      if (response.statusCode == 200) {
+        final JobTypesModel alljobtypesmodelobj =
+            jobTypesModelFromJson(response.body);
+        jobtypeslist = alljobtypesmodelobj.data ?? [];
+      } else{
+        _handleApiError(response.statusCode);
+      }
+    } catch (e) {
+      log("Error fetching categories: $e");
+      jobtypeslist = [];
+    }finally {
+      isloading = false;
+      notifyListeners();
+    }
+  }
+
   Future<void> getCategories() async {
     isloading = true;
     notifyListeners();
@@ -295,7 +319,7 @@ class JobsScreenController with ChangeNotifier {
       }
     } catch (e) {
       log("Error fetching categories: $e");
-      jobsList = [];
+      categoriesList = [];
     } finally {
       isloading = false;
       notifyListeners();

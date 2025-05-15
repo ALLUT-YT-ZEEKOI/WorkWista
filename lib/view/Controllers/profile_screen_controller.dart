@@ -63,7 +63,7 @@ class ProfileScreenController with ChangeNotifier {
   Future<String?> _refreshToken(String refreshToken) async {
     try {
       final url =
-          Uri.parse('http://192.168.3.36:8000/users/api/token/refresh/');
+          Uri.parse('https://workwista.com/users/api/token/refresh/');
       final response = await http.post(
         url,
         body: {'refresh': refreshToken},

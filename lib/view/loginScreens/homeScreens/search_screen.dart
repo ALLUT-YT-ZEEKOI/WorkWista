@@ -57,7 +57,7 @@ class _SearchScreenState extends State<SearchScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final controller = Provider.of<JobsScreenController>(context, listen: false);
+
 
     return Scaffold(
       appBar: AppBar(

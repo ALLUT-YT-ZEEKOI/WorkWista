@@ -48,6 +48,8 @@ dependencies:
  
   webview_flutter: ^4.10.0
   flutter_web_auth_2: ^4.1.0
+  location: ^7.0.1
+  
 dev_dependencies:
   flutter_test:
     sdk: flutter
