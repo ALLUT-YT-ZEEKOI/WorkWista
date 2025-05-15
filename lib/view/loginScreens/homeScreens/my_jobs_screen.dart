@@ -451,8 +451,14 @@ class _MyJobsScreenState extends State<MyJobsScreen> {
 
                         return ListView.separated(
                           itemCount: controller.postedJobsList.length,
-                          separatorBuilder: (context, index) =>
-                              SizedBox(height: 20),
+                          separatorBuilder: (context, index) => Column(
+                            children: [
+                              Divider(),
+                              SizedBox(
+                                height: 10,
+                              )
+                            ],
+                          ),
                           itemBuilder: (context, index) {
                             final postedJob = controller.postedJobsList[index];
                             return InkWell(
@@ -493,58 +499,37 @@ class _MyJobsScreenState extends State<MyJobsScreen> {
   Widget _buildPostedJobsCard(PostedItem postedJob) {
     // Now takes the job directly
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      padding: EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black12,
-            blurRadius: 6,
-            offset: Offset(0, 2),
-          ),
-        ],
+        borderRadius: BorderRadius.circular(0),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: Row(
         children: [
-          Text(
-            postedJob.title ?? "No Title",
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-            ),
+          CircleAvatar(
+            radius: 17,
+            backgroundColor: Colors.black,
+            backgroundImage: NetworkImage(
+                "https://images.pexels.com/photos/974314/pexels-photo-974314.jpeg?auto=compress&cs=tinysrgb&w=600"),
           ),
-          SizedBox(height: 10),
-
-          // Row 1: Requests & Salary
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          SizedBox(
+            width: 10,
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _infoItem("Requests", "${postedJob.requestsCount ?? 0}"),
-              _infoItem("Salary", postedJob.salary ?? "Not specified"),
+              Text(
+                postedJob.title ?? "No Title",
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              SizedBox(height: 5),
+              _infoItem("${postedJob.requestsCount ?? 0}", "Requests"),
             ],
           ),
-          SizedBox(height: 8),
-
-          // Row 2: Job Type & Category
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [],
-          ),
-          SizedBox(height: 8),
-
-          // Row 3: Job Date
-          Row(
-            children: [
-              _infoItem(
-                  "Date",
-                  postedJob.jobDate != null
-                      ? "${postedJob.jobDate!.day}/${postedJob.jobDate!.month}/${postedJob.jobDate!.year}"
-                      : "Not specified"),
-            ],
-          ),
+          Spacer(),
+          Icon(Icons.arrow_forward_ios)
         ],
       ),
     );
@@ -552,17 +537,31 @@ class _MyJobsScreenState extends State<MyJobsScreen> {
 
 // Inline widget for info items
   Widget _infoItem(String label, String value) {
-    return Column(
+    return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           label,
-          style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+          style: TextStyle(
+              fontSize: 12,
+              color: ColorConstants.greyText,
+              fontWeight: FontWeight.w400),
         ),
-        SizedBox(height: 2),
+        SizedBox(width: 2),
         Text(
           value,
-          style: TextStyle(fontSize: 13, fontWeight: FontWeight.w500),
+          style: TextStyle(
+              fontSize: 12,
+              color: ColorConstants.greyText,
+              fontWeight: FontWeight.w400),
+        ),
+        SizedBox(width: 2),
+        Text(
+          "| kerala",
+          style: TextStyle(
+              fontSize: 12,
+              color: ColorConstants.greyText,
+              fontWeight: FontWeight.w400),
         ),
       ],
     );

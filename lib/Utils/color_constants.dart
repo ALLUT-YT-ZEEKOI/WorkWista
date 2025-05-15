@@ -13,4 +13,6 @@ class ColorConstants {
   static Color ProgressBarColor = Color(0xff1E83FF);
   static Color phonepe = Color(0xff5F259F);
   static Color dotBlue = Color(0xff1E83FF);
+  static Color greyText = Color(0xff919191);
+  
 }

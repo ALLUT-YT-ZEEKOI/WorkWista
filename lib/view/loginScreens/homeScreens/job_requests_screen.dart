@@ -96,11 +96,11 @@ class _JobRequestsScreenState extends State<JobRequestsScreen> {
         return Scaffold(
           appBar: AppBar(
             title: Text(
-              "Requests",
+              "Job Requests",
               style: TextStyle(
                   color: Colors.black,
-                  fontSize: 20,
-                  fontWeight: FontWeight.w500),
+                  fontSize: 23,
+                  fontWeight: FontWeight.w600),
             ),
           ),
           body: Padding(
@@ -206,44 +206,43 @@ class _JobRequestsScreenState extends State<JobRequestsScreen> {
                 ],
               ),
               SizedBox(height: 24),
-             Row(
-  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  children: [
-    // Decline button
-    _buildActionButton(
-      text: "Decline",
-      color: Colors.white,
-      textColor: Colors.black,
-      onPressed: () async {
-        final controller = Provider.of<JobsScreenController>(
-          context, 
-          listen: false,
-        );
-        await controller.respondToRequest(request.id!, "decline");
-        Navigator.pop(context); // Go back to MyJobsScreen
-      },
-    ),
-    SizedBox(width: ResponsiveHelper.width(16, context)),
-    // Accept button
-    _buildActionButton(
-      text: "Accept",
-      color: ColorConstants.dotBlue,
-      textColor: Colors.white,
-      onPressed: () async {
-        final controller = Provider.of<JobsScreenController>(
-          context, 
-          listen: false,
-        );
-        await controller.respondToRequest(request.id!, "accept");
-        Navigator.pop(context); // Go back to MyJobsScreen
-      },
-    ),
-  ],
-),
-
-          ],
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  // Decline button
+                  _buildActionButton(
+                    text: "Decline",
+                    color: Colors.white,
+                    textColor: Colors.black,
+                    onPressed: () async {
+                      final controller = Provider.of<JobsScreenController>(
+                        context,
+                        listen: false,
+                      );
+                      await controller.respondToRequest(request.id!, "decline");
+                      Navigator.pop(context); // Go back to MyJobsScreen
+                    },
+                  ),
+                  SizedBox(width: ResponsiveHelper.width(16, context)),
+                  // Accept button
+                  _buildActionButton(
+                    text: "Accept",
+                    color: ColorConstants.dotBlue,
+                    textColor: Colors.white,
+                    onPressed: () async {
+                      final controller = Provider.of<JobsScreenController>(
+                        context,
+                        listen: false,
+                      );
+                      await controller.respondToRequest(request.id!, "accept");
+                      Navigator.pop(context); // Go back to MyJobsScreen
+                    },
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
-      ),
         SizedBox(height: 20),
         Divider(
           height: 1,
