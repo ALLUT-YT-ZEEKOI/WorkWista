@@ -16,7 +16,7 @@ class SearchField extends StatelessWidget {
     this.focusNode,
     this.onChanged,
     this.onSubmitted,
-    this.hintText = "Search...",
+    this.hintText = "Search",
     super.key,
   });
 
@@ -31,12 +31,23 @@ class SearchField extends StatelessWidget {
         onFieldSubmitted: onSubmitted,
         decoration: InputDecoration(
           hintText: hintText,
+          helperStyle: TextStyle(),
           prefixIcon: const Icon(Icons.search, color: Colors.grey),
           filled: true,
           fillColor: Colors.white,
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(15.0),
+            borderSide: BorderSide(
+              color: ColorConstants.containerBorder
+                  // ignore: deprecated_member_use
+                  .withOpacity(0.9), // adjust opacity
+              width: 2, // border width
+            ),
+          ),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(15.0),
             borderSide: BorderSide(
+              // ignore: deprecated_member_use
               color: ColorConstants.containerBorder.withOpacity(0.1),
             ),
           ),

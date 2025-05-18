@@ -94,39 +94,6 @@ String _trimLastDecimal(String input) {
     });
   }
 
-//  Future<void> _getLocation() async {
-//   bool serviceEnabled;
-//   LocationPermission permission;
-
-//   // Check if location services are enabled
-//   serviceEnabled = await Geolocator.isLocationServiceEnabled();
-//   if (!serviceEnabled) {
-//     return Future.error('Location services are disabled.');
-//   }
-
-//   // Check location permission
-//   permission = await Geolocator.checkPermission();
-//   if (permission == LocationPermission.denied) {
-//     permission = await Geolocator.requestPermission();
-//     if (permission == LocationPermission.denied) {
-//       return Future.error('Location permissions are denied');
-//     }
-//   }
-
-//   if (permission == LocationPermission.deniedForever) {
-//     return Future.error(
-//         'Location permissions are permanently denied, we cannot request permissions.');
-//   }
-
-//   // When permissions are granted, get position
-//   Position position = await Geolocator.getCurrentPosition(
-//       desiredAccuracy: LocationAccuracy.high);
-
-//   setState(() {
-//     _latitudeController.text = position.latitude.toString();
-//     _longitudeController.text = position.longitude.toString();
-//   });
-// }
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? pickedDate = await showDatePicker(
@@ -456,6 +423,7 @@ latitude: _trimLastDecimal(_latitudeController.text),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12),
             borderSide: BorderSide(
+              // ignore: deprecated_member_use
               color: ColorConstants.containerBorder.withOpacity(0.1),
             ),
           ),

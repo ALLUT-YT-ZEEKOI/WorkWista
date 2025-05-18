@@ -32,12 +32,12 @@ class _SignInScreenState extends State<SignInScreen> {
       backgroundColor: Colors.white,
       body: SafeArea(
         child: SingleChildScrollView(
-          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+          scrollDirection: Axis.vertical,
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-            // Logo and welcome text
+              // Logo and welcome text
               const SizedBox(height: 20),
               Center(
                 child: Image.asset(
@@ -67,36 +67,34 @@ class _SignInScreenState extends State<SignInScreen> {
                 ),
               ),
               const SizedBox(height: 32),
-              
+
               // Google sign-in button
               InkWell(
-  onTap: () => GoogleAuthService.signInWithGoogle(context),
-  child: Container(
-    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-    decoration: BoxDecoration(
-      color: Colors.white,
-      borderRadius: BorderRadius.circular(35),
-      border: Border.all(color: const Color(0xFFBDBDBD), width: 1),
-    ),
-    child: Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Image.asset(
-          'assets/flat-color-icons_google.png',
-          width: screenWidth * 0.07
-        ),
-        const SizedBox(width: 10),
-        const Text(
-          'Sign up with Google',
-          style: TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.w500,
-          )
-        ),
-      ],
-    ),
-  ),
-),
+                onTap: () => GoogleAuthService.signInWithGoogle(context),
+                child: Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(35),
+                    border:
+                        Border.all(color: const Color(0xFFBDBDBD), width: 1),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Image.asset('assets/flat-color-icons_google.png',
+                          width: screenWidth * 0.07),
+                      const SizedBox(width: 10),
+                      const Text('Sign up with Google',
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                          )),
+                    ],
+                  ),
+                ),
+              ),
               const SizedBox(height: 20),
 
               // OR Divider
@@ -104,21 +102,17 @@ class _SignInScreenState extends State<SignInScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Expanded(
-                    child: Divider(color: Color(0xFFCED7DE), thickness: 1)
-                  ),
+                      child: Divider(color: Color(0xFFCED7DE), thickness: 1)),
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 8),
-                    child: Text(
-                      'or',
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w400,
-                      )
-                    ),
+                    child: Text('or',
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w400,
+                        )),
                   ),
                   Expanded(
-                    child: Divider(color: Color(0xFFCED7DE), thickness: 1)
-                  ),
+                      child: Divider(color: Color(0xFFCED7DE), thickness: 1)),
                 ],
               ),
               const SizedBox(height: 20),
@@ -129,13 +123,11 @@ class _SignInScreenState extends State<SignInScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      'Phone Number/Email',
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w500,
-                      )
-                    ),
+                    const Text('Phone Number/Email',
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                        )),
                     const SizedBox(height: 5),
                     SizedBox(
                       height: 50,
@@ -171,13 +163,11 @@ class _SignInScreenState extends State<SignInScreen> {
                       ),
                     ),
                     const SizedBox(height: 20),
-                    const Text(
-                      'Password',
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w500,
-                      )
-                    ),
+                    const Text('Password',
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                        )),
                     const SizedBox(height: 5),
                     SizedBox(
                       height: 50,
@@ -222,29 +212,26 @@ class _SignInScreenState extends State<SignInScreen> {
                           ),
                         );
                       },
-                      child: const Text(
-                        'Forgot Password?',
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w400,
-                          color: Colors.black,
-                        )
-                      ),
+                      child: const Text('Forgot Password?',
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w400,
+                            color: Colors.black,
+                          )),
                     ),
                   ],
                 ),
               ),
 
               const SizedBox(height: 40),
-              
+
               // Sign up text
               GestureDetector(
                 onTap: () {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const Signupscreen()
-                    ),
+                        builder: (context) => const Signupscreen()),
                   );
                 },
                 child: const Text.rich(
@@ -270,7 +257,7 @@ class _SignInScreenState extends State<SignInScreen> {
                 ),
               ),
               const SizedBox(height: 20),
-              
+
               // Login button
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
@@ -285,14 +272,14 @@ class _SignInScreenState extends State<SignInScreen> {
                   if (emailController.text.isNotEmpty &&
                       passController.text.isNotEmpty) {
                     await context.read<LoginScreenController>().onLogin(
-                      email: emailController.text,
-                      password: passController.text,
-                      context: context,
-                    );
+                          email: emailController.text,
+                          password: passController.text,
+                          context: context,
+                        );
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
-                        content: Text("Please enter email and password")),
+                          content: Text("Please enter email and password")),
                     );
                   }
                 },

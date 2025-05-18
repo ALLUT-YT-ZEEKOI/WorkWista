@@ -1,0 +1,2 @@
+D:/WORK/WorkWista/android/app/.cxx/Debug/y4m1k644/armeabi-v7a/CMakeFiles/edit_cache.dir
+D:/WORK/WorkWista/android/app/.cxx/Debug/y4m1k644/armeabi-v7a/CMakeFiles/rebuild_cache.dir

@@ -32,6 +32,7 @@ class _DashboardState extends State<Dashboard>
   @override
   void initState() {
     super.initState();
+
     WidgetsBinding.instance.addPostFrameCallback((timestamp) async {
       // Select 'All' categroy by default
 
@@ -80,43 +81,28 @@ class _DashboardState extends State<Dashboard>
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Image(
-                              image: AssetImage('assets/Frame 26080486.png'),
-                              width: ResponsiveHelper.width(40, context),
+                            CircleAvatar(
+                              radius: ResponsiveHelper.width(25, context),
+                              child: Image(
+                                image: AssetImage('assets/Frame 26080486.png'),
+                              ),
                             ),
                             Row(
                               children: [
-                                InkWell(
-                                  onTap: () async{
-                                      // Clear tokens from SharedPreferences
-                          SharedPreferences prefs =
-                              await SharedPreferences.getInstance();
-                          await prefs.setString("access", "");
-                          await prefs.setString("refresh", "");
-
-                          // Navigate to login screen and prevent going back
-                          Navigator.pushAndRemoveUntil(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => SignInScreen()),
-                            (Route<dynamic> route) =>
-                                false, // Remove all routes
-                          );
-                                  },
-                                  child: Container(
-                                    margin: EdgeInsets.only(
-                                        right:
-                                            ResponsiveHelper.width(10, context)),
-                                    child: Image(
-                                      image: AssetImage('assets/bell.png'),
-                                      width: ResponsiveHelper.width(30, context),
-                                    ),
+                                CircleAvatar(
+                                  radius: ResponsiveHelper.width(23, context),
+                                  backgroundColor: Colors.white,
+                                  child: Image(
+                                    image: AssetImage('assets/bell.png'),
+                                    width: ResponsiveHelper.width(30, context),
                                   ),
                                 ),
-                                Container(
-                                  margin: EdgeInsets.only(
-                                      right:
-                                          ResponsiveHelper.width(10, context)),
+                                SizedBox(
+                                  width: ResponsiveHelper.width(12, context),
+                                ),
+                                CircleAvatar(
+                                  radius: ResponsiveHelper.width(23, context),
+                                  backgroundColor: Colors.white,
                                   child: Image(
                                     image: AssetImage(
                                         'assets/ant-design_message-outlined.png'),
@@ -155,8 +141,10 @@ class _DashboardState extends State<Dashboard>
                             Container(
                               decoration: BoxDecoration(
                                 border: Border.all(
-                                  color: ColorConstants.containerBorder,
-                                  width: 3,
+                                  color: ColorConstants.containerBorder
+                                      // ignore: deprecated_member_use
+                                      .withOpacity(0.9),
+                                  width: 2,
                                 ),
                                 color: Colors.white,
                                 borderRadius: BorderRadius.circular(12),
@@ -257,9 +245,10 @@ class _DashboardState extends State<Dashboard>
                                   const EdgeInsets.symmetric(horizontal: 16),
                               decoration: BoxDecoration(
                                 border: Border.all(
+                                  width: 1,
                                   color: isSelected
-                                      ? Colors.blue
-                                      : Colors.grey.shade400,
+                                      ? Color(0xff06407E)
+                                      : Color(0xffE2E8F0),
                                 ),
                                 color: Colors.white,
                                 borderRadius: BorderRadius.circular(24),
@@ -271,8 +260,8 @@ class _DashboardState extends State<Dashboard>
                                   fontSize: 12,
                                   fontWeight: FontWeight.w500,
                                   color: isSelected
-                                      ? Colors.blue
-                                      : Colors.grey.shade500,
+                                      ? Color(0xff002D64)
+                                      : Color(0xff92A5B5),
                                 ),
                               ),
                             ),

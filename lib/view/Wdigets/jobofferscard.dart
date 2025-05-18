@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:workwista/view/Model/job_item_model.dart';
+import 'package:workwista/view/responsive_helper.dart';
 
 class JobOffersCard extends StatelessWidget {
   const JobOffersCard({
@@ -12,12 +13,12 @@ class JobOffersCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 232,
+      height: 190,
       width: 373,
       margin: EdgeInsets.only(bottom: 10),
       decoration: BoxDecoration(
         color: Colors.white,
-        border: Border.all(color: Colors.grey.shade300, width: 2),
+        border: Border.all(color: Color(0xffDAE1E7), width: 1.5),
         borderRadius: BorderRadius.circular(15),
       ),
       child: Column(
@@ -33,10 +34,10 @@ class JobOffersCard extends StatelessWidget {
               ),
               child: Container(
                 width: 373,
-                height: 182,
+                height: 140,
                 decoration: BoxDecoration(
                   border: Border.all(
-                    color: Colors.black,
+                    color: Color(0xff2B6699),
                     width: 1,
                   ),
                   color: Colors.white,
@@ -68,13 +69,13 @@ class JobOffersCard extends StatelessWidget {
                                       overflow: TextOverflow.ellipsis,
                                       jobItem.title ?? "No title",
                                       style: TextStyle(
-                                          fontSize: 15,
+                                          fontSize: 18,
                                           fontWeight: FontWeight.w500),
                                     ),
                                     Text(
                                       "${jobItem.salary ?? 'N/A'}/Day",
                                       style: TextStyle(
-                                          fontSize: 14,
+                                          fontSize: 16,
                                           fontWeight: FontWeight.w500),
                                     ),
                                   ],
@@ -82,43 +83,12 @@ class JobOffersCard extends StatelessWidget {
                                 SizedBox(height: 5),
                                 Row(
                                   children: [
-                                    Flexible(
-                                      child: Container(
-                                        constraints: BoxConstraints(
-                                          maxWidth: 180,
-                                        ),
-                                        child: RichText(
-                                          overflow: TextOverflow.ellipsis,
-                                          maxLines: 3,
-                                          text: TextSpan(
-                                            children: <TextSpan>[
-                                              TextSpan(
-                                                text: 'Lulu HyperMarket',
-                                                style: TextStyle(
-                                                  fontSize: 12,
-                                                  fontWeight: FontWeight.w400,
-                                                  color: Colors.black,
-                                                ),
-                                              ),
-                                              TextSpan(
-                                                text: ' • ',
-                                                style: TextStyle(
-                                                  fontSize: 12,
-                                                  fontWeight: FontWeight.w400,
-                                                  color: Colors.black,
-                                                ),
-                                              ),
-                                              TextSpan(
-                                                text: 'Edapally',
-                                                style: TextStyle(
-                                                  fontSize: 12,
-                                                  fontWeight: FontWeight.w400,
-                                                  color: Colors.black,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
+                                    Text(
+                                      "Lulu Hyoermarket",
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w400,
+                                        color: Colors.black,
                                       ),
                                     ),
                                     Spacer(),
@@ -126,15 +96,15 @@ class JobOffersCard extends StatelessWidget {
                                       height: 22,
                                       width: 110,
                                       decoration: BoxDecoration(
-                                        color: Colors.red[100],
-                                        borderRadius: BorderRadius.circular(12),
+                                        color: Color(0xffFFCED3),
+                                        borderRadius: BorderRadius.circular(7),
                                       ),
                                       child: Center(
                                         child: Text(
                                           "Only for 2 days",
                                           style: TextStyle(
                                               fontWeight: FontWeight.w400,
-                                              color: Colors.red,
+                                              color: Color(0xff8C1823),
                                               fontSize: 12),
                                         ),
                                       ),
@@ -149,48 +119,58 @@ class JobOffersCard extends StatelessWidget {
                     ),
                     Padding(
                       padding:
-                          EdgeInsets.symmetric(horizontal: 11, vertical: 8),
+                          EdgeInsets.symmetric(horizontal: 13, vertical: 8),
                       child: Container(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Row(
                               children: [
+                                SizedBox(
+                                  width: ResponsiveHelper.width(2, context),
+                                ),
                                 Container(
                                   padding: EdgeInsets.symmetric(
-                                      horizontal: 3, vertical: 8),
+                                      horizontal: 3, vertical: 4),
                                   decoration: BoxDecoration(
                                     color: Colors.white,
-                                    borderRadius: BorderRadius.circular(24),
+                                    borderRadius: BorderRadius.circular(9),
                                     border:
-                                        Border.all(color: Colors.grey.shade300),
+                                        Border.all(color: Color(0xffCED7DE)),
                                   ),
                                   child: Text(
-                                    "${jobItem.salary ?? 'N/A'} Per Day",
+                                    "₹ ${jobItem.salary ?? 'N/A'} Per Day",
                                     style: TextStyle(
+                                        color: Color(0xff0A0A0B),
                                         fontSize: 12,
                                         fontWeight: FontWeight.w400),
                                   ),
                                 ),
                                 Text(" • ",
                                     style: TextStyle(
-                                        fontSize: 12, color: Colors.grey)),
+                                        fontSize: 12,
+                                        color: Color(0xff0A0A0B))),
                                 Container(
                                   padding: EdgeInsets.symmetric(
-                                      horizontal: 3, vertical: 8),
+                                      horizontal: 3, vertical: 4),
                                   decoration: BoxDecoration(
                                     color: Colors.white,
-                                    borderRadius: BorderRadius.circular(24),
+                                    borderRadius: BorderRadius.circular(9),
                                     border:
-                                        Border.all(color: Colors.grey.shade300),
+                                        Border.all(color: Color(0xffCED7DE)),
                                   ),
                                   child: Row(
                                     children: [
-                                      Icon(Icons.access_time, size: 16),
+                                      Icon(
+                                        Icons.access_time,
+                                        size: 16,
+                                        color: Color(0xff0A0A0B),
+                                      ),
                                       SizedBox(width: 4),
                                       Text(
                                         "Full-Time",
                                         style: TextStyle(
+                                            color: Color(0xff0A0A0B),
                                             fontSize: 12,
                                             fontWeight: FontWeight.w400),
                                       ),
@@ -199,46 +179,58 @@ class JobOffersCard extends StatelessWidget {
                                 ),
                                 Text(" • ",
                                     style: TextStyle(
-                                        fontSize: 12, color: Colors.grey)),
+                                        fontSize: 12,
+                                        color: Color(0xff0A0A0B))),
                                 Container(
                                   padding: EdgeInsets.symmetric(
-                                      horizontal: 5, vertical: 8),
+                                      horizontal: 5, vertical: 4),
                                   decoration: BoxDecoration(
                                     color: Colors.white,
-                                    borderRadius: BorderRadius.circular(24),
+                                    borderRadius: BorderRadius.circular(9),
                                     border:
-                                        Border.all(color: Colors.grey.shade300),
+                                        Border.all(color: Color(0xffCED7DE)),
                                   ),
                                   child: Row(
                                     children: [
-                                      Icon(Icons.location_on, size: 16),
+                                      Icon(
+                                        Icons.location_on,
+                                        size: 16,
+                                        color: Color(0xff0A0A0B),
+                                      ),
                                       SizedBox(width: 4),
                                       Text(
                                         "Onsite",
                                         style: TextStyle(
+                                            color: Color(0xff0A0A0B),
                                             fontSize: 12,
                                             fontWeight: FontWeight.w400),
                                       ),
                                     ],
                                   ),
                                 ),
-                                SizedBox(width: 2),
+                                SizedBox(
+                                  width: ResponsiveHelper.width(5, context),
+                                ),
+                                Container(
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal:
+                                          ResponsiveHelper.width(7, context),
+                                      vertical: 4),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(9),
+                                    border:
+                                        Border.all(color: Color(0xffCED7DE)),
+                                  ),
+                                  child: Text(
+                                    "+5",
+                                    style: TextStyle(
+                                        color: Color(0xff0A0A0B),
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w400),
+                                  ),
+                                ),
                               ],
-                            ),
-                            SizedBox(height: 3),
-                            Container(
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 15, vertical: 8),
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(24),
-                                border: Border.all(color: Colors.grey.shade300),
-                              ),
-                              child: Text(
-                                "+5",
-                                style: TextStyle(
-                                    fontSize: 12, fontWeight: FontWeight.w400),
-                              ),
                             ),
                           ],
                         ),
@@ -253,19 +245,25 @@ class JobOffersCard extends StatelessWidget {
             padding: EdgeInsets.symmetric(horizontal: 11, vertical: 11),
             child: Row(
               children: [
-                Icon(Icons.access_time, size: 18),
+                Icon(Icons.access_time_filled, size: 18),
                 SizedBox(width: 5),
                 Text(
                   "30 min ago",
-                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.w400),
+                  style: TextStyle(
+                      color: Color(0xff4A5E6D),
+                      fontSize: 12,
+                      fontWeight: FontWeight.w400),
                 ),
                 Text("  •  ",
-                    style: TextStyle(fontSize: 13, color: Colors.grey)),
+                    style: TextStyle(fontSize: 13, color: Color(0xff4A5E6D))),
                 Icon(Icons.people, size: 18),
                 SizedBox(width: 5),
                 Text(
                   "23 Applicants",
-                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.w400),
+                  style: TextStyle(
+                      color: Color(0xff4A5E6D),
+                      fontSize: 12,
+                      fontWeight: FontWeight.w400),
                 ),
               ],
             ),

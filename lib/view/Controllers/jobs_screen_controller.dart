@@ -14,6 +14,7 @@ import 'package:workwista/view/Model/posted_jobs_model.dart';
 
 class JobsScreenController with ChangeNotifier {
   List<JobItem> jobsList = [];
+  List<JobItem> SjobsList = [];
   List<AllCategories> categoriesList = [];
   List<AllJobTypes> jobtypeslist = [];
   bool isloading = false;
@@ -226,13 +227,13 @@ class JobsScreenController with ChangeNotifier {
       final response = await http.get(url);
       if (response.statusCode == 200) {
         final AllJobModel jobModel = allJobModelFromJson(response.body);
-        jobsList = jobModel.data ?? [];
+        SjobsList = jobModel.data ?? [];
       } else {
         _handleApiError(response.statusCode);
       }
     } catch (e) {
       log("Error searching jobs: $e");
-      jobsList = [];
+      SjobsList = [];
     } finally {
       isloading = false;
       notifyListeners();

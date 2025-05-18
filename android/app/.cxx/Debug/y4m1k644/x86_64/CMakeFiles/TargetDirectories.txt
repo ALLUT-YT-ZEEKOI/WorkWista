@@ -1,0 +1,2 @@
+D:/WORK/WorkWista/android/app/.cxx/Debug/y4m1k644/x86_64/CMakeFiles/edit_cache.dir
+D:/WORK/WorkWista/android/app/.cxx/Debug/y4m1k644/x86_64/CMakeFiles/rebuild_cache.dir

@@ -135,10 +135,10 @@ class _SearchScreenState extends State<SearchScreen> {
                   }
                   
                   return ListView.builder(
-                    itemCount: controller.jobsList.length,
+                    itemCount: controller.SjobsList.length,
                     itemBuilder: (context, index) {
                       return JobOffersCard(
-                        jobItem: controller.jobsList[index],
+                        jobItem: controller.SjobsList[index],
                       );
                     },
                   );

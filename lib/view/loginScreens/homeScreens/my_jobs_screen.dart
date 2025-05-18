@@ -359,6 +359,7 @@ class _MyJobsScreenState extends State<MyJobsScreen> {
                                                       borderSide: BorderSide(
                                                         color: ColorConstants
                                                             .containerBorder
+                                                            // ignore: deprecated_member_use
                                                             .withOpacity(0.1),
                                                       ),
                                                     ),
