@@ -8,6 +8,7 @@ import 'package:workwista/view/Model/posted_jobs_model.dart';
 
 import 'package:workwista/view/Wdigets/gradient_button.dart';
 import 'package:workwista/view/loginScreens/homeScreens/job_requests_screen.dart';
+import 'package:workwista/view/loginScreens/homeScreens/payment_screen.dart';
 
 import 'package:workwista/view/responsive_helper.dart';
 
@@ -241,147 +242,153 @@ class _MyJobsScreenState extends State<MyJobsScreen> {
                             onTap: () {},
                             child: GradientButton(
                                 onPressed: () {
-                                  log("showing payment window");
-                                  showModalBottomSheet(
-                                    isScrollControlled: true,
-                                    context: context,
-                                    shape: const RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.vertical(
-                                          top: Radius.circular(20)),
-                                    ),
-                                    backgroundColor: Colors.white,
-                                    builder: (context) {
-                                      return Padding(
-                                        padding: EdgeInsets.only(
-                                            bottom: MediaQuery.of(context)
-                                                .viewInsets
-                                                .bottom),
-                                        child: Container(
-                                          height: ResponsiveHelper.height(
-                                              270, context),
-                                          padding: const EdgeInsets.all(16),
-                                          child: Column(
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              Container(
-                                                width: 40,
-                                                height: 4,
-                                                decoration: BoxDecoration(
-                                                  color: Colors.black26,
-                                                  borderRadius:
-                                                      BorderRadius.circular(10),
-                                                ),
-                                              ),
-                                              const SizedBox(height: 16),
-                                              // Payment Icons Row
-                                              Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceEvenly,
-                                                children: [
-                                                  CircleAvatar(
-                                                      radius: 25,
-                                                      backgroundColor:
-                                                          ColorConstants
-                                                              .indicatorBlue,
-                                                      child: CircleAvatar(
-                                                        backgroundColor:
-                                                            Colors.white,
-                                                        radius: 24,
-                                                        child: Image.asset(
-                                                            "assets/upi.png"),
-                                                      )),
-                                                  CircleAvatar(
-                                                      radius: 25,
-                                                      backgroundColor:
-                                                          ColorConstants
-                                                              .indicatorBlue,
-                                                      child: CircleAvatar(
-                                                        backgroundColor:
-                                                            Colors.white,
-                                                        radius: 24,
-                                                        child: Image.asset(
-                                                            "assets/gpay.png"),
-                                                      )),
-                                                  CircleAvatar(
-                                                      radius: 25,
-                                                      backgroundColor:
-                                                          ColorConstants
-                                                              .indicatorBlue,
-                                                      child: CircleAvatar(
-                                                        backgroundColor:
-                                                            ColorConstants
-                                                                .phonepe,
-                                                        radius: 24,
-                                                        child: Image.asset(
-                                                            "assets/phonepe.png"),
-                                                      )),
-                                                  CircleAvatar(
-                                                      radius: 25,
-                                                      backgroundColor:
-                                                          ColorConstants
-                                                              .indicatorBlue,
-                                                      child: CircleAvatar(
-                                                        backgroundColor:
-                                                            Colors.white,
-                                                        radius: 24,
-                                                        child: Image.asset(
-                                                            "assets/paytm.png"),
-                                                      )),
-                                                  CircleAvatar(
-                                                      radius: 25,
-                                                      backgroundColor:
-                                                          ColorConstants
-                                                              .indicatorBlue,
-                                                      child: CircleAvatar(
-                                                        backgroundColor:
-                                                            Colors.white,
-                                                        radius: 24,
-                                                        child: Image.asset(
-                                                            "assets/bank.png"),
-                                                      )),
-                                                ],
-                                              ),
-                                              const SizedBox(height: 20),
-                                              // TextField for UPI ID
-                                              SizedBox(
-                                                height: ResponsiveHelper.height(
-                                                    50, context),
-                                                child: TextFormField(
-                                                  decoration: InputDecoration(
-                                                    hintText: "Enter upi id",
-                                                    filled: true,
-                                                    fillColor: Colors.white,
-                                                    border: OutlineInputBorder(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              15.0),
-                                                      borderSide: BorderSide(
-                                                        color: ColorConstants
-                                                            .containerBorder
-                                                            // ignore: deprecated_member_use
-                                                            .withOpacity(0.1),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                              const SizedBox(height: 20),
-                                              // Next Button
-                                              GradientButton(
-                                                  name: "Next",
-                                                  onPressed: () {
-                                                    log("add payment logic");
-                                                  },
-                                                  height: 45,
-                                                  width: ResponsiveHelper.width(
-                                                      double.infinity, context))
-                                            ],
-                                          ),
-                                        ),
-                                      );
-                                    },
-                                  );
+                                  log("Navigate to Payment screen");
+
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => PaymentScreen(),
+                                      ));
+                                  // showModalBottomSheet(
+                                  //   isScrollControlled: true,
+                                  //   context: context,
+                                  //   shape: const RoundedRectangleBorder(
+                                  //     borderRadius: BorderRadius.vertical(
+                                  //         top: Radius.circular(20)),
+                                  //   ),
+                                  //   backgroundColor: Colors.white,
+                                  //   builder: (context) {
+                                  //     return Padding(
+                                  //       padding: EdgeInsets.only(
+                                  //           bottom: MediaQuery.of(context)
+                                  //               .viewInsets
+                                  //               .bottom),
+                                  //       child: Container(
+                                  //         height: ResponsiveHelper.height(
+                                  //             270, context),
+                                  //         padding: const EdgeInsets.all(16),
+                                  //         child: Column(
+                                  //           mainAxisSize: MainAxisSize.min,
+                                  //           children: [
+                                  //             Container(
+                                  //               width: 40,
+                                  //               height: 4,
+                                  //               decoration: BoxDecoration(
+                                  //                 color: Colors.black26,
+                                  //                 borderRadius:
+                                  //                     BorderRadius.circular(10),
+                                  //               ),
+                                  //             ),
+                                  //             const SizedBox(height: 16),
+                                  //             // Payment Icons Row
+                                  //             Row(
+                                  //               mainAxisAlignment:
+                                  //                   MainAxisAlignment
+                                  //                       .spaceEvenly,
+                                  //               children: [
+                                  //                 CircleAvatar(
+                                  //                     radius: 25,
+                                  //                     backgroundColor:
+                                  //                         ColorConstants
+                                  //                             .indicatorBlue,
+                                  //                     child: CircleAvatar(
+                                  //                       backgroundColor:
+                                  //                           Colors.white,
+                                  //                       radius: 24,
+                                  //                       child: Image.asset(
+                                  //                           "assets/upi.png"),
+                                  //                     )),
+                                  //                 CircleAvatar(
+                                  //                     radius: 25,
+                                  //                     backgroundColor:
+                                  //                         ColorConstants
+                                  //                             .indicatorBlue,
+                                  //                     child: CircleAvatar(
+                                  //                       backgroundColor:
+                                  //                           Colors.white,
+                                  //                       radius: 24,
+                                  //                       child: Image.asset(
+                                  //                           "assets/gpay.png"),
+                                  //                     )),
+                                  //                 CircleAvatar(
+                                  //                     radius: 25,
+                                  //                     backgroundColor:
+                                  //                         ColorConstants
+                                  //                             .indicatorBlue,
+                                  //                     child: CircleAvatar(
+                                  //                       backgroundColor:
+                                  //                           ColorConstants
+                                  //                               .phonepe,
+                                  //                       radius: 24,
+                                  //                       child: Image.asset(
+                                  //                           "assets/phonepe.png"),
+                                  //                     )),
+                                  //                 CircleAvatar(
+                                  //                     radius: 25,
+                                  //                     backgroundColor:
+                                  //                         ColorConstants
+                                  //                             .indicatorBlue,
+                                  //                     child: CircleAvatar(
+                                  //                       backgroundColor:
+                                  //                           Colors.white,
+                                  //                       radius: 24,
+                                  //                       child: Image.asset(
+                                  //                           "assets/paytm.png"),
+                                  //                     )),
+                                  //                 CircleAvatar(
+                                  //                     radius: 25,
+                                  //                     backgroundColor:
+                                  //                         ColorConstants
+                                  //                             .indicatorBlue,
+                                  //                     child: CircleAvatar(
+                                  //                       backgroundColor:
+                                  //                           Colors.white,
+                                  //                       radius: 24,
+                                  //                       child: Image.asset(
+                                  //                           "assets/bank.png"),
+                                  //                     )),
+                                  //               ],
+                                  //             ),
+                                  //             const SizedBox(height: 20),
+                                  //             // TextField for UPI ID
+                                  //             SizedBox(
+                                  //               height: ResponsiveHelper.height(
+                                  //                   50, context),
+                                  //               child: TextFormField(
+                                  //                 decoration: InputDecoration(
+                                  //                   hintText: "Enter upi id",
+                                  //                   filled: true,
+                                  //                   fillColor: Colors.white,
+                                  //                   border: OutlineInputBorder(
+                                  //                     borderRadius:
+                                  //                         BorderRadius.circular(
+                                  //                             15.0),
+                                  //                     borderSide: BorderSide(
+                                  //                       color: ColorConstants
+                                  //                           .containerBorder
+                                  //                           // ignore: deprecated_member_use
+                                  //                           .withOpacity(0.1),
+                                  //                     ),
+                                  //                   ),
+                                  //                 ),
+                                  //               ),
+                                  //             ),
+                                  //             const SizedBox(height: 20),
+                                  //             // Next Button
+                                  //             GradientButton(
+                                  //                 name: "Next",
+                                  //                 onPressed: () {
+                                  //                   log("add payment logic");
+                                  //                 },
+                                  //                 height: 45,
+                                  //                 width: ResponsiveHelper.width(
+                                  //                     double.infinity, context))
+                                  //           ],
+                                  //         ),
+                                  //       ),
+                                  //     );
+                                  //   },
+                                  // );
                                 },
                                 name: "Pay",
                                 height: 38,

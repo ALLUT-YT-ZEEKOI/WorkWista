@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:workwista/view/Controllers/add_job_controller.dart';
 import 'package:workwista/view/Controllers/apply_job_controller.dart';
@@ -29,7 +30,6 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(
           create: (context) => JobsScreenController(),
         ),
-       
         ChangeNotifierProvider(
           create: (context) => LoginScreenController(),
         ),
@@ -43,14 +43,16 @@ class MyApp extends StatelessWidget {
           create: (context) => ProfileScreenController(),
         ),
       ],
-      child: MaterialApp(
-
-        debugShowCheckedModeBanner: false,
-        title: 'Flutter Demo',
-        theme: ThemeData(
-          fontFamily: 'MonoSans',
+      child: ScreenUtilInit(
+        designSize: Size(393, 852),
+        child: MaterialApp(
+          debugShowCheckedModeBanner: false,
+          title: 'Flutter Demo',
+          theme: ThemeData(
+            fontFamily: 'MonoSans',
+          ),
+          home: SplashScreen(),
         ),
-        home: SplashScreen(),
       ),
     );
   }

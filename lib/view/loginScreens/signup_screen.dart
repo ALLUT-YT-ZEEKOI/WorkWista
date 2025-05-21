@@ -1,12 +1,13 @@
 import 'dart:developer';
 
-
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:workwista/AppTextStyle/app_text_style.dart';
 import 'package:workwista/view/Controllers/register_screen_controller.dart';
 import 'package:workwista/view/loginScreens/sign_in_screen.dart';
+
 class Signupscreen extends StatefulWidget {
   const Signupscreen({super.key});
 
@@ -21,9 +22,6 @@ class _SignupscreenState extends State<Signupscreen> {
   TextEditingController _phoneNumberController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
   TextEditingController _CPasswordController = TextEditingController();
-
-
-
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? pickedDate = await showDatePicker(
@@ -61,111 +59,114 @@ class _SignupscreenState extends State<Signupscreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 10),
+        padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 0.h),
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              const SizedBox(height: 45),
-               Text(
+              SizedBox(height: 60.h),
+              Text(
                 'Sign up for an account now!',
                 textAlign: TextAlign.center,
                 style: AppTextStyle.heading,
               ),
-              const SizedBox(height: 10),
-               Text(
+              SizedBox(height: 10.h),
+              Text(
                 'Join us for job opportunities!',
                 textAlign: TextAlign.center,
                 style: AppTextStyle.loginsubhead,
               ),
-              const SizedBox(height: 40),
+              SizedBox(height: 40.h),
 
               // Form Fields
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                   Text('Your name', style: AppTextStyle.labeltext),
-                  const SizedBox(height: 5),
+                  Text('Your name', style: AppTextStyle.labeltext),
+                  SizedBox(height: 5.h),
                   SizedBox(
-                    height: 50,
+                    height: 44.h,
                     child: TextFormField(
                       controller: _nameController,
                       decoration: InputDecoration(
                         filled: true,
                         fillColor: Colors.white,
                         border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(33),
-                          borderSide: const BorderSide(
+                          borderRadius: BorderRadius.circular(33.w),
+                          borderSide: BorderSide(
                             color: Color(0xFFBDBDBD),
-                            width: 1,
+                            width: 1.w,
                           ),
                         ),
                       ),
                     ),
                   ),
-                  const SizedBox(height: 20),
-                   Text('Email', style: AppTextStyle.labeltext),
-                  const SizedBox(height: 5),
+                  SizedBox(height: 20.h),
+                  Text('Email', style: AppTextStyle.labeltext),
+                  SizedBox(height: 5.h),
                   SizedBox(
-                    height: 50,
+                    height: 44.h,
                     child: TextFormField(
                       controller: _emailController,
                       decoration: InputDecoration(
                         filled: true,
                         fillColor: Colors.white,
                         border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(33),
-                          borderSide: const BorderSide(
+                          borderRadius: BorderRadius.circular(33.w),
+                          borderSide: BorderSide(
                             color: Color(0xFFBDBDBD),
-                            width: 1,
+                            width: 1.w,
                           ),
                         ),
                       ),
                     ),
                   ),
-                  const SizedBox(height: 20),
-                   Text('Date of Birth', style: AppTextStyle.labeltext),
-                  const SizedBox(height: 5),
-                  TextField(
-                    controller: _dateController,
-                    readOnly: true,
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(33),
-                        borderSide: const BorderSide(
-                          color: Color(0xFFBDBDBD),
-                          width: 1,
+                  SizedBox(height: 20.h),
+                  Text('Date of Birth', style: AppTextStyle.labeltext),
+                  SizedBox(height: 5.h),
+                  SizedBox(
+                    height: 44.h,
+                    child: TextField(
+                      controller: _dateController,
+                      readOnly: true,
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(33.w),
+                          borderSide: BorderSide(
+                            color: Color(0xFFBDBDBD),
+                            width: 1.w,
+                          ),
                         ),
                       ),
+                      onTap: () => _selectDate(context),
                     ),
-                    onTap: () => _selectDate(context),
                   ),
-                  const SizedBox(height: 20),
-                   Text('Phone Number', style: AppTextStyle.labeltext),
-                  const SizedBox(height: 5),
+                  SizedBox(height: 20.h),
+                  Text('Phone Number', style: AppTextStyle.labeltext),
+                  SizedBox(height: 5.h),
                   SizedBox(
-                    height: 50,
+                    height: 44.h,
                     child: TextFormField(
                       controller: _phoneNumberController,
                       decoration: InputDecoration(
                         filled: true,
                         fillColor: Colors.white,
                         border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(33),
-                          borderSide: const BorderSide(
+                          borderRadius: BorderRadius.circular(33.w),
+                          borderSide: BorderSide(
                             color: Color(0xFFBDBDBD),
-                            width: 1,
+                            width: 1.w,
                           ),
                         ),
                       ),
                       keyboardType: TextInputType.phone,
                     ),
                   ),
-                  const SizedBox(height: 20),
-                   Text('Password', style: AppTextStyle.labeltext),
-                  const SizedBox(height: 5),
+                  SizedBox(height: 20.h),
+                  Text('Password', style: AppTextStyle.labeltext),
+                  SizedBox(height: 5.h),
                   SizedBox(
-                    height: 50,
+                    height: 44.h,
                     child: TextFormField(
                       controller: _passwordController,
                       obscureText: true,
@@ -173,20 +174,20 @@ class _SignupscreenState extends State<Signupscreen> {
                         filled: true,
                         fillColor: Colors.white,
                         border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(33),
-                          borderSide: const BorderSide(
+                          borderRadius: BorderRadius.circular(33.w),
+                          borderSide: BorderSide(
                             color: Color(0xFFBDBDBD),
-                            width: 1,
+                            width: 1.w,
                           ),
                         ),
                       ),
                     ),
                   ),
-                  const SizedBox(height: 20),
-                   Text('Confirm Password', style: AppTextStyle.labeltext),
-                  const SizedBox(height: 5),
+                  SizedBox(height: 20.h),
+                  Text('Confirm Password', style: AppTextStyle.labeltext),
+                  SizedBox(height: 5.h),
                   SizedBox(
-                    height: 50,
+                    height: 44.h,
                     child: TextFormField(
                       controller: _CPasswordController,
                       obscureText: true,
@@ -194,10 +195,10 @@ class _SignupscreenState extends State<Signupscreen> {
                         filled: true,
                         fillColor: Colors.white,
                         border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(33),
-                          borderSide: const BorderSide(
+                          borderRadius: BorderRadius.circular(33.w),
+                          borderSide: BorderSide(
                             color: Color(0xFFBDBDBD),
-                            width: 1,
+                            width: 1.w,
                           ),
                         ),
                       ),
@@ -206,8 +207,8 @@ class _SignupscreenState extends State<Signupscreen> {
                 ],
               ),
 
-              const SizedBox(height: 30),
-               Text.rich(
+              SizedBox(height: 30.h),
+              Text.rich(
                 TextSpan(
                   children: [
                     TextSpan(
@@ -217,11 +218,11 @@ class _SignupscreenState extends State<Signupscreen> {
                       text: 'terms',
                       style: TextStyle(
                         color: Color(0xFF1E83FF),
-                        fontSize: 12,
+                        fontSize: 12.sp,
                         fontFamily: 'Mona Sans',
                         fontWeight: FontWeight.w500,
-                        height: 1.33,
-                        letterSpacing: 0.04,
+                        height: 1.33.h,
+                        letterSpacing: 0.04.w,
                       ),
                     ),
                     TextSpan(text: ' and ', style: AppTextStyle.loginsubhead),
@@ -229,23 +230,23 @@ class _SignupscreenState extends State<Signupscreen> {
                       text: 'privacy',
                       style: TextStyle(
                         color: Color(0xFF1E83FF),
-                        fontSize: 12,
+                        fontSize: 12.sp,
                         fontFamily: 'Mona Sans',
                         fontWeight: FontWeight.w500,
-                        height: 1.33,
-                        letterSpacing: 0.04,
+                        height: 1.33.h,
+                        letterSpacing: 0.04.w,
                       ),
                     ),
                   ],
                 ),
                 textAlign: TextAlign.center,
               ),
-              const SizedBox(height: 20),
+              SizedBox(height: 20.h),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  minimumSize: const Size(double.infinity, 50),
+                  minimumSize: Size(double.infinity.w, 50.h),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(53),
+                    borderRadius: BorderRadius.circular(53.w),
                   ),
                   backgroundColor: Colors.transparent,
                   elevation: 0,
@@ -266,10 +267,9 @@ class _SignupscreenState extends State<Signupscreen> {
                         DOB: _dateController.text,
                         password: _passwordController.text,
                         confirm_pass: _CPasswordController.text);
-                  }else {
+                  } else {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text("Please enter all details")),
+                      const SnackBar(content: Text("Please enter all details")),
                     );
                   }
                 },
@@ -284,19 +284,19 @@ class _SignupscreenState extends State<Signupscreen> {
                   ),
                   child: Container(
                     alignment: Alignment.center,
-                    padding: const EdgeInsets.symmetric(vertical: 12),
-                    child: const Text(
+                    padding: EdgeInsets.symmetric(vertical: 12.h),
+                    child: Text(
                       'Next',
                       style: TextStyle(
                         color: Color(0xFFFAFAFA),
-                        fontSize: 16,
+                        fontSize: 16.sp,
                         fontWeight: FontWeight.w700,
                       ),
                     ),
                   ),
                 ),
               ),
-              const SizedBox(height: 0),
+              SizedBox(height: 0.h),
               TextButton(
                 onPressed: () {
                   log("sign in now pressed");
@@ -306,7 +306,7 @@ class _SignupscreenState extends State<Signupscreen> {
                         builder: (context) => SignInScreen(),
                       ));
                 },
-                child:  Text.rich(
+                child: Text.rich(
                   TextSpan(
                     children: [
                       TextSpan(
@@ -316,7 +316,7 @@ class _SignupscreenState extends State<Signupscreen> {
                         text: 'Sign in',
                         style: TextStyle(
                           color: Color(0xFF1E83FF),
-                          fontSize: 12,
+                          fontSize: 12.sp,
                           fontFamily: 'Mona Sans',
                           fontWeight: FontWeight.w500,
                         ),

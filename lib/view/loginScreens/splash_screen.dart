@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:workwista/view/Common%20Screens/custom_bottom_navbar.dart';
@@ -32,7 +33,7 @@ class _SplashScreenState extends State<SplashScreen> {
 Navigator.pushReplacement(
             context, MaterialPageRoute(builder: (context) => SignInScreen()));
         }
-        
+
       },
     );
   }
@@ -46,25 +47,25 @@ Navigator.pushReplacement(
           mainAxisSize:
               MainAxisSize.min, // Keeps content centered in the middle
           children: [
-            const Image(
+            Image(
               image: AssetImage('assets/Frame 26080486.png'),
-              width: 100,
+              width: 100.w,
             ),
-            const SizedBox(height: 20), // Adds spacing
+            SizedBox(height: 20.h), // Adds spacing
             Image.asset(
               'assets/Workwista (1).png',
-              width: screenWidth * 0.4,
+              width: screenWidth * 0.4.w,
               fit: BoxFit.cover,
             ),
-            const SizedBox(height: 20), // Adds spacing
-            const SizedBox(
-              width: 300,
+            SizedBox(height: 20.h), // Adds spacing
+            SizedBox(
+              width: 300.w,
               child: Text(
                 'Find your next gig close by and connect with cool talent online!',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   color: Colors.black,
-                  fontSize: 16,
+                  fontSize: 16.sp,
                   fontFamily: 'Mona Sans',
                   fontWeight: FontWeight.w400,
                 ),

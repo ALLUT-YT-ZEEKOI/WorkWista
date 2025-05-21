@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
@@ -58,383 +59,384 @@ class _DashboardState extends State<Dashboard>
     return SafeArea(
       child: Consumer<JobsScreenController>(
         builder: (context, jobsScreenControllerObj, child) {
-          return SingleChildScrollView(
-            child: Column(
-              children: [
-                // App bar content (unchanged)
-                Container(
-                  decoration: const BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment(0.50, -0.00),
-                      end: Alignment(0.50, 1.89),
-                      colors: [Color(0xFFDAE6FC), Colors.white],
-                    ),
-                  ),
-                  child: Column(
-                    children: [
-                      // Header with logo and notifications
-                      Padding(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: ResponsiveHelper.width(10, context),
-                          vertical: ResponsiveHelper.height(7, context),
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            CircleAvatar(
-                              radius: ResponsiveHelper.width(25, context),
-                              child: Image(
-                                image: AssetImage('assets/Frame 26080486.png'),
-                              ),
-                            ),
-                            Row(
-                              children: [
-                                CircleAvatar(
-                                  radius: ResponsiveHelper.width(23, context),
-                                  backgroundColor: Colors.white,
-                                  child: Image(
-                                    image: AssetImage('assets/bell.png'),
-                                    width: ResponsiveHelper.width(30, context),
-                                  ),
-                                ),
-                                SizedBox(
-                                  width: ResponsiveHelper.width(12, context),
-                                ),
-                                CircleAvatar(
-                                  radius: ResponsiveHelper.width(23, context),
-                                  backgroundColor: Colors.white,
-                                  child: Image(
-                                    image: AssetImage(
-                                        'assets/ant-design_message-outlined.png'),
-                                    width: ResponsiveHelper.width(30, context),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
+          return Container(
+            color: Colors.white,
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  // App bar content (unchanged)
+                  Container(
+                    decoration: const BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment(0.50, -0.00),
+                        end: Alignment(0.50, 1.89),
+                        colors: [Color(0xFFDAE6FC), Colors.white],
                       ),
-
-                      // Search and location
-                      Padding(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: ResponsiveHelper.width(10, context),
-                          vertical: ResponsiveHelper.height(18, context),
-                        ),
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: InkWell(
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => SearchScreen()),
-                                  );
-                                },
-                                child: IgnorePointer(
-                                  child: SearchField(height: 50),
+                    ),
+                    child: Column(
+                      children: [
+                        // Header with logo and notifications
+                        Padding(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 10.w,
+                            vertical: 7.h,
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              CircleAvatar(
+                                radius: 22.w,
+                                child: Image(
+                                  image:
+                                      AssetImage('assets/Frame 26080486.png'),
                                 ),
                               ),
-                            ),
-                            SizedBox(width: ResponsiveHelper.width(5, context)),
-                            Container(
-                              decoration: BoxDecoration(
-                                border: Border.all(
-                                  color: ColorConstants.containerBorder
-                                      // ignore: deprecated_member_use
-                                      .withOpacity(0.9),
-                                  width: 2,
-                                ),
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              height: ResponsiveHelper.height(50, context),
-                              width: ResponsiveHelper.width(125, context),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
+                              Row(
                                 children: [
-                                  Image.asset(
-                                    'assets/location.png',
-                                    height:
-                                        ResponsiveHelper.height(24, context),
-                                    width: ResponsiveHelper.width(24, context),
-                                  ),
-                                  Text(
-                                    "Eranakulam",
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w600,
+                                  CircleAvatar(
+                                    radius: 23.w,
+                                    backgroundColor: Colors.white,
+                                    child: Image(
+                                      image: AssetImage('assets/bell.png'),
+                                      width: 30.w,
                                     ),
-                                  )
+                                  ),
+                                  SizedBox(
+                                    width: 12.w,
+                                  ),
+                                  CircleAvatar(
+                                    radius: 23.w,
+                                    backgroundColor: Colors.white,
+                                    child: Image(
+                                      image: AssetImage(
+                                          'assets/ant-design_message-outlined.png'),
+                                      width: 30.w,
+                                    ),
+                                  ),
                                 ],
                               ),
-                            )
-                          ],
+                            ],
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: ResponsiveHelper.width(10, context),
-                    vertical: ResponsiveHelper.height(18, context),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        "Discover Jobs",
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontWeight: FontWeight.w700,
-                          fontSize: 18,
+
+                        // Search and location
+                        Padding(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 10.w,
+                            vertical: 18.h,
+                          ),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: InkWell(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => SearchScreen()),
+                                    );
+                                  },
+                                  child: IgnorePointer(
+                                    child: SearchField(height: 50.h),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(width: 5.w),
+                              Container(
+                                decoration: BoxDecoration(
+                                  border: Border.all(
+                                    color: ColorConstants.containerBorder
+                                        // ignore: deprecated_member_use
+                                        .withOpacity(0.9),
+                                    width: 2.w,
+                                  ),
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(12.w),
+                                ),
+                                height: 47.5.h,
+                                width: 125.w,
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    Image.asset(
+                                      'assets/location.png',
+                                      height: 24.h,
+                                      width: 24.w,
+                                    ),
+                                    Text(
+                                      "Eranakulam",
+                                      style: TextStyle(
+                                        fontSize: 12.sp,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              )
+                            ],
+                          ),
                         ),
-                      ),
-                      InkWell(
-                        onTap: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => CategoriesScreen(),
-                              ));
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 10.w,
+                      vertical: 18.h,
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "Discover Jobs",
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.w700,
+                            fontSize: 18.sp,
+                          ),
+                        ),
+                        InkWell(
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => CategoriesScreen(),
+                                ));
+                          },
+                          child: Text(
+                            "View More",
+                            style: TextStyle(
+                              color: ColorConstants.viewMoreText,
+                              fontWeight: FontWeight.w400,
+                              fontSize: 12.sp,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  // Categories horizontal scroll (unchanged)
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      children: List.generate(
+                        jobsScreenControllerObj.categoriesList.length + 1,
+                        (index) {
+                          final isAll = index == 0;
+                          final isSelected =
+                              jobsScreenControllerObj.selectedCategoryIndex ==
+                                  index;
+                          final categoryTitle = isAll
+                              ? "All"
+                              : jobsScreenControllerObj
+                                      .categoriesList[index - 1].title ??
+                                  "Unnamed";
+                          return Padding(
+                            padding: EdgeInsets.only(
+                                left: 8.w, right: 8.w, top: 8.h, bottom: 8.h),
+                            child: InkWell(
+                              onTap: () {
+                                jobsScreenControllerObj
+                                    .onCategorySelected(index);
+                                // No need for additional calls here since onCategorySelected now handles it
+                              },
+                              child: Container(
+                                constraints: BoxConstraints(
+                                    minWidth: 70.w, minHeight: 32.h),
+                                padding: EdgeInsets.symmetric(horizontal: 16.w),
+                                decoration: BoxDecoration(
+                                  border: Border.all(
+                                    width: 1.w,
+                                    color: isSelected
+                                        ? Color(0xff06407E)
+                                        : Color(0xffE2E8F0),
+                                  ),
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(24.w),
+                                ),
+                                alignment: Alignment.center,
+                                child: Text(
+                                  categoryTitle,
+                                  style: TextStyle(
+                                    fontSize: 12.sp,
+                                    fontWeight: FontWeight.w500,
+                                    color: isSelected
+                                        ? Color(0xff002D64)
+                                        : Color(0xff92A5B5),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          );
                         },
-                        child: Text(
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 28.h),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 10.w),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "Near Jobs",
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.w700,
+                            fontSize: 18.sp,
+                          ),
+                        ),
+                        Text(
                           "View More",
                           style: TextStyle(
                             color: ColorConstants.viewMoreText,
                             fontWeight: FontWeight.w400,
-                            fontSize: 12,
+                            fontSize: 12.sp,
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-                ),
-
-                // Categories horizontal scroll (unchanged)
-                SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
-                    children: List.generate(
-                      jobsScreenControllerObj.categoriesList.length + 1,
-                      (index) {
-                        final isAll = index == 0;
-                        final isSelected =
-                            jobsScreenControllerObj.selectedCategoryIndex ==
-                                index;
-                        final categoryTitle = isAll
-                            ? "All"
-                            : jobsScreenControllerObj
-                                    .categoriesList[index - 1].title ??
-                                "Unnamed";
-                        return Padding(
-                          padding: const EdgeInsets.all(8),
-                          child: InkWell(
-                            onTap: () {
-                              jobsScreenControllerObj.onCategorySelected(index);
-                              // No need for additional calls here since onCategorySelected now handles it
-                            },
-                            child: Container(
-                              constraints: BoxConstraints(
-                                  minWidth: 70,
-                                  minHeight: 32), // 👈 Ensures a minimum size
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 16),
-                              decoration: BoxDecoration(
-                                border: Border.all(
-                                  width: 1,
-                                  color: isSelected
-                                      ? Color(0xff06407E)
-                                      : Color(0xffE2E8F0),
-                                ),
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(24),
-                              ),
-                              alignment: Alignment.center,
-                              child: Text(
-                                categoryTitle,
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w500,
-                                  color: isSelected
-                                      ? Color(0xff002D64)
-                                      : Color(0xff92A5B5),
-                                ),
-                              ),
-                            ),
-                          ),
-                        );
-                      },
+                      ],
                     ),
                   ),
-                ),
-                SizedBox(height: 28),
-                Padding(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: ResponsiveHelper.width(10, context),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        "Near Jobs",
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontWeight: FontWeight.w700,
-                          fontSize: 18,
-                        ),
-                      ),
-                      Text(
-                        "View More",
-                        style: TextStyle(
-                          color: ColorConstants.viewMoreText,
-                          fontWeight: FontWeight.w400,
-                          fontSize: 12,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                SizedBox(height: ResponsiveHelper.height(12, context)),
+                  SizedBox(height: 12.h),
 
-                // Job List
-                jobsScreenControllerObj.isloading
-                    ? const Center(child: CircularProgressIndicator())
-                    : jobsScreenControllerObj.jobsList.isEmpty
-                        ? Center(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(
-                                  Icons.work_outline,
-                                  size: 64,
-                                  color: Colors.grey[400],
-                                ),
-                                const SizedBox(height: 16),
-                                Text(
-                                  "No jobs available",
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    color: Colors.grey[600],
+                  // Job List
+                  jobsScreenControllerObj.isloading
+                      ? const Center(child: CircularProgressIndicator())
+                      : jobsScreenControllerObj.jobsList.isEmpty
+                          ? Center(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    Icons.work_outline,
+                                    size: 64.w,
+                                    color: Colors.grey[400],
                                   ),
-                                ),
-                                if (jobsScreenControllerObj
-                                        .selectedCategoryIndex !=
-                                    0)
+                                  SizedBox(height: 16.h),
                                   Text(
-                                    "for this category",
+                                    "No jobs available",
                                     style: TextStyle(
-                                      fontSize: 14,
-                                      color: Colors.grey[500],
+                                      fontSize: 18.sp,
+                                      color: Colors.grey[600],
                                     ),
                                   ),
-                              ],
+                                  if (jobsScreenControllerObj
+                                          .selectedCategoryIndex !=
+                                      0)
+                                    Text(
+                                      "for this category",
+                                      style: TextStyle(
+                                        fontSize: 14.sp,
+                                        color: Colors.grey[500],
+                                      ),
+                                    ),
+                                ],
+                              ),
+                            )
+                          : Column(
+                              children: List.generate(
+                                jobsScreenControllerObj.jobsList.length,
+                                (index) {
+                                  final jobItem =
+                                      jobsScreenControllerObj.jobsList[index];
+                                  return InkWell(
+                                    onTap: () {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                JobDetailsScreen(
+                                                    jobId: jobItem.id),
+                                          ));
+                                    },
+                                    child: JobOffersCard(jobItem: jobItem),
+                                  );
+                                },
+                              ),
                             ),
-                          )
-                        : Column(
-                            children: List.generate(
-                              jobsScreenControllerObj.jobsList.length,
-                              (index) {
-                                final jobItem =
-                                    jobsScreenControllerObj.jobsList[index];
-                                return InkWell(
-                                  onTap: () {
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) =>
-                                              JobDetailsScreen(
-                                                  jobId: jobItem.id),
-                                        ));
-                                  },
-                                  child: JobOffersCard(jobItem: jobItem),
-                                );
-                              },
-                            ),
-                          ),
-                Padding(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: ResponsiveHelper.width(10, context),
-                  ),
-                  child: Column(
-                    children: [
-                      Row(
-                        children: [
-                          Text(
-                            "Companies nearby",
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 18,
-                              fontWeight: FontWeight.w700,
-                            ),
-                          ),
-                          Spacer(),
-                          Text(
-                            "View More",
-                            style: TextStyle(
-                              color: ColorConstants.viewMoreText,
-                              fontSize: 12,
-                              fontWeight: FontWeight.w400,
-                            ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: ResponsiveHelper.height(18, context)),
-                      SizedBox(
-                        height: 150,
-                        child: ListView.separated(
-                          scrollDirection: Axis.horizontal,
-                          itemCount: 5,
-                          padding: EdgeInsets.symmetric(
-                            horizontal: ResponsiveHelper.width(10, context),
-                          ),
-                          separatorBuilder: (context, index) => SizedBox(
-                            width: ResponsiveHelper.width(10, context),
-                          ),
-                          itemBuilder: (context, index) {
-                            return Material(
-                              child: CompaniesCard(),
-                            );
-                          },
-                        ),
-                      ),
-                      SizedBox(height: ResponsiveHelper.height(22, context)),
-                      SizedBox(
-                        height: 200,
-                        child: PageView(
-                          controller: _controller,
+                  Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 10.w,
+                    ),
+                    child: Column(
+                      children: [
+                        Row(
                           children: [
-                            GreenCard(),
-                            GreenCard(),
-                            GreenCard(),
+                            Text(
+                              "Companies nearby",
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 18.sp,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                            Spacer(),
+                            Text(
+                              "View More",
+                              style: TextStyle(
+                                color: ColorConstants.viewMoreText,
+                                fontSize: 12.sp,
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
                           ],
                         ),
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Center(
-                        child: SmoothPageIndicator(
-                          controller: _controller,
-                          count: _numPages,
-                          effect: WormEffect(
-                            dotHeight: screenHight * 0.020,
-                            dotWidth: screenWidth * 0.016,
-                            activeDotColor: Colors.black,
-                            dotColor: Colors.black,
+                        SizedBox(height: 18.h),
+                        SizedBox(
+                          height: 150.h,
+                          child: ListView.separated(
+                            scrollDirection: Axis.horizontal,
+                            itemCount: 5,
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 10.w,
+                            ),
+                            separatorBuilder: (context, index) => SizedBox(
+                              width: 10.w,
+                            ),
+                            itemBuilder: (context, index) {
+                              return Material(
+                                child: CompaniesCard(),
+                              );
+                            },
                           ),
                         ),
-                      ),
-                      SizedBox(
-                        height: 50,
-                      )
-                    ],
-                  ),
-                )
-              ],
+                        SizedBox(height: 22.h),
+                        SizedBox(
+                          height: 200.h,
+                          child: PageView(
+                            controller: _controller,
+                            children: [
+                              GreenCard(),
+                              GreenCard(),
+                              GreenCard(),
+                            ],
+                          ),
+                        ),
+                        SizedBox(
+                          height: 10.h,
+                        ),
+                        Center(
+                          child: SmoothPageIndicator(
+                            controller: _controller,
+                            count: _numPages,
+                            effect: WormEffect(
+                              dotHeight: screenHight * 0.020.h,
+                              dotWidth: screenWidth * 0.016.w,
+                              activeDotColor: Colors.black,
+                              dotColor: Colors.black,
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 50.h,
+                        )
+                      ],
+                    ),
+                  )
+                ],
+              ),
             ),
           );
         },
