@@ -1,5 +1,6 @@
 import 'dart:developer';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:workwista/Utils/color_constants.dart';
 
@@ -31,13 +32,13 @@ class _MyJobsScreenState extends State<MyJobsScreen> {
           title: Row(
             children: [
               Icon(Icons.info_outline, color: Colors.blue),
-              SizedBox(width: 10),
+              SizedBox(width: 10.w),
               Text("No Requests Yet"),
             ],
           ),
           content: Text(
             "This job hasn't received any applications yet. Check back later!",
-            style: TextStyle(fontSize: 16),
+            style: TextStyle(fontSize: 16.sp),
           ),
           actions: [
             TextButton(
@@ -71,26 +72,27 @@ class _MyJobsScreenState extends State<MyJobsScreen> {
           length: 3,
           child: Scaffold(
             appBar: AppBar(
-              titleTextStyle: const TextStyle(
+              elevation: 0, // remove shadow
+              scrolledUnderElevation: 0,
+              backgroundColor: Colors.white,
+              titleTextStyle: TextStyle(
                   color: Colors.black,
-                  fontSize: 24,
+                  fontSize: 28.sp,
                   fontWeight: FontWeight.w700),
-              title: const Text("My jobs"),
+              title: Text("My jobs"),
               actions: [
                 IconButton(
                     onPressed: () {
                       log("pressed");
                     },
-                    icon: const Icon(
-                      Icons.more_vert,
-                      size: 26,
+                    icon: Icon(
+                      Icons.settings,
+                      size: 24,
                     ))
               ],
             ),
             body: Padding(
-              padding: EdgeInsets.symmetric(
-                  horizontal: ResponsiveHelper.width(14, context),
-                  vertical: ResponsiveHelper.height(14, context)),
+              padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 27.h),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -98,149 +100,152 @@ class _MyJobsScreenState extends State<MyJobsScreen> {
                   if (showCurrentJobCard)
                     Container(
                       padding: EdgeInsets.only(
-                          right: ResponsiveHelper.width(16, context),
-                          left: ResponsiveHelper.width(17, context),
-                          top: ResponsiveHelper.height(21, context),
-                          bottom: ResponsiveHelper.height(19, context)),
-                      width: ResponsiveHelper.width(373, context),
-                      height: 240,
+                          right: 17.w, left: 14.w, top: 21.h, bottom: 19.h),
+                      width: 373.w,
+                      height: 230.h,
                       decoration: BoxDecoration(
                           color: Colors.white,
-                          borderRadius: BorderRadius.circular(13),
+                          borderRadius: BorderRadius.circular(13.r),
                           border: Border.all(
-                              color: ColorConstants.containerBorder, width: 1)),
+                              color: ColorConstants.containerBorder,
+                              width: 1.w)),
                       child: Column(
                         children: [
                           Row(
                             children: [
-                              const CircleAvatar(
+                              CircleAvatar(
                                 backgroundColor: Colors.black,
-                                radius: 24,
+                                radius: 22.r,
                               ),
                               SizedBox(
-                                width: ResponsiveHelper.width(14, context),
+                                width: 14.w,
                               ),
-                              const Column(
+                              Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
                                     "Joseph",
                                     style: TextStyle(
-                                        fontSize: 14,
+                                        fontSize: 14.sp,
                                         fontWeight: FontWeight.w500),
                                   ),
                                   Text(
                                     "plumbing Work",
                                     style: TextStyle(
-                                        fontSize: 12,
+                                        fontSize: 12.sp,
                                         fontWeight: FontWeight.w400),
                                   ),
                                 ],
                               ),
-                              const Spacer(),
+                              Spacer(),
                               Column(
                                 children: [
                                   Row(
                                     children: [
                                       CircleAvatar(
-                                        radius: 4,
+                                        radius: 4.r,
                                         backgroundColor:
                                             ColorConstants.nowOnline,
                                       ),
                                       SizedBox(
-                                        width:
-                                            ResponsiveHelper.width(9, context),
+                                        width: 9.w,
                                       ),
-                                      const Text(
+                                      Text(
                                         "Online",
                                         style: TextStyle(
                                             color: Colors.black,
-                                            fontSize: 12,
+                                            fontSize: 12.sp,
                                             fontWeight: FontWeight.w500),
                                       )
                                     ],
                                   ),
-                                  const Text(
+                                  Text(
                                     "06/09/2025",
                                     style: TextStyle(
                                         color: Colors.black,
-                                        fontSize: 10,
+                                        fontSize: 10.sp,
                                         fontWeight: FontWeight.w500),
                                   )
                                 ],
                               )
                             ],
                           ),
-                          const SizedBox(
-                            height: 23,
+                          SizedBox(
+                            height: 24.h,
                           ),
-                          const Row(
+                          Row(
                             children: [
                               Text(
                                 "Ongoing",
                                 style: TextStyle(
-                                    fontSize: 12, fontWeight: FontWeight.w500),
+                                    fontSize: 12.sp,
+                                    fontWeight: FontWeight.w500),
                               ),
                               Spacer(),
                               Text(
                                 "Owner",
                                 style: TextStyle(
-                                    fontSize: 12, fontWeight: FontWeight.w500),
+                                    fontSize: 12.sp,
+                                    fontWeight: FontWeight.w500),
                               ),
                             ],
                           ),
-                          const SizedBox(
-                            height: 14,
+                          SizedBox(
+                            height: 14.h,
                           ),
                           Container(
                             width: ResponsiveHelper.width(
                                 double.infinity, context),
-                            height: 8,
+                            height: 7.h,
                             decoration: BoxDecoration(
                               color: Colors.blue[100],
-                              borderRadius: BorderRadius.circular(10),
+                              borderRadius: BorderRadius.circular(23.r),
                             ),
                             child: ClipRRect(
-                              borderRadius: BorderRadius.circular(10),
+                              borderRadius: BorderRadius.circular(23.r),
                               child: LinearProgressIndicator(
-                                value: 0.1,
+                                value: 0.3,
                                 backgroundColor: Colors.transparent,
                                 valueColor: AlwaysStoppedAnimation<Color>(
                                     ColorConstants.ProgressBarColor),
                               ),
                             ),
                           ),
-                          const SizedBox(
-                            height: 14,
+                          SizedBox(
+                            height: 2.h,
                           ),
-                          const Row(
+                          Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
                               Text(
                                 "9:00 AM",
                                 style: TextStyle(
-                                    fontSize: 10, fontWeight: FontWeight.w500),
+                                    fontSize: 10.sp,
+                                    fontWeight: FontWeight.w500),
                               ),
                               Spacer(),
                               Text(
                                 "6:00 PM",
                                 style: TextStyle(
-                                    fontSize: 10, fontWeight: FontWeight.w500),
+                                    fontSize: 10.sp,
+                                    fontWeight: FontWeight.w500),
                               ),
                               Spacer(),
                               Text(
                                 "pay",
                                 style: TextStyle(
-                                    fontSize: 10, fontWeight: FontWeight.w500),
+                                    fontSize: 10.sp,
+                                    fontWeight: FontWeight.w500),
                               ),
                             ],
                           ),
-                          const SizedBox(
-                            height: 10,
+                          SizedBox(
+                            height: 13.h,
                           ),
                           InkWell(
                             onTap: () {},
                             child: GradientButton(
+                                radius: 10,
                                 onPressed: () {
                                   log("Navigate to Payment screen");
 
@@ -391,9 +396,8 @@ class _MyJobsScreenState extends State<MyJobsScreen> {
                                   // );
                                 },
                                 name: "Pay",
-                                height: 38,
-                                width: ResponsiveHelper.width(
-                                    double.infinity, context)),
+                                height: 38.h,
+                                width: double.infinity.w),
                           )
                         ],
                       ),
@@ -514,13 +518,13 @@ class _MyJobsScreenState extends State<MyJobsScreen> {
       child: Row(
         children: [
           CircleAvatar(
-            radius: 17,
+            radius: 21.r,
             backgroundColor: Colors.black,
             backgroundImage: NetworkImage(
                 "https://images.pexels.com/photos/974314/pexels-photo-974314.jpeg?auto=compress&cs=tinysrgb&w=600"),
           ),
           SizedBox(
-            width: 10,
+            width: 10.w,
           ),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -528,11 +532,11 @@ class _MyJobsScreenState extends State<MyJobsScreen> {
               Text(
                 postedJob.title ?? "No Title",
                 style: TextStyle(
-                  fontSize: 12,
+                  fontSize: 12.sp,
                   fontWeight: FontWeight.w600,
                 ),
               ),
-              SizedBox(height: 5),
+              SizedBox(height: 5.h),
               _infoItem("${postedJob.requestsCount ?? 0}", "Requests"),
             ],
           ),
@@ -551,23 +555,23 @@ class _MyJobsScreenState extends State<MyJobsScreen> {
         Text(
           label,
           style: TextStyle(
-              fontSize: 12,
+              fontSize: 12.sp,
               color: ColorConstants.greyText,
               fontWeight: FontWeight.w400),
         ),
-        SizedBox(width: 2),
+        SizedBox(width: 2.w),
         Text(
           value,
           style: TextStyle(
-              fontSize: 12,
+              fontSize: 12.sp,
               color: ColorConstants.greyText,
               fontWeight: FontWeight.w400),
         ),
-        SizedBox(width: 2),
+        SizedBox(width: 2.w),
         Text(
           "| kerala",
           style: TextStyle(
-              fontSize: 12,
+              fontSize: 12.sp,
               color: ColorConstants.greyText,
               fontWeight: FontWeight.w400),
         ),

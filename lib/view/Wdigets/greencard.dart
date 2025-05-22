@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import 'package:workwista/view/responsive_helper.dart';
 
 class GreenCard extends StatelessWidget {
   const GreenCard({

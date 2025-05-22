@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:workwista/Utils/color_constants.dart';
 import 'package:workwista/view/Controllers/jobs_screen_controller.dart';
@@ -13,9 +13,6 @@ import 'package:workwista/view/Wdigets/search_field.dart';
 import 'package:workwista/view/loginScreens/homeScreens/categories_screen.dart';
 import 'package:workwista/view/loginScreens/homeScreens/job_details_screen.dart';
 import 'package:workwista/view/loginScreens/homeScreens/search_screen.dart';
-import 'package:workwista/view/loginScreens/sign_in_screen.dart';
-
-import 'package:workwista/view/responsive_helper.dart';
 
 class Dashboard extends StatefulWidget {
   const Dashboard({super.key});
@@ -29,28 +26,63 @@ class _DashboardState extends State<Dashboard>
   // late TabController _tabController;
   // late PageController _pageController;
   // int _currentIndex = 0;
+late ScrollController _scrollController;
+
+
+
+
+
 
   @override
   void initState() {
     super.initState();
+ _scrollController = ScrollController();
+  _scrollController.addListener(_onScroll);
+ // Apply correct initial status bar color immediately
+WidgetsBinding.instance.addPostFrameCallback((_) async {
+  _updateStatusBarBasedOnOffset();
 
-    WidgetsBinding.instance.addPostFrameCallback((timestamp) async {
-      // Select 'All' categroy by default
-
-      final jobsController = context.read<JobsScreenController>();
-      await jobsController.getCategories(); // Fetch categories first
-      await jobsController.getJobs(); // Then fetch all jobs
-    });
-
-    WidgetsBinding.instance.addPostFrameCallback((timestamp) {
-      context
-          .read<JobsScreenController>()
-          .getCategories(); // Select 'All' categroy by default
-    });
+  final jobsController = context.read<JobsScreenController>();
+  await jobsController.getCategories();
+  await jobsController.getJobs();
+});
   }
+
+void _updateStatusBarBasedOnOffset() {
+  if (_scrollController.hasClients && _scrollController.offset > 100) {
+    SystemChrome.setSystemUIOverlayStyle(
+      SystemUiOverlayStyle(
+        statusBarColor: Colors.white,
+        statusBarIconBrightness: Brightness.dark,
+      ),
+    );
+  } else {
+    SystemChrome.setSystemUIOverlayStyle(
+      SystemUiOverlayStyle(
+        statusBarColor: Color(0xFFDAE6FC),
+        statusBarIconBrightness: Brightness.dark,
+      ),
+    );
+  }
+}
+
+
+
+void _onScroll() {
+  _updateStatusBarBasedOnOffset();
+}
+
+
+@override
+void dispose() {
+  _scrollController.dispose();
+  super.dispose();
+}
+
 
   @override
   Widget build(BuildContext context) {
+  
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHight = MediaQuery.of(context).size.width;
     final PageController _controller = PageController();
@@ -62,6 +94,7 @@ class _DashboardState extends State<Dashboard>
           return Container(
             color: Colors.white,
             child: SingleChildScrollView(
+              controller: _scrollController,
               child: Column(
                 children: [
                   // App bar content (unchanged)

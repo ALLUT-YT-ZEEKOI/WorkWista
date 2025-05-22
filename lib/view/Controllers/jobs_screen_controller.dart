@@ -15,6 +15,7 @@ import 'package:workwista/view/Model/posted_jobs_model.dart';
 class JobsScreenController with ChangeNotifier {
   List<JobItem> jobsList = [];
   List<JobItem> SjobsList = [];
+  List<AllCategories> SCategoryList = [];
   List<AllCategories> categoriesList = [];
   List<AllJobTypes> jobtypeslist = [];
   bool isloading = false;
@@ -22,6 +23,19 @@ class JobsScreenController with ChangeNotifier {
   List<PostedItem> postedJobsList = []; // List for posted jobs
   String? errorMessage;
   JobRequestsModel? jobRequests;
+  List<AllCategories> filteredCategories = [];
+
+  void filterCategories(String query) {
+    if (query.isEmpty) {
+      filteredCategories = categoriesList;
+    } else {
+      filteredCategories = categoriesList
+          .where((cat) =>
+              cat.title?.toLowerCase().contains(query.toLowerCase()) ?? false)
+          .toList();
+    }
+    notifyListeners();
+  }
 
   Future<void> respondToRequest(String requestId, String action) async {
     isloading = true;
@@ -215,7 +229,7 @@ class JobsScreenController with ChangeNotifier {
     }
   }
 
-// Add this to your JobsScreenController
+// Search job function for job search
   Future<void> searchJobs(String query) async {
     isloading = true;
     notifyListeners();
@@ -234,6 +248,32 @@ class JobsScreenController with ChangeNotifier {
     } catch (e) {
       log("Error searching jobs: $e");
       SjobsList = [];
+    } finally {
+      isloading = false;
+      notifyListeners();
+    }
+  }
+
+// Search job function for categorie  search
+  Future<void> searchCategories(String query) async {
+    isloading = true;
+    notifyListeners();
+
+    final url =
+        Uri.parse("https://workwista.com/job/view/category/?title=$query");
+
+    try {
+      final response = await http.get(url);
+      if (response.statusCode == 200) {
+        final AllCategoryListingModel allcatmodelobj =
+            allCategoryListingModelFromJson(response.body);
+        SCategoryList = allcatmodelobj.data ?? [];
+      } else {
+        _handleApiError(response.statusCode);
+      }
+    } catch (e) {
+      log("Error searching Categories: $e");
+      SCategoryList = [];
     } finally {
       isloading = false;
       notifyListeners();
@@ -291,13 +331,13 @@ class JobsScreenController with ChangeNotifier {
         final JobTypesModel alljobtypesmodelobj =
             jobTypesModelFromJson(response.body);
         jobtypeslist = alljobtypesmodelobj.data ?? [];
-      } else{
+      } else {
         _handleApiError(response.statusCode);
       }
     } catch (e) {
       log("Error fetching categories: $e");
       jobtypeslist = [];
-    }finally {
+    } finally {
       isloading = false;
       notifyListeners();
     }
@@ -315,6 +355,7 @@ class JobsScreenController with ChangeNotifier {
         final AllCategoryListingModel allcatmodelobj =
             allCategoryListingModelFromJson(response.body);
         categoriesList = allcatmodelobj.data ?? [];
+        filteredCategories = categoriesList;
       } else {
         _handleApiError(response.statusCode);
       }

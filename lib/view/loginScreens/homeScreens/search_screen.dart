@@ -5,6 +5,7 @@ import 'package:workwista/view/Controllers/jobs_screen_controller.dart';
 import 'package:workwista/view/Wdigets/jobofferscard.dart';
 import 'package:workwista/view/Wdigets/recent_search_helper.dart';
 import 'package:workwista/view/Wdigets/search_field.dart';
+import 'package:workwista/view/loginScreens/homeScreens/job_details_screen.dart';
 
 class SearchScreen extends StatefulWidget {
   const SearchScreen({super.key});
@@ -42,11 +43,12 @@ class _SearchScreenState extends State<SearchScreen> {
 
   void _handleSearch(String query) async {
     if (query.isEmpty) return;
-    
+
     await RecentSearchHelper.addRecentSearch(query);
     _loadRecentSearches(); // Refresh recent searches
-    
-    final controller = Provider.of<JobsScreenController>(context, listen: false);
+
+    final controller =
+        Provider.of<JobsScreenController>(context, listen: false);
     controller.searchJobs(query);
   }
 
@@ -57,10 +59,12 @@ class _SearchScreenState extends State<SearchScreen> {
 
   @override
   Widget build(BuildContext context) {
-
-
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
+        elevation: 0, // remove shadow
+        scrolledUnderElevation: 0,
+        backgroundColor: Colors.white,
         title: const Text("Search Jobs"),
       ),
       body: Padding(
@@ -98,19 +102,21 @@ class _SearchScreenState extends State<SearchScreen> {
                       ),
                     ),
                   ),
-                  ...recentSearches.map((search) => ListTile(
-                    leading: const Icon(Icons.history),
-                    title: Text(search),
-                    trailing: IconButton(
-                      icon: const Icon(Icons.close),
-                      onPressed: () => _removeRecentSearch(search),
-                    ),
-                    onTap: () {
-                      _searchController.text = search;
-                      _handleSearch(search);
-                      _searchFocusNode.unfocus();
-                    },
-                  )).toList(),
+                  ...recentSearches
+                      .map((search) => ListTile(
+                            leading: const Icon(Icons.history),
+                            title: Text(search),
+                            trailing: IconButton(
+                              icon: const Icon(Icons.close),
+                              onPressed: () => _removeRecentSearch(search),
+                            ),
+                            onTap: () {
+                              _searchController.text = search;
+                              _handleSearch(search);
+                              _searchFocusNode.unfocus();
+                            },
+                          ))
+                      .toList(),
                   const Divider(),
                 ],
               ),
@@ -121,24 +127,36 @@ class _SearchScreenState extends State<SearchScreen> {
                   if (controller.isloading) {
                     return const Center(child: CircularProgressIndicator());
                   }
-                  
+
                   if (_searchController.text.isEmpty) {
                     return const Center(
                       child: Text("Search for jobs by title"),
                     );
                   }
-                  
+
                   if (controller.jobsList.isEmpty) {
                     return Center(
-                      child: Text("No jobs found for '${_searchController.text}'"),
+                      child:
+                          Text("No jobs found for '${_searchController.text}'"),
                     );
                   }
-                  
+
                   return ListView.builder(
                     itemCount: controller.SjobsList.length,
                     itemBuilder: (context, index) {
-                      return JobOffersCard(
-                        jobItem: controller.SjobsList[index],
+                      final jobItem = controller.SjobsList[index];
+                      return InkWell(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    JobDetailsScreen(jobId: jobItem.id),
+                              ));
+                        },
+                        child: JobOffersCard(
+                          jobItem: jobItem,
+                        ),
                       );
                     },
                   );

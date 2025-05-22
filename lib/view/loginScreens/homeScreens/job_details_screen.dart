@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:workwista/Utils/color_constants.dart';
@@ -55,182 +56,230 @@ class _JobDetailsScreenState extends State<JobDetailsScreen> {
         title: Text(
           "Job Details",
           style: TextStyle(
-              color: Colors.black, fontSize: 20, fontWeight: FontWeight.w600),
+              color: Colors.black,
+              fontSize: 20.sp,
+              fontWeight: FontWeight.w600),
         ),
       ),
       body: Padding(
-        padding: EdgeInsetsDirectional.symmetric(
-            horizontal: ResponsiveHelper.width(10, context),
-            vertical: ResponsiveHelper.height(16, context)),
+        padding:
+            EdgeInsetsDirectional.symmetric(horizontal: 10.w, vertical: 18.h),
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(
-                height: ResponsiveHelper.height(200, context),
+                height: 203.h,
                 child: PageView(
                   controller: _controller,
                   children: [
                     Container(
-                      width: ResponsiveHelper.width(375, context),
-                      height: ResponsiveHelper.height(205, context),
+                      width: 373.w,
+                      height: 203.h,
                       decoration: BoxDecoration(
                           image: DecorationImage(
                               fit: BoxFit.cover,
                               image: NetworkImage(
                                   'https://images.pexels.com/photos/125532/pexels-photo-125532.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2')),
-                          borderRadius: BorderRadius.circular(11),
+                          borderRadius: BorderRadius.circular(11.r),
                           color: Colors.amber),
                     ),
                     Container(
-                      width: ResponsiveHelper.width(375, context),
-                      height: ResponsiveHelper.height(205, context),
+                      width: 373.w,
+                      height: 203.h,
                       decoration: BoxDecoration(
                           image: DecorationImage(
                               fit: BoxFit.cover,
                               image: NetworkImage(
                                   'https://images.pexels.com/photos/125532/pexels-photo-125532.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2')),
-                          borderRadius: BorderRadius.circular(11),
+                          borderRadius: BorderRadius.circular(11.r),
                           color: Colors.amber),
                     ),
                     Container(
-                      width: ResponsiveHelper.width(375, context),
-                      height: ResponsiveHelper.height(205, context),
+                      width: 373.w,
+                      height: 203.h,
                       decoration: BoxDecoration(
                           image: DecorationImage(
                               fit: BoxFit.cover,
                               image: NetworkImage(
                                   'https://images.pexels.com/photos/125532/pexels-photo-125532.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2')),
-                          borderRadius: BorderRadius.circular(11),
+                          borderRadius: BorderRadius.circular(11.r),
                           color: Colors.amber),
                     ),
                   ],
                 ),
               ),
               SizedBox(
-                height: 10,
+                height: 8.h,
               ),
               Center(
                 child: SmoothPageIndicator(
                   controller: _controller,
                   count: _numPages,
                   effect: WormEffect(
-                    dotHeight: screenHight * 0.010,
-                    dotWidth: screenWidth * 0.035,
+                    dotHeight: 3.h,
+                    dotWidth: 19.w,
                     activeDotColor: ColorConstants.indicatorBlue,
-                    dotColor: Colors.black,
+                    dotColor: Color(0xffD9D9D9),
                   ),
                 ),
               ),
               SizedBox(
-                height: ResponsiveHelper.height(37, context),
+                height: 37.h,
               ),
               Row(
                 children: [
-                  Text(
-                    job?.salary ?? "Salary not specified",
-                    style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 20,
-                        fontWeight: FontWeight.w400),
+                  RichText(
+                    text: TextSpan(
+                      children: [
+                        TextSpan(
+                          text: '₹',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w400,
+                            fontSize: 20.sp,
+                            height: 1.0,
+                            letterSpacing: 0.0,
+                            color: Colors.black,
+                          ),
+                        ),
+                        TextSpan(
+                          text: job?.salary ?? "Salary not specified",
+                          style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 24.sp,
+                            height: 1.0,
+                            letterSpacing: 0.0,
+                            color: Colors.black,
+                          ),
+                        ),
+                        TextSpan(
+                          text: '/',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 20.sp,
+                            height: 1.0,
+                            letterSpacing: 0.0,
+                            color: Colors.black,
+                          ),
+                        ),
+                        TextSpan(
+                          text: 'month',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w500,
+                            fontSize: 16.sp,
+                            height: 1.5,
+                            letterSpacing: 0.0,
+                            color: Colors.black,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                   Spacer(),
-                  Icon(Icons.bookmark_border_outlined)
+                  Icon(
+                    Icons.bookmark_border_outlined,
+                    size: 24,
+                  )
                 ],
               ),
               Text(
                 "1 vacancy for Sales Staff",
                 style: TextStyle(
                     color: Colors.black,
-                    fontSize: 16,
+                    fontSize: 16.sp,
                     fontWeight: FontWeight.w500),
               ),
               SizedBox(
                 height: ResponsiveHelper.height(24, context),
               ),
-              Row(
-                children: [
-                  Image.asset(
-                    'assets/location2.png',
-                    width: ResponsiveHelper.width(12, context),
-                    height: ResponsiveHelper.height(15, context),
+              Padding(
+                padding: EdgeInsets.only(left: 22.w),
+                child: Column(children: [
+                  Row(
+                    children: [
+                      Image.asset(
+                        'assets/location2.png',
+                        width: 18.w,
+                        height: 18.h,
+                      ),
+                      SizedBox(
+                        width: 6.w,
+                      ),
+                      Text(
+                        "Ernakulam",
+                        style: TextStyle(
+                            fontSize: 14.sp,
+                            fontWeight: FontWeight.w400,
+                            color: ColorConstants.lighttext),
+                      )
+                    ],
                   ),
                   SizedBox(
-                    width: ResponsiveHelper.width(6, context),
+                    height: 7.h,
                   ),
-                  Text(
-                    "Ernakulam",
-                    style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w400,
-                        color: ColorConstants.lighttext),
-                  )
-                ],
+                  Row(
+                    children: [
+                      Image.asset(
+                        'assets/building.png',
+                        width: 18.w,
+                        height: 18.h,
+                      ),
+                      SizedBox(
+                        width: 6.w,
+                      ),
+                      Text(
+                        "Lulu HyperMarket",
+                        style: TextStyle(
+                            fontSize: 14.sp,
+                            fontWeight: FontWeight.w400,
+                            color: ColorConstants.indicatorBlue),
+                      ),
+                      SizedBox(
+                        width: 2.w,
+                      ),
+                      Icon(
+                        Icons.north_east,
+                        size: 18,
+                        color: ColorConstants.indicatorBlue,
+                      )
+                    ],
+                  ),
+                  SizedBox(
+                    height: 7.h,
+                  ),
+                  Row(
+                    children: [
+                      Image.asset(
+                        'assets/flag_black.png',
+                        width: 18.w,
+                        height: 18.h,
+                      ),
+                      SizedBox(
+                        width: 6.w,
+                      ),
+                      Text(
+                        "Full time",
+                        style: TextStyle(
+                            fontSize: 14.sp,
+                            fontWeight: FontWeight.w400,
+                            color: Colors.black),
+                      ),
+                    ],
+                  ),
+                ]),
               ),
               SizedBox(
-                height: 2,
-              ),
-              Row(
-                children: [
-                  Image.asset(
-                    'assets/building.png',
-                    width: ResponsiveHelper.width(12, context),
-                    height: ResponsiveHelper.height(15, context),
-                  ),
-                  SizedBox(
-                    width: ResponsiveHelper.width(6, context),
-                  ),
-                  Text(
-                    "Lulu HyperMarket",
-                    style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w400,
-                        color: ColorConstants.indicatorBlue),
-                  ),
-                  SizedBox(
-                    width: ResponsiveHelper.width(2, context),
-                  ),
-                  Icon(
-                    Icons.north_east,
-                    size: 18,
-                    color: ColorConstants.indicatorBlue,
-                  )
-                ],
-              ),
-              SizedBox(
-                height: 2,
-              ),
-              Row(
-                children: [
-                  Image.asset(
-                    'assets/flag_black.png',
-                    width: ResponsiveHelper.width(12, context),
-                    height: ResponsiveHelper.height(15, context),
-                  ),
-                  SizedBox(
-                    width: ResponsiveHelper.width(6, context),
-                  ),
-                  Text(
-                    "Full time",
-                    style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w400,
-                        color: Colors.black),
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: ResponsiveHelper.height(40, context),
+                height: 25.h,
               ),
               Text(
                 "Job description",
                 style: TextStyle(
                     color: Colors.black,
-                    fontSize: 20,
+                    fontSize: 20.sp,
                     fontWeight: FontWeight.w500),
               ),
               SizedBox(
-                height: ResponsiveHelper.height(8, context),
+                height: 8.h,
               ),
               Text(
                 maxLines: 4,
@@ -238,21 +287,21 @@ class _JobDetailsScreenState extends State<JobDetailsScreen> {
                 "Join our dynamic sales team as a Sales Executive! In this role, you'll be responsible for driving revenue growth by building strong relationships with clients and identifying their needs. You'll engage with potential customers, present our innovative solutions, and close deals to meet and exceed sales targets. We value creativity and initiative, so you'll have the freedom to develop your own strategies for success. If you're passionate about sales and eager to make an impact, we want to hear from you!",
                 style: TextStyle(
                     color: ColorConstants.descText,
-                    fontSize: 16,
+                    fontSize: 16.sp,
                     fontWeight: FontWeight.w400),
               ),
               SizedBox(
-                height: ResponsiveHelper.height(24, context),
+                height: 20.h,
               ),
               Text(
                 "Key Responsbilities",
                 style: TextStyle(
                     color: Colors.black,
-                    fontSize: 20,
+                    fontSize: 20.sp,
                     fontWeight: FontWeight.w500),
               ),
               SizedBox(
-                height: ResponsiveHelper.height(8, context),
+                height: 8.h,
               ),
               Text(
                 "Develop and implement effective sales strategies to drive revenue growth. - Identify and engage potential clients through networking and outreach efforts more. - Conduct market research to understand customer needs and preferences. - Prepare and deliver compelling sales presentations to prospective clients. - Collaborate with the marketing team to create promotional materials and campaigns. - Maintain accurate records of sales activities and customer interactions in the CRM system. - Provide exceptional customer service to build long-term relationships with clients. - Meet or exceed monthly and quarterly sales targets.",
@@ -260,45 +309,45 @@ class _JobDetailsScreenState extends State<JobDetailsScreen> {
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(
                     color: ColorConstants.descText,
-                    fontSize: 16,
+                    fontSize: 16.sp,
                     fontWeight: FontWeight.w400),
               ),
               SizedBox(
-                height: ResponsiveHelper.height(24, context),
+                height: 24.h,
               ),
               Text(
                 "Skills",
                 style: TextStyle(
                     color: Colors.black,
-                    fontSize: 20,
+                    fontSize: 20.sp,
                     fontWeight: FontWeight.w500),
               ),
               SizedBox(
-                height: ResponsiveHelper.height(12, context),
+                height: 12.h,
               ),
               Row(
                 children: [
                   skillsContainer(context, "Cumunication skills"),
                   SizedBox(
-                    width: ResponsiveHelper.width(12, context),
+                    width: 12.w,
                   ),
                   skillsContainer(context, "Product knowledge"),
                 ],
               ),
               SizedBox(
-                height: ResponsiveHelper.height(12, context),
+                height: 12.h,
               ),
               Row(
                 children: [
                   skillsContainer(context, "Active listening"),
                   SizedBox(
-                    width: ResponsiveHelper.width(12, context),
+                    width: 12.w,
                   ),
                   skillsContainer(context, "Time Management"),
                 ],
               ),
               SizedBox(
-                height: ResponsiveHelper.height(17, context),
+                height: 16.h,
               ),
               GradientButton(
                 onPressed: () async {
@@ -308,14 +357,19 @@ class _JobDetailsScreenState extends State<JobDetailsScreen> {
                       );
                 },
                 name: "Apply job",
-                width: 373,
-                height: 44,
+                width: 373.w,
+                height: 44.h,
               ),
               SizedBox(
-                height: ResponsiveHelper.height(10, context),
+                height: 4.h,
               ),
-              ButtonWithoutGradient(
-                name: "Back",
+              InkWell(
+                onTap: () {
+                  Navigator.pop(context);
+                },
+                child: ButtonWithoutGradient(
+                  name: "Back",
+                ),
               )
             ],
           ),

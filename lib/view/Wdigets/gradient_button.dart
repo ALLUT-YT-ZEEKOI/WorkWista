@@ -1,15 +1,15 @@
-
-
 import 'package:flutter/material.dart';
-import 'package:workwista/view/responsive_helper.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 // ignore: must_be_immutable
 class GradientButton extends StatelessWidget {
   String name;
   double height;
   double width;
+  double radius;
   void Function()? onPressed;
   GradientButton({
+    this.radius = 53,
     required this.name,
     required this.onPressed,
     required this.height,
@@ -22,19 +22,19 @@ class GradientButton extends StatelessWidget {
     return ElevatedButton(
       style: ButtonStyle(
         minimumSize: WidgetStateProperty.all(Size(
-          ResponsiveHelper.width(width, context),
-          ResponsiveHelper.height(height, context),
+          width,
+          height,
         )),
         backgroundColor: WidgetStateProperty.all(Colors.transparent),
         shadowColor: WidgetStateProperty.all(Colors.transparent),
         shape: WidgetStateProperty.all(
           RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(53), // Adjust as needed
+            borderRadius: BorderRadius.circular(53.r), // Adjust as needed
           ),
         ),
         padding: WidgetStateProperty.all(EdgeInsets.zero),
       ),
-      onPressed:onPressed,
+      onPressed: onPressed,
       child: Ink(
         decoration: BoxDecoration(
           gradient: LinearGradient(
@@ -46,17 +46,17 @@ class GradientButton extends StatelessWidget {
             end: Alignment.centerRight,
           ),
           borderRadius:
-              BorderRadius.circular(53), // Match button's border radius
+              BorderRadius.circular(radius), // Match button's border radius
         ),
         child: Container(
-          width: ResponsiveHelper.width(373, context),
-          height: ResponsiveHelper.height(44, context),
+          width: 373.w,
+          height: 44.h,
           alignment: Alignment.center,
           child: Text(
             name,
             style: TextStyle(
               color: Colors.white,
-              fontSize: 14,
+              fontSize: 14.sp,
               fontWeight: FontWeight.w700,
             ),
           ),

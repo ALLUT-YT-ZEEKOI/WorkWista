@@ -57,6 +57,7 @@ class _SignupscreenState extends State<Signupscreen> {
 
   @override
   Widget build(BuildContext context) {
+    final controller = Provider.of<RegisterScreenController>(context);
     return Scaffold(
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 0.h),
@@ -282,18 +283,20 @@ class _SignupscreenState extends State<Signupscreen> {
                     ),
                     borderRadius: BorderRadius.circular(53),
                   ),
-                  child: Container(
-                    alignment: Alignment.center,
-                    padding: EdgeInsets.symmetric(vertical: 12.h),
-                    child: Text(
-                      'Next',
-                      style: TextStyle(
-                        color: Color(0xFFFAFAFA),
-                        fontSize: 16.sp,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                  ),
+                  child: controller.isloading
+                      ? CircularProgressIndicator()
+                      : Container(
+                          alignment: Alignment.center,
+                          padding: EdgeInsets.symmetric(vertical: 12.h),
+                          child: Text(
+                            'Next',
+                            style: TextStyle(
+                              color: Color(0xFFFAFAFA),
+                              fontSize: 16.sp,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ),
                 ),
               ),
               SizedBox(height: 0.h),

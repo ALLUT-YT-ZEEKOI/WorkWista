@@ -27,7 +27,7 @@ class _SignInScreenState extends State<SignInScreen> {
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
-
+final controller = Provider.of<LoginScreenController>(context);
     return Scaffold(
       resizeToAvoidBottomInset: true,
       backgroundColor: Colors.white,
@@ -259,7 +259,7 @@ class _SignInScreenState extends State<SignInScreen> {
               SizedBox(height: 20.h),
 
               // Login button
-              ElevatedButton(
+             controller.isloading ? CircularProgressIndicator() : ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   padding: EdgeInsets.symmetric(vertical: 14.h),
                   shape: RoundedRectangleBorder(

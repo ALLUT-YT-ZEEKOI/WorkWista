@@ -44,7 +44,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final profile = controller.ProfileDetails!.data;
 
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
+        elevation: 0, // remove shadow
+        scrolledUnderElevation: 0,
+        backgroundColor: Colors.white,
         title: Text(
           "Profile",
           style: TextStyle(fontWeight: FontWeight.w700, fontSize: 24),
