@@ -48,7 +48,8 @@ dependencies:
   flutter_screenutil: ^5.9.3
   webview_flutter: ^4.10.0
   flutter_web_auth_2: ^4.1.0
-  location: ^7.0.1
+  location: ^6.0.2
+  geocoding: ^3.0.0
   
 dev_dependencies:
   flutter_test:

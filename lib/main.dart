@@ -5,6 +5,7 @@ import 'package:workwista/view/Controllers/add_job_controller.dart';
 import 'package:workwista/view/Controllers/apply_job_controller.dart';
 import 'package:workwista/view/Controllers/job_details_screen_controller.dart';
 import 'package:workwista/view/Controllers/jobs_screen_controller.dart';
+import 'package:workwista/view/Controllers/location_provider_controller.dart';
 import 'package:workwista/view/Controllers/login_screen_controller.dart';
 import 'package:workwista/view/Controllers/profile_screen_controller.dart';
 import 'package:workwista/view/Controllers/register_screen_controller.dart';
@@ -23,6 +24,9 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(
           create: (context) => AddJobController(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => LocationProvider(),
         ),
         ChangeNotifierProvider(
           create: (context) => ApplyJobController(),

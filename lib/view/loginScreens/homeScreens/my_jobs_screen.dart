@@ -71,6 +71,7 @@ class _MyJobsScreenState extends State<MyJobsScreen> {
         return DefaultTabController(
           length: 3,
           child: Scaffold(
+            backgroundColor: Colors.white,
             appBar: AppBar(
               elevation: 0, // remove shadow
               scrolledUnderElevation: 0,

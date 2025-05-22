@@ -1,10 +1,15 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:location/location.dart' as loc;
 import 'package:provider/provider.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:workwista/Utils/color_constants.dart';
 import 'package:workwista/view/Controllers/jobs_screen_controller.dart';
+import 'package:workwista/view/Controllers/location_provider_controller.dart';
 import 'package:workwista/view/Wdigets/companiescard.dart';
 
 import 'package:workwista/view/Wdigets/greencard.dart';
@@ -30,23 +35,35 @@ late ScrollController _scrollController;
 
 
 
+ 
 
 
 
-  @override
+ @override
   void initState() {
     super.initState();
- _scrollController = ScrollController();
-  _scrollController.addListener(_onScroll);
- // Apply correct initial status bar color immediately
-WidgetsBinding.instance.addPostFrameCallback((_) async {
-  _updateStatusBarBasedOnOffset();
+    _scrollController = ScrollController();
+    _scrollController.addListener(_onScroll);
+    
+    // Apply correct initial status bar color immediately
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      _updateStatusBarBasedOnOffset();
 
-  final jobsController = context.read<JobsScreenController>();
-  await jobsController.getCategories();
-  await jobsController.getJobs();
-});
+      final jobsController = context.read<JobsScreenController>();
+      await jobsController.getCategories();
+      await jobsController.getJobs();
+      
+
+      // Initialize location once when app starts
+      final locationProvider = context.read<LocationProvider>();
+      if (locationProvider.cityName == 'not found') {
+        await locationProvider.getCurrentLocationAndCity();
+      }
+     
+    });
   }
+
+
 
 void _updateStatusBarBasedOnOffset() {
   if (_scrollController.hasClients && _scrollController.offset > 100) {
@@ -72,17 +89,18 @@ void _onScroll() {
   _updateStatusBarBasedOnOffset();
 }
 
+   @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
 
-@override
-void dispose() {
-  _scrollController.dispose();
-  super.dispose();
-}
+
 
 
   @override
   Widget build(BuildContext context) {
-  
+  final locationProvider = Provider.of<LocationProvider>(context);
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHight = MediaQuery.of(context).size.width;
     final PageController _controller = PageController();
@@ -175,36 +193,57 @@ void dispose() {
                                 ),
                               ),
                               SizedBox(width: 5.w),
-                              Container(
-                                decoration: BoxDecoration(
-                                  border: Border.all(
-                                    color: ColorConstants.containerBorder
-                                        // ignore: deprecated_member_use
-                                        .withOpacity(0.9),
-                                    width: 2.w,
-                                  ),
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(12.w),
-                                ),
-                                height: 47.5.h,
-                                width: 125.w,
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceEvenly,
-                                  children: [
-                                    Image.asset(
-                                      'assets/location.png',
-                                      height: 24.h,
-                                      width: 24.w,
+                              InkWell(
+                                onTap: () {
+                                   // Retry location when tapped
+                                  // Optionally allow manual refresh
+                locationProvider.getCurrentLocationAndCity();
+                                },
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                      color: ColorConstants.containerBorder
+                                          // ignore: deprecated_member_use
+                                          .withOpacity(0.9),
+                                      width: 2.w,
                                     ),
-                                    Text(
-                                      "Eranakulam",
-                                      style: TextStyle(
-                                        fontSize: 12.sp,
-                                        fontWeight: FontWeight.w500,
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(12.w),
+                                  ),
+                                  height: 47.5.h,
+                                  width: 125.w,
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
+                                    children: [
+                                     locationProvider.isLoadingLocation
+                                          ? SizedBox(
+                                              width: 16.w,
+                                              height: 16.h,
+                                              child: CircularProgressIndicator(
+                                                strokeWidth: 2,
+                                                color: Colors.grey[600],
+                                              ),
+                                            )
+                                          :
+                                      Image.asset(
+                                        'assets/location.png',
+                                        height: 24.h,
+                                        width: 24.w,
                                       ),
-                                    )
-                                  ],
+                                      Flexible(
+
+                                        child: Text(
+                                          overflow: TextOverflow.ellipsis,
+                                         locationProvider.cityName,
+                                          style: TextStyle(
+                                            fontSize: 12.sp,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+                                      )
+                                    ],
+                                  ),
                                 ),
                               )
                             ],
