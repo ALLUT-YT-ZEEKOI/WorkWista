@@ -34,8 +34,7 @@ class _JobDetailsScreenState extends State<JobDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     final controller = context.watch<JobDetailsScreenController>();
-    final screenWidth = MediaQuery.of(context).size.width;
-    final screenHight = MediaQuery.of(context).size.width;
+
     final PageController _controller = PageController();
     final int _numPages = 3;
 

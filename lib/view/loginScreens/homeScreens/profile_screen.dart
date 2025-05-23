@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:workwista/Utils/color_constants.dart';
 import 'package:workwista/view/Controllers/profile_screen_controller.dart';
 import 'package:workwista/view/loginScreens/sign_in_screen.dart';
-import 'package:workwista/view/responsive_helper.dart';
+
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -51,407 +52,412 @@ class _ProfileScreenState extends State<ProfileScreen> {
         backgroundColor: Colors.white,
         title: Text(
           "Profile",
-          style: TextStyle(fontWeight: FontWeight.w700, fontSize: 24),
+          style: TextStyle(fontWeight: FontWeight.w700, fontSize: 24.sp),
         ),
       ),
       body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(
-              height: 22,
-            ),
-            Center(
-              child: Container(
-                width: ResponsiveHelper.width(372, context),
-                height: ResponsiveHelper.height(205, context),
-                decoration: BoxDecoration(
-                    border:
-                        Border.all(width: 1, color: ColorConstants.descText),
-                    borderRadius: BorderRadius.circular(14),
-                    color: Colors.white),
-                child: Column(
-                  children: [
-                    SizedBox(
-                      height: ResponsiveHelper.height(19, context),
-                    ),
-                    CircleAvatar(
-                      backgroundColor: Colors.black,
-                      radius: 25,
-                    ),
-                    SizedBox(
-                      height: ResponsiveHelper.height(16, context),
-                    ),
-                    Text(
-                      profile?.name ?? "not found",
-                      style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 18,
-                          fontWeight: FontWeight.w700),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          "Software Developer",
-                          style: TextStyle(
-                              color: ColorConstants.descText,
-                              fontWeight: FontWeight.w400,
-                              fontSize: 14),
-                        ),
-                        SizedBox(
-                          width: ResponsiveHelper.width(10, context),
-                        ),
-                        CircleAvatar(
-                          radius: 3,
-                          backgroundColor: ColorConstants.descText,
-                        ),
-                        SizedBox(
-                          width: ResponsiveHelper.width(10, context),
-                        ),
-                        Text(
-                          "Amazone",
-                          style: TextStyle(
-                              color: ColorConstants.descText,
-                              fontWeight: FontWeight.w400,
-                              fontSize: 14),
-                        ),
-                      ],
-                    ),
-                    SizedBox(
-                      height: ResponsiveHelper.height(13, context),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.symmetric(
-                          horizontal: ResponsiveHelper.width(10, context)),
-                      child: Divider(),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          profile?.email ?? "",
-                          style: TextStyle(
-                              color: ColorConstants.descText,
-                              fontWeight: FontWeight.w400,
-                              fontSize: 14),
-                        ),
-                        SizedBox(
-                          width: ResponsiveHelper.width(10, context),
-                        ),
-                        SizedBox(
-                          width: ResponsiveHelper.width(10, context),
-                        ),
-                        Text(
-                          "+91 ${profile?.phoneNumber ?? ""}",
-                          style: TextStyle(
-                              color: Colors.grey,
-                              fontWeight: FontWeight.w400,
-                              fontSize: 14),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
+        child: Padding(
+          padding: EdgeInsets.symmetric(vertical: 12),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(
+                height: 22.h,
               ),
-            ),
-            SizedBox(
-              height: ResponsiveHelper.height(29, context),
-            ),
-            Padding(
-              padding: EdgeInsets.symmetric(
-                  horizontal: ResponsiveHelper.width(10, context)),
-              child: Text(
-                "Accounts",
-                style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 20,
-                    fontWeight: FontWeight.w500),
-              ),
-            ),
-            Center(
-              child: Container(
-                  padding: EdgeInsets.symmetric(
-                      vertical: ResponsiveHelper.height(16, context),
-                      horizontal: ResponsiveHelper.width(12, context)),
-                  width: ResponsiveHelper.width(372, context),
-                  height: ResponsiveHelper.height(435, context),
+              Center(
+                child: Container(
+                  width: 372.w,
+                  height: 205.h,
                   decoration: BoxDecoration(
-                      border:
-                          Border.all(width: 1, color: ColorConstants.descText),
-                      borderRadius: BorderRadius.circular(14),
+                      border: Border.all(
+                          width: 1.w, color: ColorConstants.descText),
+                      borderRadius: BorderRadius.circular(14.r),
                       color: Colors.white),
                   child: Column(
                     children: [
+                      SizedBox(
+                        height: 18.h,
+                      ),
+                      CircleAvatar(
+                        backgroundColor: Colors.black,
+                        radius: 26.r,
+                        child: CircleAvatar(
+                          backgroundColor: Colors.white,
+                          radius: 25.r,
+                          child: Icon(
+                            Icons.person,
+                            size: 40,
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 16.h,
+                      ),
+                      Text(
+                        profile?.name ?? "not found",
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 18.sp,
+                            fontWeight: FontWeight.w700),
+                      ),
                       Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Container(
-                            width: 36,
-                            height: 36,
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(33),
-                                color: ColorConstants.containerwhite),
-                            child: Icon(
-                              Icons.person_outlined,
-                              color: Colors.grey.shade600,
-                            ),
+                          Text(
+                            "Software Developer",
+                            style: TextStyle(
+                                color: ColorConstants.descText,
+                                fontWeight: FontWeight.w400,
+                                fontSize: 14.sp),
                           ),
                           SizedBox(
-                            width: 10,
+                            width: 8.w,
+                          ),
+                          CircleAvatar(
+                            radius: 3.r,
+                            backgroundColor:
+                                // ignore: deprecated_member_use
+                                ColorConstants.descText.withOpacity(0.7),
+                          ),
+                          SizedBox(
+                            width: 8.w,
                           ),
                           Text(
-                            "Location,Address",
+                            "Amazone",
                             style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 16,
-                                fontWeight: FontWeight.w500),
+                                color: ColorConstants.descText,
+                                fontWeight: FontWeight.w400,
+                                fontSize: 14.sp),
                           ),
-                          Spacer(),
-                          Icon(
-                            Icons.arrow_forward_ios,
-                            size: 20,
-                          )
                         ],
                       ),
                       SizedBox(
-                        height: 16,
+                        height: 18.h,
                       ),
-                      Divider(
-                        thickness: 2,
-                      ),
-                      Row(
-                        children: [
-                          Container(
-                            width: 36,
-                            height: 36,
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(33),
-                                color: ColorConstants.containerwhite),
-                            child: Icon(
-                              Icons.email_outlined,
-                              size: 22,
-                              color: Colors.grey.shade600,
-                            ),
-                          ),
-                          SizedBox(
-                            width: 10,
-                          ),
-                          Text(
-                            "Email",
-                            style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 16,
-                                fontWeight: FontWeight.w500),
-                          ),
-                          Spacer(),
-                          Text(
-                            "verify",
-                            style: TextStyle(
-                              fontSize: 13,
-                              fontWeight: FontWeight.w400,
-                              fontStyle: FontStyle.italic,
-                            ),
-                          ),
-                          Icon(
-                            Icons.arrow_forward_ios,
-                            size: 20,
-                          )
-                        ],
-                      ),
-                      SizedBox(
-                        height: 16,
-                      ),
-                      Divider(
-                        thickness: 2,
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 10.w),
+                        child: Divider(),
                       ),
                       Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Container(
-                            width: 36,
-                            height: 36,
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(33),
-                                color: ColorConstants.containerwhite),
-                            child: Icon(
-                              Icons.person_outline,
-                              size: 22,
-                              color: Colors.grey.shade600,
-                            ),
+                          Text(
+                            profile?.email ?? "",
+                            style: TextStyle(
+                                color: ColorConstants.descText,
+                                fontWeight: FontWeight.w400,
+                                fontSize: 14.sp),
                           ),
                           SizedBox(
-                            width: 10,
+                            width: 23.w,
                           ),
                           Text(
-                            "Age",
+                            "+91 ${profile?.phoneNumber ?? ""}",
                             style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 16,
-                                fontWeight: FontWeight.w500),
+                                color: ColorConstants.descText,
+                                fontWeight: FontWeight.w400,
+                                fontSize: 14.sp),
                           ),
-                          Spacer(),
-                          Text(
-                            profile?.dob.toString() ?? "",
-                            style: TextStyle(
-                              fontSize: 13,
-                              fontWeight: FontWeight.w400,
-                              fontStyle: FontStyle.italic,
-                            ),
-                          ),
-                          Icon(
-                            Icons.arrow_forward_ios,
-                            size: 20,
-                          )
                         ],
                       ),
-                      SizedBox(
-                        height: 16,
-                      ),
-                      Divider(
-                        thickness: 2,
-                      ),
-                      Row(
-                        children: [
-                          Container(
-                            width: 36,
-                            height: 36,
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(33),
-                                color: ColorConstants.containerwhite),
-                            child: Icon(
-                              Icons.language,
-                              size: 22,
-                              color: Colors.grey.shade600,
-                            ),
-                          ),
-                          SizedBox(
-                            width: 10,
-                          ),
-                          Text(
-                            "Language",
-                            style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 16,
-                                fontWeight: FontWeight.w500),
-                          ),
-                          Spacer(),
-                          Text(
-                            "Malayalam",
-                            style: TextStyle(
-                              fontSize: 13,
-                              fontWeight: FontWeight.w400,
-                              fontStyle: FontStyle.italic,
-                            ),
-                          ),
-                          Icon(
-                            Icons.arrow_forward_ios,
-                            size: 20,
-                          )
-                        ],
-                      ),
-                      SizedBox(
-                        height: 16,
-                      ),
-                      Divider(
-                        thickness: 2,
-                      ),
-                      Row(
-                        children: [
-                          Container(
-                            width: 36,
-                            height: 36,
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(33),
-                                color: ColorConstants.containerwhite),
-                            child: Icon(
-                              Icons.business_center_outlined,
-                              size: 22,
-                              color: Colors.grey.shade600,
-                            ),
-                          ),
-                          SizedBox(
-                            width: 10,
-                          ),
-                          Text(
-                            "Profession",
-                            style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 16,
-                                fontWeight: FontWeight.w500),
-                          ),
-                          Spacer(),
-                          Text(
-                            "Software developer",
-                            style: TextStyle(
-                              fontSize: 13,
-                              fontWeight: FontWeight.w400,
-                              fontStyle: FontStyle.italic,
-                            ),
-                          ),
-                          Icon(
-                            Icons.arrow_forward_ios,
-                            size: 20,
-                          )
-                        ],
-                      ),
-                      SizedBox(
-                        height: 16,
-                      ),
-                      Divider(
-                        thickness: 2,
-                      ),
-                      InkWell(
-                        onTap: () async {
-                          // Clear tokens from SharedPreferences
-                          SharedPreferences prefs =
-                              await SharedPreferences.getInstance();
-                          await prefs.setString("access", "");
-                          await prefs.setString("refresh", "");
-
-                          // Navigate to login screen and prevent going back
-                          Navigator.pushAndRemoveUntil(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => SignInScreen()),
-                            (Route<dynamic> route) =>
-                                false, // Remove all routes
-                          );
-                        },
-                        child: Row(
+                    ],
+                  ),
+                ),
+              ),
+              SizedBox(height: 29.h),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 10.w),
+                child: Text(
+                  "Accounts",
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 20.sp,
+                      fontWeight: FontWeight.w500),
+                ),
+              ),
+              Center(
+                child: Container(
+                    padding:
+                        EdgeInsets.symmetric(vertical: 16.h, horizontal: 12.w),
+                    width: 374.w,
+                    height: 415.h,
+                    decoration: BoxDecoration(
+                        border: Border.all(
+                            width: 1.w, color: ColorConstants.descText),
+                        borderRadius: BorderRadius.circular(12.r),
+                        color: Colors.white),
+                    child: Column(
+                      children: [
+                        Row(
                           children: [
                             Container(
-                              width: 36,
-                              height: 36,
+                              width: 36.w,
+                              height: 36.h,
                               decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(33),
-                                  color: ColorConstants.containerwhite),
+                                  borderRadius: BorderRadius.circular(33.r),
+                                  color: Color(0xffDAE1E7)),
                               child: Icon(
-                                Icons.exit_to_app,
-                                size: 22,
-                                color: Colors.grey.shade600,
+                                Icons.person_outlined,
+                                color: Color(0xff92A5B5),
                               ),
                             ),
                             SizedBox(
-                              width: 10,
+                              width: 10.w,
                             ),
                             Text(
-                              "Logout",
+                              "Location,Address",
                               style: TextStyle(
                                   color: Colors.black,
-                                  fontSize: 16,
+                                  fontSize: 16.sp,
                                   fontWeight: FontWeight.w500),
                             ),
                             Spacer(),
                             Icon(
                               Icons.arrow_forward_ios,
-                              size: 20,
+                              size: 20.w,
                             )
                           ],
                         ),
-                      ),
-                    ],
-                  )),
-            ),
-          ],
+                        SizedBox(
+                          height: 15.h,
+                        ),
+                        Divider(
+                          thickness: 2.h,
+                        ),
+                        Row(
+                          children: [
+                            Container(
+                              width: 36.w,
+                              height: 36.h,
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(33.r),
+                                  color: Color(0xffDAE1E7)),
+                              child: Icon(
+                                Icons.email_outlined,
+                                size: 22,
+                                color: Color(0xff92A5B5),
+                              ),
+                            ),
+                            SizedBox(
+                              width: 10.w,
+                            ),
+                            Text(
+                              "Email",
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 16.sp,
+                                  fontWeight: FontWeight.w500),
+                            ),
+                            Spacer(),
+                            Text(
+                              "verify",
+                              style: TextStyle(
+                                fontSize: 13.sp,
+                                fontWeight: FontWeight.w400,
+                                fontStyle: FontStyle.italic,
+                              ),
+                            ),
+                            Icon(
+                              Icons.arrow_forward_ios,
+                              size: 20.w,
+                            )
+                          ],
+                        ),
+                        SizedBox(
+                          height: 15.h,
+                        ),
+                        Divider(
+                          thickness: 2.h,
+                        ),
+                        Row(
+                          children: [
+                            Container(
+                              width: 36.w,
+                              height: 36.h,
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(33.r),
+                                  color: Color(0xffDAE1E7)),
+                              child: Icon(
+                                Icons.person_outline,
+                                size: 22,
+                                color: Color(0xff92A5B5),
+                              ),
+                            ),
+                            SizedBox(
+                              width: 10.w,
+                            ),
+                            Text(
+                              "Age",
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 16.sp,
+                                  fontWeight: FontWeight.w500),
+                            ),
+                            Spacer(),
+                            Text(
+                              profile?.dob.toString() ?? "",
+                              style: TextStyle(
+                                fontSize: 13.sp,
+                                fontWeight: FontWeight.w400,
+                                fontStyle: FontStyle.italic,
+                              ),
+                            ),
+                            Icon(
+                              Icons.arrow_forward_ios,
+                              size: 20.w,
+                            )
+                          ],
+                        ),
+                        SizedBox(
+                          height: 15.h,
+                        ),
+                        Divider(
+                          thickness: 2.h,
+                        ),
+                        Row(
+                          children: [
+                            Container(
+                              width: 36.w,
+                              height: 36.h,
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(33.r),
+                                  color: Color(0xffDAE1E7)),
+                              child: Icon(
+                                Icons.language,
+                                size: 22,
+                                color: Color(0xff92A5B5),
+                              ),
+                            ),
+                            SizedBox(
+                              width: 10.w,
+                            ),
+                            Text(
+                              "Language",
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 16.sp,
+                                  fontWeight: FontWeight.w500),
+                            ),
+                            Spacer(),
+                            Text(
+                              "Malayalam",
+                              style: TextStyle(
+                                fontSize: 13.sp,
+                                fontWeight: FontWeight.w400,
+                                fontStyle: FontStyle.italic,
+                              ),
+                            ),
+                            Icon(
+                              Icons.arrow_forward_ios,
+                              size: 20.w,
+                            )
+                          ],
+                        ),
+                        SizedBox(
+                          height: 15.h,
+                        ),
+                        Divider(
+                          thickness: 2.h,
+                        ),
+                        Row(
+                          children: [
+                            Container(
+                              width: 36.w,
+                              height: 36.h,
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(33.r),
+                                  color: Color(0xffDAE1E7)),
+                              child: Icon(
+                                Icons.business_center_outlined,
+                                size: 22,
+                                color: Color(0xff92A5B5),
+                              ),
+                            ),
+                            SizedBox(
+                              width: 10.w,
+                            ),
+                            Text(
+                              "Profession",
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 16.sp,
+                                  fontWeight: FontWeight.w500),
+                            ),
+                            Spacer(),
+                            Text(
+                              "Software developer",
+                              style: TextStyle(
+                                fontSize: 13.sp,
+                                fontWeight: FontWeight.w400,
+                                fontStyle: FontStyle.italic,
+                              ),
+                            ),
+                            Icon(
+                              Icons.arrow_forward_ios,
+                              size: 20.w,
+                            )
+                          ],
+                        ),
+                        SizedBox(
+                          height: 15.h,
+                        ),
+                        Divider(
+                          thickness: 2.h,
+                        ),
+                        InkWell(
+                          onTap: () async {
+                            // Clear tokens from SharedPreferences
+                            SharedPreferences prefs =
+                                await SharedPreferences.getInstance();
+                            await prefs.setString("access", "");
+                            await prefs.setString("refresh", "");
+
+                            // Navigate to login screen and prevent going back
+                            Navigator.pushAndRemoveUntil(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => SignInScreen()),
+                              (Route<dynamic> route) =>
+                                  false, // Remove all routes
+                            );
+                          },
+                          child: Row(
+                            children: [
+                              Container(
+                                width: 36.w,
+                                height: 36.h,
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(33.r),
+                                    color: Color(0xffDAE1E7)),
+                                child: Icon(
+                                  Icons.exit_to_app,
+                                  size: 22,
+                                  color: Color(0xff92A5B5),
+                                ),
+                              ),
+                              SizedBox(
+                                width: 10.w,
+                              ),
+                              Text(
+                                "Logout",
+                                style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 16.sp,
+                                    fontWeight: FontWeight.w500),
+                              ),
+                              Spacer(),
+                              Icon(
+                                Icons.arrow_forward_ios,
+                                size: 20.w,
+                              )
+                            ],
+                          ),
+                        ),
+                      ],
+                    )),
+              ),
+            ],
+          ),
         ),
       ),
     );

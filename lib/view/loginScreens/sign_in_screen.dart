@@ -3,7 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:workwista/view/Controllers/login_screen_controller.dart';
 import 'package:workwista/view/loginScreens/forgot_password_screen.dart';
-import 'package:workwista/view/loginScreens/homeScreens/google_auth_webview.dart';
+
 import 'package:workwista/view/loginScreens/signup_screen.dart';
 
 class SignInScreen extends StatefulWidget {
@@ -27,7 +27,7 @@ class _SignInScreenState extends State<SignInScreen> {
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
-final controller = Provider.of<LoginScreenController>(context);
+    final controller = Provider.of<LoginScreenController>(context);
     return Scaffold(
       resizeToAvoidBottomInset: true,
       backgroundColor: Colors.white,
@@ -71,29 +71,34 @@ final controller = Provider.of<LoginScreenController>(context);
 
               // Google sign-in button
               InkWell(
-                onTap: () => GoogleAuthService.signInWithGoogle(context),
-                child: Container(
-                  padding:
-                      EdgeInsets.symmetric(horizontal: 20.w, vertical: 12.h),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(35.w),
-                    border: Border.all(color: Color(0xFFBDBDBD), width: 1.w),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Image.asset('assets/flat-color-icons_google.png',
-                          width: screenWidth * 0.07.w),
-                      SizedBox(width: 10.w),
-                      Text('Sign up with Google',
-                          style: TextStyle(
-                            fontSize: 14.sp,
-                            fontWeight: FontWeight.w500,
-                          )),
-                    ],
-                  ),
-                ),
+                onTap: () {
+                  controller.handleGoogleSignIn(context: context);
+                },
+                child: controller.isloadingG
+                    ? CircularProgressIndicator()
+                    : Container(
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 20.w, vertical: 12.h),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(35.w),
+                          border:
+                              Border.all(color: Color(0xFFBDBDBD), width: 1.w),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Image.asset('assets/flat-color-icons_google.png',
+                                width: screenWidth * 0.07.w),
+                            SizedBox(width: 10.w),
+                            Text('Sign up with Google',
+                                style: TextStyle(
+                                  fontSize: 14.sp,
+                                  fontWeight: FontWeight.w500,
+                                )),
+                          ],
+                        ),
+                      ),
               ),
               SizedBox(height: 20.h),
 
@@ -259,55 +264,58 @@ final controller = Provider.of<LoginScreenController>(context);
               SizedBox(height: 20.h),
 
               // Login button
-             controller.isloading ? CircularProgressIndicator() : ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  padding: EdgeInsets.symmetric(vertical: 14.h),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(53.w),
-                  ),
-                  backgroundColor: Colors.transparent,
-                  shadowColor: Colors.transparent,
-                ),
-                onPressed: () async {
-                  if (emailController.text.isNotEmpty &&
-                      passController.text.isNotEmpty) {
-                    await context.read<LoginScreenController>().onLogin(
-                          email: emailController.text,
-                          password: passController.text,
-                          context: context,
-                        );
-                  } else {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                          content: Text("Please enter email and password")),
-                    );
-                  }
-                },
-                child: Ink(
-                  decoration: BoxDecoration(
-                    gradient: const LinearGradient(
-                      begin: Alignment(0.00, 0.50),
-                      end: Alignment(1.00, 0.50),
-                      colors: [Color(0xFF56A2FF), Color(0xFF00316D)],
-                    ),
-                    borderRadius: BorderRadius.circular(53.w),
-                  ),
-                  child: Container(
-                    width: double.infinity,
-                    alignment: Alignment.center,
-                    padding: EdgeInsets.symmetric(vertical: 12.h),
-                    child: Text(
-                      'Login',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: Color(0xFFFAFAFA),
-                        fontSize: 16.sp,
-                        fontWeight: FontWeight.w700,
+              controller.isloading
+                  ? CircularProgressIndicator()
+                  : ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        padding: EdgeInsets.symmetric(vertical: 14.h),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(53.w),
+                        ),
+                        backgroundColor: Colors.transparent,
+                        shadowColor: Colors.transparent,
+                      ),
+                      onPressed: () async {
+                        if (emailController.text.isNotEmpty &&
+                            passController.text.isNotEmpty) {
+                          await context.read<LoginScreenController>().onLogin(
+                                email: emailController.text,
+                                password: passController.text,
+                                context: context,
+                              );
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                                content:
+                                    Text("Please enter email and password")),
+                          );
+                        }
+                      },
+                      child: Ink(
+                        decoration: BoxDecoration(
+                          gradient: const LinearGradient(
+                            begin: Alignment(0.00, 0.50),
+                            end: Alignment(1.00, 0.50),
+                            colors: [Color(0xFF56A2FF), Color(0xFF00316D)],
+                          ),
+                          borderRadius: BorderRadius.circular(53.w),
+                        ),
+                        child: Container(
+                          width: double.infinity,
+                          alignment: Alignment.center,
+                          padding: EdgeInsets.symmetric(vertical: 12.h),
+                          child: Text(
+                            'Login',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: Color(0xFFFAFAFA),
+                              fontSize: 16.sp,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ),
                       ),
                     ),
-                  ),
-                ),
-              ),
               SizedBox(height: 16.h),
             ],
           ),

@@ -7,7 +7,6 @@ import 'package:workwista/view/Model/all_category_listing_model.dart';
 import 'package:workwista/view/Wdigets/search_field.dart';
 import 'package:workwista/view/loginScreens/homeScreens/category_search_screen.dart';
 import 'package:workwista/view/loginScreens/homeScreens/selected_category_jobs_screen.dart';
-import 'package:workwista/view/responsive_helper.dart';
 
 class CategoriesScreen extends StatefulWidget {
   const CategoriesScreen({super.key});

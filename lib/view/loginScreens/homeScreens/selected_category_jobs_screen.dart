@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:workwista/view/Controllers/jobs_screen_controller.dart';
 import 'package:workwista/view/Wdigets/jobofferscard.dart';
 import 'package:workwista/view/loginScreens/homeScreens/job_details_screen.dart';
-import 'package:workwista/view/responsive_helper.dart';
+
 
 class SelectedCategoryJobsScreen extends StatelessWidget {
   final String selectedCategory;
