@@ -15,12 +15,13 @@ class AddJobController with ChangeNotifier {
   Future onAddJob({
     required String title,
     required String description,
+    required String manual_location,
+    required String key_responsibility,
     required String job_date,
     required BuildContext context,
     required File? job_image,
-    required String salary,
-    required String longitude,
-    required String latitude,
+    required String salary_from,
+    required String salary_to,
     required String? job_category,
     required String job_type,
   }) async {
@@ -39,9 +40,10 @@ class AddJobController with ChangeNotifier {
         description,
         job_date,
         job_image,
-        salary,
-        longitude,
-        latitude,
+        salary_from,
+        salary_to,
+        manual_location,
+        key_responsibility,
         job_category,
         job_type,
       );
@@ -56,11 +58,12 @@ class AddJobController with ChangeNotifier {
             description,
             job_date,
             job_image,
-            salary,
-            longitude,
-            latitude,
-            job_category,
-            job_type,
+            salary_from,
+            salary_to,
+            manual_location,
+           key_responsibility,
+           job_category,
+           job_type
           );
         }
       }
@@ -101,9 +104,10 @@ class AddJobController with ChangeNotifier {
     String description,
     String job_date,
     File? job_image,
-    String salary,
-    String longitude,
-    String latitude,
+    String salary_from,
+    String salary_to,
+    String manual_location,
+    String key_responsibility,
     String? job_category,
     String job_type,
   ) async {
@@ -113,9 +117,10 @@ class AddJobController with ChangeNotifier {
     request.fields['title'] = title;
     request.fields['description'] = description;
     request.fields['job_date'] = job_date;
-    request.fields['salary'] = salary;
-    request.fields['longitude'] = longitude;
-    request.fields['latitude'] = latitude;
+    request.fields['salary_from'] = salary_from;
+    request.fields['salary_to'] = salary_to;
+    request.fields['manual_location'] = manual_location;
+    request.fields['key_responsibility'] = key_responsibility;
     request.fields['job_category'] = job_category ?? '';
     request.fields['job_type'] = job_type;
 
@@ -134,8 +139,7 @@ class AddJobController with ChangeNotifier {
 
   Future<String?> _refreshToken(String refreshToken) async {
     try {
-      final url =
-          Uri.parse('https://workwista.com/users/api/token/refresh/');
+      final url = Uri.parse('https://workwista.com/users/api/token/refresh/');
       final response = await http.post(
         url,
         body: {'refresh': refreshToken},

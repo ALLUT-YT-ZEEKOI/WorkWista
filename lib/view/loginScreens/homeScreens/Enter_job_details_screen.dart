@@ -188,7 +188,7 @@ class _EnterJobDetailsScreenState extends State<EnterJobDetailsScreen> {
   final TextEditingController _jobTitleController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
 
-  final TextEditingController _longitudeController = TextEditingController();
+  final TextEditingController _key_responsibilities = TextEditingController();
 
   final TextEditingController _salaryFromController = TextEditingController();
   final TextEditingController _salaryToController = TextEditingController();
@@ -626,7 +626,7 @@ class _EnterJobDetailsScreenState extends State<EnterJobDetailsScreen> {
                     "Responsiblities",
                     100,
                     maxLines: 3,
-                    _descriptionController,
+                    _key_responsibilities,
                     validator: (value) =>
                         value == null || value.isEmpty ? 'Required' : null,
                   ),
@@ -634,22 +634,23 @@ class _EnterJobDetailsScreenState extends State<EnterJobDetailsScreen> {
                   SizedBox(height: 20.h),
                   GradientButton(
                     onPressed: () async {
+                      String formatted =
+                          '${selectedYear!}-${selectedMonth!.toString().padLeft(2, '0')}-${selectedDay!.toString().padLeft(2, '0')}';
                       bool formValid = _formKey.currentState!.validate();
                       bool selectionsValid = _validateSelections();
-
+                      log(formatted.toString());
                       if (formValid && selectionsValid) {
                         // All fields are filled correctly — proceed with add job
                         await context.read<AddJobController>().onAddJob(
                               title: _jobTitleController.text,
                               description: _descriptionController.text,
-                              job_date: _descriptionController.text,
+                              job_date: formatted,
                               context: context,
                               job_image: _selectedImage,
-                              salary: _salaryFromController.text,
-                              longitude:
-                                  _trimLastDecimal(_longitudeController.text),
-                              latitude:
-                                  _trimLastDecimal(_descriptionController.text),
+                              salary_from: _salaryFromController.text,
+                              salary_to: _salaryToController.text,
+                              manual_location: _locationController.text,
+                              key_responsibility: _key_responsibilities.text,
                               job_category: widget.category_id,
                               job_type: _selectedJobTypeId!,
                             );
