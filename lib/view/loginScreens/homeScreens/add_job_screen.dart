@@ -69,7 +69,10 @@ class _AddJobScreenState extends State<AddJobScreen> {
                 vertical: 0.h,
               ),
               child: controller.isloading
-                  ? CircularProgressIndicator()
+                  ? SizedBox(
+                      height: MediaQuery.of(context).size.height *
+                          0.6, // Take most of the screen height
+                      child: Center(child: CircularProgressIndicator()))
                   : Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: controller.filteredCategories.map((category) {

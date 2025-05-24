@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
@@ -36,7 +38,7 @@ class _JobDetailsScreenState extends State<JobDetailsScreen> {
     final controller = context.watch<JobDetailsScreenController>();
 
     final PageController _controller = PageController();
-    final int _numPages = 3;
+    final int _numPages = 1;
 
     // Show loading indicator
     if (controller.isloading) {
@@ -51,13 +53,21 @@ class _JobDetailsScreenState extends State<JobDetailsScreen> {
 
     return Scaffold(
       appBar: AppBar(
+        elevation: 0, // remove shadow
+        scrolledUnderElevation: 0,
+        backgroundColor: Colors.white,
         centerTitle: true,
-        title: Text(
-          "Job Details",
-          style: TextStyle(
-              color: Colors.black,
-              fontSize: 20.sp,
-              fontWeight: FontWeight.w600),
+        title: InkWell(
+          onTap: () {
+            log(job!.jobImage.toString());
+          },
+          child: Text(
+            "Job Details",
+            style: TextStyle(
+                color: Colors.black,
+                fontSize: 20.sp,
+                fontWeight: FontWeight.w600),
+          ),
         ),
       ),
       body: Padding(
@@ -78,29 +88,7 @@ class _JobDetailsScreenState extends State<JobDetailsScreen> {
                       decoration: BoxDecoration(
                           image: DecorationImage(
                               fit: BoxFit.cover,
-                              image: NetworkImage(
-                                  'https://images.pexels.com/photos/125532/pexels-photo-125532.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2')),
-                          borderRadius: BorderRadius.circular(11.r),
-                          color: Colors.amber),
-                    ),
-                    Container(
-                      width: 373.w,
-                      height: 203.h,
-                      decoration: BoxDecoration(
-                          image: DecorationImage(
-                              fit: BoxFit.cover,
-                              image: NetworkImage(
-                                  'https://images.pexels.com/photos/125532/pexels-photo-125532.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2')),
-                          borderRadius: BorderRadius.circular(11.r),
-                          color: Colors.amber),
-                    ),
-                    Container(
-                      width: 373.w,
-                      height: 203.h,
-                      decoration: BoxDecoration(
-                          image: DecorationImage(
-                              fit: BoxFit.cover,
-                              image: NetworkImage(
+                              image: NetworkImage(job?.jobImage ??
                                   'https://images.pexels.com/photos/125532/pexels-photo-125532.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2')),
                           borderRadius: BorderRadius.circular(11.r),
                           color: Colors.amber),
@@ -142,7 +130,37 @@ class _JobDetailsScreenState extends State<JobDetailsScreen> {
                           ),
                         ),
                         TextSpan(
-                          text: job?.salary ?? "Salary not specified",
+                          text: job?.salary_from != null
+                              ? double.tryParse(job!.salary_from!)
+                                      ?.toInt()
+                                      .toString() ??
+                                  "0"
+                              : "Salary not specified",
+                          style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 24.sp,
+                            height: 1.0,
+                            letterSpacing: 0.0,
+                            color: Colors.black,
+                          ),
+                        ),
+                        TextSpan(
+                          text: ' - ',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w400,
+                            fontSize: 20.sp,
+                            height: 1.0,
+                            letterSpacing: 0.0,
+                            color: Colors.black,
+                          ),
+                        ),
+                        TextSpan(
+                          text: job?.salary_to != null
+                              ? double.tryParse(job!.salary_to!)
+                                      ?.toInt()
+                                      .toString() ??
+                                  "0"
+                              : "Salary not specified",
                           style: TextStyle(
                             fontWeight: FontWeight.w600,
                             fontSize: 24.sp,
@@ -189,83 +207,155 @@ class _JobDetailsScreenState extends State<JobDetailsScreen> {
                     fontWeight: FontWeight.w500),
               ),
               SizedBox(
-                height: ResponsiveHelper.height(24, context),
+                height: 16.h,
               ),
               Padding(
-                padding: EdgeInsets.only(left: 22.w),
-                child: Column(children: [
-                  Row(
+                padding: EdgeInsets.only(left: 0.w),
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Image.asset(
-                        'assets/location2.png',
-                        width: 18.w,
-                        height: 18.h,
-                      ),
+                      Row(children: [
+                        Container(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 12.w, vertical: 0),
+                          height: 32.h,
+                          // width: 121.w,
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(12.r),
+                              border: Border.all(
+                                width: 1.w,
+                                color: Color(0xff7991A4),
+                              )),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Baseline(
+                                baselineType: TextBaseline.alphabetic,
+                                baseline: 16.sp,
+                                child: Image.asset(
+                                  'assets/location2.png',
+                                  width: 18.w,
+                                  height: 18.h,
+                                  alignment: Alignment.center,
+                                ),
+                              ),
+                              SizedBox(
+                                width: 6.w,
+                              ),
+                              Align(
+                                child: Text(
+                                  "Eranakulam",
+                                  style: TextStyle(
+                                      fontSize: 14.sp,
+                                      fontWeight: FontWeight.w400,
+                                      color: ColorConstants.lighttext),
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                        SizedBox(
+                          width: 5,
+                        ),
+                        Container(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 12.w, vertical: 0),
+                          height: 32.h,
+                          // width: 121.w,
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(12.r),
+                              border: Border.all(
+                                width: 1.w,
+                                color: Color(0xff7991A4),
+                              )),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Baseline(
+                                baselineType: TextBaseline.alphabetic,
+                                baseline: 16.sp,
+                                child: Image.asset(
+                                  'assets/building.png',
+                                  width: 18.w,
+                                  height: 18.h,
+                                  alignment: Alignment.center,
+                                ),
+                              ),
+                              SizedBox(
+                                width: 6.w,
+                              ),
+                              Align(
+                                child: Text(
+                                  "Lulu Hypermarket",
+                                  style: TextStyle(
+                                      fontSize: 14.sp,
+                                      fontWeight: FontWeight.w400,
+                                      color: ColorConstants.ProgressBarColor),
+                                ),
+                              ),
+                              SizedBox(
+                                width: 4.w,
+                              ),
+                              Baseline(
+                                baselineType: TextBaseline.alphabetic,
+                                baseline: 9.sp,
+                                child: Image.asset(
+                                  'assets/north_east.png',
+                                  width: 10.w,
+                                  height: 10.h,
+                                  alignment: Alignment.center,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ]),
                       SizedBox(
-                        width: 6.w,
+                        height: 8.h,
                       ),
-                      Text(
-                        "Ernakulam",
-                        style: TextStyle(
-                            fontSize: 14.sp,
-                            fontWeight: FontWeight.w400,
-                            color: ColorConstants.lighttext),
-                      )
-                    ],
-                  ),
-                  SizedBox(
-                    height: 7.h,
-                  ),
-                  Row(
-                    children: [
-                      Image.asset(
-                        'assets/building.png',
-                        width: 18.w,
-                        height: 18.h,
+                      Container(
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 12.w, vertical: 0),
+                        height: 32.h,
+                        // width: 121.w,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(12.r),
+                            border: Border.all(
+                              width: 1.w,
+                              color: Color(0xff7991A4),
+                            )),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Baseline(
+                              baselineType: TextBaseline.alphabetic,
+                              baseline: 16.sp,
+                              child: Image.asset(
+                                'assets/flag_black.png',
+                                width: 18.w,
+                                height: 18.h,
+                                alignment: Alignment.center,
+                              ),
+                            ),
+                            SizedBox(
+                              width: 6.w,
+                            ),
+                            Align(
+                              child: Text(
+                                job?.jobType ?? "Type not specified",
+                                style: TextStyle(
+                                    fontSize: 14.sp,
+                                    fontWeight: FontWeight.w400,
+                                    color: ColorConstants.lighttext),
+                              ),
+                            )
+                          ],
+                        ),
                       ),
-                      SizedBox(
-                        width: 6.w,
-                      ),
-                      Text(
-                        "Lulu HyperMarket",
-                        style: TextStyle(
-                            fontSize: 14.sp,
-                            fontWeight: FontWeight.w400,
-                            color: ColorConstants.indicatorBlue),
-                      ),
-                      SizedBox(
-                        width: 2.w,
-                      ),
-                      Icon(
-                        Icons.north_east,
-                        size: 18,
-                        color: ColorConstants.indicatorBlue,
-                      )
-                    ],
-                  ),
-                  SizedBox(
-                    height: 7.h,
-                  ),
-                  Row(
-                    children: [
-                      Image.asset(
-                        'assets/flag_black.png',
-                        width: 18.w,
-                        height: 18.h,
-                      ),
-                      SizedBox(
-                        width: 6.w,
-                      ),
-                      Text(
-                        "Full time",
-                        style: TextStyle(
-                            fontSize: 14.sp,
-                            fontWeight: FontWeight.w400,
-                            color: Colors.black),
-                      ),
-                    ],
-                  ),
-                ]),
+                    ]),
               ),
               SizedBox(
                 height: 25.h,
@@ -274,7 +364,7 @@ class _JobDetailsScreenState extends State<JobDetailsScreen> {
                 "Job description",
                 style: TextStyle(
                     color: Colors.black,
-                    fontSize: 20.sp,
+                    fontSize: 18.sp,
                     fontWeight: FontWeight.w500),
               ),
               SizedBox(
@@ -283,7 +373,7 @@ class _JobDetailsScreenState extends State<JobDetailsScreen> {
               Text(
                 maxLines: 4,
                 overflow: TextOverflow.ellipsis,
-                "Join our dynamic sales team as a Sales Executive! In this role, you'll be responsible for driving revenue growth by building strong relationships with clients and identifying their needs. You'll engage with potential customers, present our innovative solutions, and close deals to meet and exceed sales targets. We value creativity and initiative, so you'll have the freedom to develop your own strategies for success. If you're passionate about sales and eager to make an impact, we want to hear from you!",
+                job?.description ?? "Description not specified",
                 style: TextStyle(
                     color: ColorConstants.descText,
                     fontSize: 16.sp,
@@ -295,55 +385,31 @@ class _JobDetailsScreenState extends State<JobDetailsScreen> {
               Text(
                 "Key Responsbilities",
                 style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 20.sp,
-                    fontWeight: FontWeight.w500),
+                  color: Colors.black,
+                  fontSize: 18.sp,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
-              SizedBox(
-                height: 8.h,
-              ),
-              Text(
-                "Develop and implement effective sales strategies to drive revenue growth. - Identify and engage potential clients through networking and outreach efforts more. - Conduct market research to understand customer needs and preferences. - Prepare and deliver compelling sales presentations to prospective clients. - Collaborate with the marketing team to create promotional materials and campaigns. - Maintain accurate records of sales activities and customer interactions in the CRM system. - Provide exceptional customer service to build long-term relationships with clients. - Meet or exceed monthly and quarterly sales targets.",
-                maxLines: 4,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(
+              SizedBox(height: 8.h),
+
+// Constrain the height to approximate 4 lines of text
+              ConstrainedBox(
+                constraints: BoxConstraints(
+                  minHeight: 100
+                      .h, // Adjust this value based on your font size & line height
+                ),
+                child: Text(
+                  job?.key_responsibility?.isNotEmpty == true
+                      ? job!.key_responsibility!
+                      : "Not specified",
+                  maxLines: 4,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
                     color: ColorConstants.descText,
                     fontSize: 16.sp,
-                    fontWeight: FontWeight.w400),
-              ),
-              SizedBox(
-                height: 24.h,
-              ),
-              Text(
-                "Skills",
-                style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 20.sp,
-                    fontWeight: FontWeight.w500),
-              ),
-              SizedBox(
-                height: 12.h,
-              ),
-              Row(
-                children: [
-                  skillsContainer(context, "Cumunication skills"),
-                  SizedBox(
-                    width: 12.w,
+                    fontWeight: FontWeight.w400,
                   ),
-                  skillsContainer(context, "Product knowledge"),
-                ],
-              ),
-              SizedBox(
-                height: 12.h,
-              ),
-              Row(
-                children: [
-                  skillsContainer(context, "Active listening"),
-                  SizedBox(
-                    width: 12.w,
-                  ),
-                  skillsContainer(context, "Time Management"),
-                ],
+                ),
               ),
               SizedBox(
                 height: 16.h,

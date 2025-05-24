@@ -65,7 +65,12 @@ class _CategoriesScreenState extends State<CategoriesScreen>
               ),
               // Show loading indicator while fetching
               if (controller.isloading)
-                const Center(child: CircularProgressIndicator()),
+                SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.6,
+                  child: const Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                ),
               // Show error message if no categories available
               if (!controller.isloading && controller.categoriesList.isEmpty)
                 const Center(child: Text("No categories available")),

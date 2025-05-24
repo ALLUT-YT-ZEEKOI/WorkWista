@@ -9,7 +9,6 @@ import 'package:workwista/view/Controllers/location_provider_controller.dart';
 import 'package:workwista/view/Controllers/login_screen_controller.dart';
 import 'package:workwista/view/Controllers/profile_screen_controller.dart';
 import 'package:workwista/view/Controllers/register_screen_controller.dart';
-import 'package:workwista/view/loginScreens/homeScreens/TEST/login_screen.dart';
 import 'package:workwista/view/loginScreens/splash_screen.dart';
 
 

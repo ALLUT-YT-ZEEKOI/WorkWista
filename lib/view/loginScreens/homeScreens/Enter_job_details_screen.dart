@@ -1,15 +1,20 @@
 import 'dart:developer';
 import 'dart:io';
+import 'dart:async';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
-import 'package:location/location.dart';
+
 import 'package:provider/provider.dart';
 import 'package:workwista/Utils/color_constants.dart';
 import 'package:workwista/view/Controllers/add_job_controller.dart';
 import 'package:workwista/view/Controllers/jobs_screen_controller.dart';
+import 'package:workwista/view/Controllers/location_provider_controller.dart';
 import 'package:workwista/view/Wdigets/button_without_gradient.dart';
 import 'package:workwista/view/Wdigets/gradient_button.dart';
 import 'package:workwista/view/responsive_helper.dart';
@@ -24,7 +29,111 @@ class EnterJobDetailsScreen extends StatefulWidget {
 }
 
 class _EnterJobDetailsScreenState extends State<EnterJobDetailsScreen> {
-  bool _isLoadingLocation = false;
+  void _showLocationSearchDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext dialogContext) {
+        return LocationSearchDialog(
+          onLocationSelected: (Map<String, dynamic> location) {
+            setState(() {
+              _locationController.text = location['display_name'];
+              // You can also store lat/lon if needed
+              // _latitudeController.text = location['lat'];
+              // _longitudeController.text = location['lon'];
+            });
+            Navigator.of(dialogContext).pop();
+          },
+        );
+      },
+    );
+  }
+
+  int? selectedDay;
+  int? selectedMonth;
+  int? selectedYear;
+
+  final List<int> days = List.generate(31, (index) => index + 1);
+  final List<int> months = List.generate(12, (index) => index + 1);
+  final List<int> years = List.generate(11, (index) => 2025 + index);
+
+  Widget _dateDropdown({
+    required String hint,
+    required int? value,
+    required List<int> items,
+    required void Function(int?) onChanged,
+  }) {
+    return DropdownButtonFormField2<int>(
+      value: value,
+      items: items.map((int item) {
+        return DropdownMenuItem<int>(
+          value: item,
+          child: Text(
+            item.toString().padLeft(2, '0'),
+            style: TextStyle(fontSize: 14.sp),
+          ),
+        );
+      }).toList(),
+      onChanged: onChanged,
+      decoration: InputDecoration(
+        isDense: true,
+        contentPadding: EdgeInsets.zero,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12.r),
+          borderSide: BorderSide(
+            color: ColorConstants.containerBorder,
+            width: 1.w,
+          ),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12.r),
+          borderSide: BorderSide(
+            color: ColorConstants.containerBorder,
+            width: 1.w,
+          ),
+        ),
+      ),
+      buttonStyleData: ButtonStyleData(
+        height: 50.h,
+        padding: EdgeInsets.only(left: 12.w, right: 8.w),
+      ),
+      dropdownStyleData: DropdownStyleData(
+        maxHeight: 200.h,
+        width: 112.w,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12.r),
+        ),
+        offset: const Offset(1, -6), // Adjust this to position dropdown
+      ),
+      iconStyleData: IconStyleData(
+        icon: Icon(
+          Icons.arrow_drop_down,
+          color: ColorConstants.descText,
+        ),
+        iconSize: 24.w,
+      ),
+      hint: Text(
+        hint,
+        style: TextStyle(
+          fontSize: 14.sp,
+          color: ColorConstants.descText,
+        ),
+      ),
+    );
+  }
+
+  void logDate() {
+    if (selectedDay != null && selectedMonth != null && selectedYear != null) {
+      String formatted =
+          '${selectedYear!}-${selectedMonth!.toString().padLeft(2, '0')}-${selectedDay!.toString().padLeft(2, '0')}';
+      print('Selected Date: $formatted');
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Date Saved: $formatted')));
+    } else {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Please select all fields')));
+    }
+  }
+
   bool _validateSelections() {
     bool isValid = true;
 
@@ -73,94 +182,17 @@ class _EnterJobDetailsScreenState extends State<EnterJobDetailsScreen> {
 
   File? _selectedImage;
   final ImagePicker _picker = ImagePicker();
-  String locationText = "Press the button to get location";
-  Location location = Location();
 
-  String _location = 'Unknown';
   String? _selectedJobTypeId; // Changed to String for job type ID
   String? _selectedWorkMode; // Changed to String for work mode
   final TextEditingController _jobTitleController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
-  final TextEditingController _jobdateController = TextEditingController();
-  final TextEditingController _salaryController = TextEditingController();
+
   final TextEditingController _longitudeController = TextEditingController();
-  final TextEditingController _latitudeController = TextEditingController();
 
-  Future<void> _getLocation() async {
-    setState(() {
-      _isLoadingLocation = true; // Start loading
-    });
-
-    try {
-      bool _serviceEnabled;
-      PermissionStatus _permissionGranted;
-      LocationData _locationData;
-
-      // Check if location service is enabled
-      _serviceEnabled = await location.serviceEnabled();
-      if (!_serviceEnabled) {
-        _serviceEnabled = await location.requestService();
-        if (!_serviceEnabled) {
-          setState(() {
-            _location = 'Location service disabled';
-            _isLoadingLocation = false; // Stop loading
-          });
-          return;
-        }
-      }
-
-      // Check permission
-      _permissionGranted = await location.hasPermission();
-      if (_permissionGranted == PermissionStatus.denied) {
-        _permissionGranted = await location.requestPermission();
-        if (_permissionGranted != PermissionStatus.granted) {
-          setState(() {
-            _location = 'Location permission denied';
-            _isLoadingLocation = false; // Stop loading
-          });
-          return;
-        }
-      }
-
-      // Get location
-      _locationData = await location.getLocation();
-
-      setState(() {
-        log(_locationData.latitude.toString());
-        _location =
-            'Lat: ${_locationData.latitude}, Lon: ${_locationData.longitude}';
-        _latitudeController.text = _locationData.latitude.toString();
-        _longitudeController.text = _locationData.longitude.toString();
-        _isLoadingLocation = false; // Stop loading
-      });
-    } catch (e) {
-      setState(() {
-        _location = 'Error getting location: $e';
-        _isLoadingLocation = false; // Stop loading on error
-      });
-      log('Location error: $e');
-    }
-  }
-
-  Future<void> _selectDate(BuildContext context) async {
-    final DateTime? pickedDate = await showDatePicker(
-      context: context,
-      initialDate: DateTime.now(), // current date
-      firstDate: DateTime(2000), // earliest date
-      lastDate: DateTime(2100), // latest date
-    );
-
-    if (pickedDate != null) {
-      String formattedDate =
-          DateFormat('yyyy-MM-dd').format(pickedDate); // format date
-      setState(() {
-        _jobdateController.text = formattedDate; // set to TextField
-      });
-
-      // Now you can use the formattedDate string wherever needed
-      print("Selected date: $formattedDate");
-    }
-  }
+  final TextEditingController _salaryFromController = TextEditingController();
+  final TextEditingController _salaryToController = TextEditingController();
+  late TextEditingController _locationController = TextEditingController();
 
   // Updated work modes to use String values
   final List<Map<String, dynamic>> _workModes = [
@@ -171,13 +203,23 @@ class _EnterJobDetailsScreenState extends State<EnterJobDetailsScreen> {
   @override
   void initState() {
     super.initState();
+
     WidgetsBinding.instance.addPostFrameCallback((timestamp) async {
       await context.read<JobsScreenController>().getJobTypes();
     });
   }
 
   @override
+  void dispose() {
+    _locationController.dispose();
+
+    // ... dispose other controllers ...
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final locationProvider = context.read<LocationProvider>();
     Future<void> _pickImage() async {
       final XFile? pickedFile =
           await _picker.pickImage(source: ImageSource.gallery);
@@ -216,16 +258,17 @@ class _EnterJobDetailsScreenState extends State<EnterJobDetailsScreen> {
             child: Form(
               key: _formKey,
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   SizedBox(
-                    height: 15.h,
+                    height: 30.h,
                   ),
                   // Image Upload Section
                   InkWell(
                     onTap: _pickImage,
                     child: Container(
                       width: double.infinity,
-                      height: 179.h,
+                      height: 111.h,
                       decoration: BoxDecoration(
                         border: Border.all(
                           color: ColorConstants.containerBorder,
@@ -259,8 +302,15 @@ class _EnterJobDetailsScreenState extends State<EnterJobDetailsScreen> {
                     ),
                   ),
 
-                  SizedBox(height: 12.h),
-
+                  SizedBox(height: 18.h),
+                  Text(
+                    "Job type*",
+                    style:
+                        TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w700),
+                  ),
+                  SizedBox(
+                    height: 5.h,
+                  ),
                   // Job Types from API
                   Consumer<JobsScreenController>(
                     builder: (context, jobsController, child) {
@@ -353,119 +403,234 @@ class _EnterJobDetailsScreenState extends State<EnterJobDetailsScreen> {
                       ],
                     ),
                   ),
-                  SizedBox(height: 12.h),
+                  SizedBox(height: 18.h),
+                  Text(
+                    "Enter title*",
+                    style:
+                        TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w700),
+                  ),
+                  SizedBox(
+                    height: 5.h,
+                  ),
                   _textFields(
                     context,
                     double.infinity,
                     "title*",
+                    50,
                     _jobTitleController,
                     validator: (value) =>
                         value == null || value.isEmpty ? 'Required' : null,
                   ),
-                  SizedBox(height: 12.h),
-                  _textFields(
-                    context,
-                    double.infinity,
-                    "description",
-                    _descriptionController,
-                    validator: (value) =>
-                        value == null || value.isEmpty ? 'Required' : null,
+                  SizedBox(height: 18.h),
+
+                  Row(children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Salary from*",
+                            style: TextStyle(
+                                fontSize: 14.sp, fontWeight: FontWeight.w700),
+                          ),
+                          SizedBox(
+                            height: 5.h,
+                          ),
+                          _textFields(
+                            context,
+                            double.infinity,
+                            "salary from",
+                            50,
+                            _salaryFromController,
+                            validator: (value) => value == null || value.isEmpty
+                                ? 'Required'
+                                : null,
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(
+                      width: 5.w,
+                    ),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Salary to*",
+                            style: TextStyle(
+                                fontSize: 14.sp, fontWeight: FontWeight.w700),
+                          ),
+                          SizedBox(
+                            height: 5.h,
+                          ),
+                          _textFields(
+                            context,
+                            double.infinity,
+                            "salary to",
+                            50,
+                            _salaryToController,
+                            validator: (value) => value == null || value.isEmpty
+                                ? 'Required'
+                                : null,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ]),
+                  SizedBox(height: 18.h),
+                  Text(
+                    "Enter your location*",
+                    style:
+                        TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w700),
                   ),
-                  SizedBox(height: 12.h),
-                  _textFields(
-                    context,
-                    double.infinity,
+                  SizedBox(
+                    height: 5.h,
+                  ),
+                  Row(children: [
+                    Expanded(
+                      flex: 5,
+                      child: GestureDetector(
+                        onTap: () {
+                          _showLocationSearchDialog();
+                        },
+                        child: AbsorbPointer(
+                          child: _textFields(
+                            context,
+                            double.infinity,
+                            "Search location",
+                            50,
+                            _locationController,
+                            validator: (value) => value == null || value.isEmpty
+                                ? 'Required'
+                                : null,
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: 5.w),
+                    Expanded(
+                      flex: 4,
+                      child: InkWell(
+                        onTap: () {
+                          log("tapped");
+                          locationProvider.getCurrentLocationAndCity();
+                          if (locationProvider.cityName.isNotEmpty) {
+                            setState(() {
+                              _locationController.text =
+                                  locationProvider.cityName;
+                            });
+                          }
+                        },
+                        child: Container(
+                          padding: EdgeInsets.symmetric(vertical: 11.h),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            border: Border.all(
+                                color: ColorConstants.containerBorder),
+                            borderRadius: BorderRadius.circular(12.r),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.my_location, color: Colors.blue),
+                              SizedBox(width: 10.w),
+                              Text(
+                                "Current location",
+                                style: TextStyle(
+                                  fontSize: 12.sp,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+                    )
+                  ]),
+                  SizedBox(height: 18.h),
+                  Text(
                     "Job date*",
-                    _jobdateController,
-                    ontap: () => _selectDate(context),
-                    validator: (value) =>
-                        value == null || value.isEmpty ? 'Required' : null,
+                    style:
+                        TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w700),
                   ),
-                  SizedBox(height: 12.h),
-                  _textFields(
-                    context,
-                    double.infinity,
-                    "Salary*",
-                    _salaryController,
-                    validator: (value) =>
-                        value == null || value.isEmpty ? 'Required' : null,
+                  SizedBox(
+                    height: 5.h,
                   ),
-                  SizedBox(height: 12.h),
+
                   Row(
                     children: [
                       Expanded(
-                        flex: 1,
-                        child: Column(
-                          children: [
-                            _textFields(
-                              context,
-                              double.infinity,
-                              "longitude",
-                              _longitudeController,
-                              validator: (value) =>
-                                  value == null || value.isEmpty
-                                      ? 'Required'
-                                      : null,
-                            ),
-                            SizedBox(
-                                height: ResponsiveHelper.height(12, context)),
-                            _textFields(
-                              context,
-                              double.infinity,
-                              "latitude",
-                              _latitudeController,
-                              validator: (value) =>
-                                  value == null || value.isEmpty
-                                      ? 'Required'
-                                      : null,
-                            ),
-                          ],
+                        child: _dateDropdown(
+                          hint: 'Day',
+                          value: selectedDay,
+                          items: days,
+                          onChanged: (value) =>
+                              setState(() => selectedDay = value),
                         ),
                       ),
+                      SizedBox(width: 10.w),
                       Expanded(
-                        flex: 1,
-                        child: ElevatedButton(
-                          onPressed: _isLoadingLocation ? null : _getLocation,
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: _isLoadingLocation
-                                ? Colors.grey.shade300
-                                : Colors.transparent,
-                            foregroundColor: _isLoadingLocation
-                                ? Colors.grey.shade600
-                                : Colors.white,
-                            padding: EdgeInsets.symmetric(
-                                vertical: 10.h, horizontal: 10.w),
-                          ),
-                          child: _isLoadingLocation
-                              ? SizedBox(
-                                  width: 16.w,
-                                  height: 16.h,
-                                  child: CircularProgressIndicator(
-                                    strokeWidth: 2,
-                                    valueColor: AlwaysStoppedAnimation<Color>(
-                                      Colors.grey.shade600,
-                                    ),
-                                  ),
-                                )
-                              : Center(child: Text("Get Current Location")),
+                        child: _dateDropdown(
+                          hint: 'Month',
+                          value: selectedMonth,
+                          items: months,
+                          onChanged: (value) =>
+                              setState(() => selectedMonth = value),
+                        ),
+                      ),
+                      SizedBox(width: 10.w),
+                      Expanded(
+                        child: _dateDropdown(
+                          hint: 'Year',
+                          value: selectedYear,
+                          items: years,
+                          onChanged: (value) =>
+                              setState(() => selectedYear = value),
                         ),
                       ),
                     ],
                   ),
+                  SizedBox(height: 18.h),
+                  Text(
+                    "Description*",
+                    style:
+                        TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w700),
+                  ),
+                  SizedBox(
+                    height: 5.h,
+                  ),
+                  ElevatedButton(onPressed: logDate, child: Text("log")),
+                  _textFields(
+                    context,
+                    double.infinity,
+                    "Description",
+                    100,
+                    maxLines: 3,
+                    _descriptionController,
+                    validator: (value) =>
+                        value == null || value.isEmpty ? 'Required' : null,
+                  ),
+                  SizedBox(height: 18.h),
+                  Text(
+                    "Key responsiblities*",
+                    style:
+                        TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w700),
+                  ),
+                  SizedBox(
+                    height: 5.h,
+                  ),
+                  _textFields(
+                    context,
+                    double.infinity,
+                    "Responsiblities",
+                    100,
+                    maxLines: 3,
+                    _descriptionController,
+                    validator: (value) =>
+                        value == null || value.isEmpty ? 'Required' : null,
+                  ),
 
-                  // _textFields(
-                  //     context, double.infinity, "Date From*", _dateFromController),
-                  // SizedBox(height: ResponsiveHelper.height(12, context)),
-                  // _textFields(
-                  //     context, double.infinity, "Date To*", _dateToController),
-                  // SizedBox(height: ResponsiveHelper.height(20, context)),
-                  // Row(
-                  //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  //   children: [
-                  //     _textFields(context, 175, "00: 00*", _startTimeController),
-                  //     _textFields(context, 175, "00: 00*", _endTimeController),
-                  //   ],
-                  // ),
                   SizedBox(height: 20.h),
                   GradientButton(
                     onPressed: () async {
@@ -477,14 +642,14 @@ class _EnterJobDetailsScreenState extends State<EnterJobDetailsScreen> {
                         await context.read<AddJobController>().onAddJob(
                               title: _jobTitleController.text,
                               description: _descriptionController.text,
-                              job_date: _jobdateController.text,
+                              job_date: _descriptionController.text,
                               context: context,
                               job_image: _selectedImage,
-                              salary: _salaryController.text,
+                              salary: _salaryFromController.text,
                               longitude:
                                   _trimLastDecimal(_longitudeController.text),
                               latitude:
-                                  _trimLastDecimal(_latitudeController.text),
+                                  _trimLastDecimal(_descriptionController.text),
                               job_category: widget.category_id,
                               job_type: _selectedJobTypeId!,
                             );
@@ -506,54 +671,6 @@ class _EnterJobDetailsScreenState extends State<EnterJobDetailsScreen> {
             ),
           ),
         ),
-        if (_isLoadingLocation)
-          Container(
-            // ignore: deprecated_member_use
-            color: Colors.black.withOpacity(0.5), // Semi-transparent background
-            child: Center(
-              child: Container(
-                padding: EdgeInsets.all(24.w),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(16.r),
-                  boxShadow: [
-                    BoxShadow(
-                      // ignore: deprecated_member_use
-                      color: Colors.black.withOpacity(0.1),
-                      blurRadius: 10,
-                      spreadRadius: 2,
-                    ),
-                  ],
-                ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    CircularProgressIndicator(
-                      strokeWidth: 3,
-                      valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
-                    ),
-                    SizedBox(height: 16.h),
-                    Text(
-                      'Getting your location...',
-                      style: TextStyle(
-                        fontSize: 16.sp,
-                        fontWeight: FontWeight.w500,
-                        color: Colors.black87,
-                      ),
-                    ),
-                    SizedBox(height: 8.h),
-                    Text(
-                      'This may take a few seconds',
-                      style: TextStyle(
-                        fontSize: 12.sp,
-                        color: Colors.grey.shade600,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          )
       ]),
     );
   }
@@ -566,6 +683,7 @@ class _EnterJobDetailsScreenState extends State<EnterJobDetailsScreen> {
     required ValueChanged<String?> onChanged,
     bool hasError = false,
   }) {
+    bool isSelected = groupValue == value;
     return GestureDetector(
       onTap: () => onChanged(value),
       child: Container(
@@ -580,7 +698,11 @@ class _EnterJobDetailsScreenState extends State<EnterJobDetailsScreen> {
           color: Colors.white,
           borderRadius: BorderRadius.circular(12.r),
           border: Border.all(
-            color: hasError ? Colors.red : ColorConstants.containerBorder,
+            color: hasError
+                ? Colors.red
+                : isSelected
+                    ? Colors.blue
+                    : ColorConstants.containerBorder,
             width: hasError ? 2 : 1,
           ),
         ),
@@ -617,39 +739,226 @@ class _EnterJobDetailsScreenState extends State<EnterJobDetailsScreen> {
     BuildContext context,
     double width,
     String hint,
+    double height,
     TextEditingController controller, {
     VoidCallback? ontap,
     String? Function(String?)? validator,
+    int? maxLines,
   }) {
     return SizedBox(
-      width: ResponsiveHelper.width(width, context),
-      height: 50.h,
+      width: width.w,
+      height: height.h,
       child: TextFormField(
         validator: validator,
         controller: controller,
+        maxLines: maxLines ?? 1,
         decoration: InputDecoration(
-          // Disable error text to prevent height change
-          errorStyle: TextStyle(height: 0, fontSize: 0),
-          errorBorder: OutlineInputBorder(
-              borderSide: BorderSide(
-                  color: Colors.red, width: 2), // Make error more visible
-              borderRadius: BorderRadius.circular(12.r)),
-          enabledBorder: OutlineInputBorder(
+            // Disable error text to prevent height change
+            errorStyle: TextStyle(height: 0, fontSize: 0),
+            errorBorder: OutlineInputBorder(
+                borderSide: BorderSide(
+                    color: Colors.red, width: 2), // Make error more visible
+                borderRadius: BorderRadius.circular(12.r)),
+            enabledBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: ColorConstants.containerBorder),
+                borderRadius: BorderRadius.circular(12.r)),
+            hintText: hint,
+            hintStyle: TextStyle(color: ColorConstants.descText),
+            filled: true,
+            fillColor: Colors.white,
+            focusedBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: ColorConstants.containerBorder),
+                borderRadius: BorderRadius.circular(12.r)),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12.r),
               borderSide: BorderSide(color: ColorConstants.containerBorder),
-              borderRadius: BorderRadius.circular(12.r)),
-          hintText: hint,
-          hintStyle: TextStyle(color: ColorConstants.descText),
-          filled: true,
-          fillColor: Colors.white,
-          focusedBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: ColorConstants.containerBorder),
-              borderRadius: BorderRadius.circular(12.r)),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12.r),
-            borderSide: BorderSide(color: ColorConstants.containerBorder),
-          ),
-        ),
+            ),
+            contentPadding:
+                EdgeInsets.symmetric(horizontal: 12.w, vertical: 16.h)),
         onTap: ontap,
+      ),
+    );
+  }
+}
+
+class LocationSearchDialog extends StatefulWidget {
+  final Function(Map<String, dynamic>) onLocationSelected;
+
+  const LocationSearchDialog({
+    Key? key,
+    required this.onLocationSelected,
+  }) : super(key: key);
+
+  @override
+  _LocationSearchDialogState createState() => _LocationSearchDialogState();
+}
+
+class _LocationSearchDialogState extends State<LocationSearchDialog> {
+  TextEditingController _searchController = TextEditingController();
+  List<Map<String, dynamic>> _searchResults = [];
+  Timer? _debounce;
+  bool _isLoading = false;
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    _debounce?.cancel();
+    super.dispose();
+  }
+
+  void _onSearchChanged(String query) {
+    if (_debounce?.isActive ?? false) _debounce?.cancel();
+
+    _debounce = Timer(const Duration(milliseconds: 500), () {
+      if (query.isNotEmpty) {
+        _searchLocation(query);
+      } else {
+        setState(() {
+          _searchResults.clear();
+          _isLoading = false;
+        });
+      }
+    });
+  }
+
+  Future<void> _searchLocation(String query) async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      final url = Uri.parse(
+        'https://nominatim.openstreetmap.org/search?q=$query&format=json&addressdetails=1&limit=10',
+      );
+
+      final response = await http.get(url, headers: {
+        'User-Agent': 'FlutterLocationApp/1.0 (your_email@example.com)',
+      });
+
+      if (response.statusCode == 200) {
+        final List results = json.decode(response.body);
+        setState(() {
+          _searchResults = results
+              .map((e) => {
+                    'display_name': e['display_name'],
+                    'lat': e['lat'],
+                    'lon': e['lon'],
+                  })
+              .toList();
+          _isLoading = false;
+        });
+      }
+    } catch (e) {
+      print('Search error: $e');
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16.r),
+      ),
+      child: Container(
+        width: double.infinity,
+        height: 500.h,
+        padding: EdgeInsets.all(16.w),
+        child: Column(
+          children: [
+            // Header
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Search Location',
+                  style: TextStyle(
+                    fontSize: 18.sp,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                IconButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  icon: Icon(Icons.close),
+                ),
+              ],
+            ),
+            SizedBox(height: 16.h),
+
+            // Search Field
+            TextField(
+              controller: _searchController,
+              decoration: InputDecoration(
+                prefixIcon: Icon(Icons.search),
+                hintText: "Enter location to search",
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12.r),
+                  borderSide: BorderSide(color: ColorConstants.containerBorder),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12.r),
+                  borderSide: BorderSide(color: ColorConstants.containerBorder),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12.r),
+                  borderSide: BorderSide(color: Colors.blue),
+                ),
+              ),
+              onChanged: _onSearchChanged,
+              onSubmitted: (query) {
+                _debounce?.cancel();
+                _searchLocation(query);
+              },
+            ),
+            SizedBox(height: 16.h),
+
+            // Results
+            Expanded(
+              child: _isLoading
+                  ? Center(child: CircularProgressIndicator())
+                  : _searchResults.isEmpty
+                      ? Center(
+                          child: Text(
+                            _searchController.text.isEmpty
+                                ? 'Start typing to search locations'
+                                : 'No results found',
+                            style: TextStyle(
+                              color: ColorConstants.descText,
+                              fontSize: 14.sp,
+                            ),
+                          ),
+                        )
+                      : ListView.builder(
+                          itemCount: _searchResults.length,
+                          itemBuilder: (context, index) {
+                            final item = _searchResults[index];
+                            return ListTile(
+                              leading: Icon(
+                                Icons.location_pin,
+                                color: Colors.blue,
+                              ),
+                              title: Text(
+                                item['display_name'],
+                                style: TextStyle(fontSize: 14.sp),
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              subtitle: Text(
+                                'Lat: ${item['lat']}, Lon: ${item['lon']}',
+                                style: TextStyle(
+                                  fontSize: 12.sp,
+                                  color: ColorConstants.descText,
+                                ),
+                              ),
+                              onTap: () => widget.onLocationSelected(item),
+                            );
+                          },
+                        ),
+            ),
+          ],
+        ),
       ),
     );
   }

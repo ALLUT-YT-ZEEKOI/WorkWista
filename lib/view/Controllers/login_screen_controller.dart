@@ -11,7 +11,7 @@ import 'package:workwista/view/Model/login_model.dart';
 class LoginScreenController with ChangeNotifier {
   bool isloading = false;
   bool isloadingG = false;
-  String? errorMessage;
+  String? generalError;
 // No GoogleSignIn needed anymore - we'll use WebView
 
 //   // Only need to update the handleGoogleAuthCallback method
@@ -51,6 +51,17 @@ class LoginScreenController with ChangeNotifier {
   //   }
   // }
 
+// Field-wise error tracking
+  Map<String, String?> fieldErrors = {
+    "email": null,
+    "password": null,
+  };
+
+  void clearErrors() {
+    fieldErrors.updateAll((key, value) => null);
+    generalError = null;
+  }
+
   final GoogleSignIn _googleSignIn = GoogleSignIn(
       scopes: ['email', 'profile'],
       serverClientId:
@@ -60,7 +71,7 @@ class LoginScreenController with ChangeNotifier {
   Future<void> handleGoogleSignIn({required BuildContext context}) async {
     isloadingG = true;
     notifyListeners();
-    final url = Uri.parse("https://workwista.com/google_mobile_auth/");
+    // final url = Uri.parse("https://workwista.com/google_mobile_auth/");
 
     try {
       final GoogleSignInAccount? account = await _googleSignIn.signIn();
@@ -111,58 +122,64 @@ class LoginScreenController with ChangeNotifier {
     }
   }
 
-  Future<bool> onLogin(
-      {required String email,
-      required String password,
-      required BuildContext context}) async {
-    final url = Uri.parse("https://workwista.com/users/api/token/");
-    isloading = true;
-    errorMessage = null;
-    notifyListeners();
+ Future<bool> onLogin({
+  required String email,
+  required String password,
+  required BuildContext context
+}) async {
+  final url = Uri.parse("https://workwista.com/users/api/token/");
+  isloading = true;
+  clearErrors(); // Clear previous errors
+  notifyListeners();
 
-    try {
-      final response =
-          await http.post(url, body: {"email": email, "password": password});
+  try {
+    final response = await http.post(url, body: {
+      "email": email, 
+      "password": password
+    });
 
-      if (response.statusCode == 200) {
-        LoginModel loginModel = loginModelFromJson(response.body);
+    if (response.statusCode == 200) {
+      LoginModel loginModel = loginModelFromJson(response.body);
 
-        if (loginModel.access != null && loginModel.access!.isNotEmpty) {
-          SharedPreferences prefs = await SharedPreferences.getInstance();
-          await prefs.setString("access", loginModel.access!);
-          await prefs.setString("refresh", loginModel.refresh!);
-          // Log saved tokens
-          log("✅ Saved Access Token: ${prefs.getString('access')}");
-          log("✅ Saved Refresh Token: ${prefs.getString('refresh')}");
-          // Navigate on success
-          Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                builder: (context) => CustomBottomNavbar(),
-              ));
-        } else {
-          errorMessage = "Invalid token received";
-        }
+      if (loginModel.access != null && loginModel.access!.isNotEmpty) {
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        await prefs.setString("access", loginModel.access!);
+        await prefs.setString("refresh", loginModel.refresh!);
+        
+        log("✅ Saved Access Token: ${prefs.getString('access')}");
+        log("✅ Saved Refresh Token: ${prefs.getString('refresh')}");
+        
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => CustomBottomNavbar()),
+        );
         return true;
       } else {
-        errorMessage = "Login failed: ${response.statusCode}";
+        generalError = "Invalid token received";
       }
-      return false;
-    } catch (e) {
-      errorMessage = "Connection error: ${e.toString()}";
-      log(e.toString());
-      return false;
-    } finally {
-      isloading = false;
-      notifyListeners();
-
-      // Show error message if exists
-      if (errorMessage != null && context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(errorMessage!)),
-        );
-      }
-      return false;
+    } else if (response.statusCode == 400) {
+      // Handle field-specific errors
+      final decoded = json.decode(response.body);
+      decoded.forEach((key, value) {
+        if (fieldErrors.containsKey(key)) {
+ fieldErrors[key] = (value as List).join(', ');
+        } else {
+          generalError = (value as List).join(', ');
+        }
+      });
+    } else {
+      generalError = "Login failed: ${response.statusCode}";
+      log(response.body.toString());
     }
+    
+    return false;
+  } catch (e) {
+    generalError = "Connection error: ${e.toString()}";
+    log(e.toString());
+    return false;
+  } finally {
+    isloading = false;
+    notifyListeners();
   }
+}
 }

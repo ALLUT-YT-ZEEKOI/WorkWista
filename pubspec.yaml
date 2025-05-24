@@ -49,6 +49,7 @@ dependencies:
   webview_flutter: ^4.10.0
   flutter_web_auth_2: ^4.1.0
   location: ^6.0.2
+  dropdown_button2: ^2.3.9
   geocoding: ^3.0.0
   
 dev_dependencies:
@@ -104,6 +105,7 @@ flutter:
     - assets/paytm.png
     - assets/bank.png
     - assets/phonepebg.png
+    - assets/north_east.png
     
 
 

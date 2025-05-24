@@ -47,6 +47,10 @@ class _CustomBottomNavbarState extends State<CustomBottomNavbar> {
         // color: Colors.white,
         // elevation: 0,
         child: BottomNavigationBar(
+          selectedLabelStyle:
+              TextStyle(fontSize: 12, fontWeight: FontWeight.w700),
+          unselectedLabelStyle:
+              TextStyle(fontSize: 12, fontWeight: FontWeight.w400),
           backgroundColor: Colors.white,
           // elevation: 0,
           currentIndex: _currentIndex,

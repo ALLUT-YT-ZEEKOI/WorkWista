@@ -72,11 +72,83 @@ class JobOffersCard extends StatelessWidget {
                                           fontSize: 18.sp,
                                           fontWeight: FontWeight.w500),
                                     ),
-                                    Text(
-                                      "${jobItem.salary ?? 'N/A'}/Day",
-                                      style: TextStyle(
-                                          fontSize: 16.sp,
-                                          fontWeight: FontWeight.w500),
+                                    RichText(
+                                      text: TextSpan(
+                                        children: [
+                                          TextSpan(
+                                            text: '₹',
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.w500,
+                                              fontSize: 16.sp,
+                                              height: 1.0,
+                                              letterSpacing: 0.0,
+                                              color: Colors.black,
+                                            ),
+                                          ),
+                                          TextSpan(
+                                            text: jobItem.salary_from != null
+                                                ? double.tryParse(jobItem
+                                                            .salary_from!)
+                                                        ?.toInt()
+                                                        .toString() ??
+                                                    "0"
+                                                : "Salary not specified",
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.w500,
+                                              fontSize: 16.sp,
+                                              height: 1.0,
+                                              letterSpacing: 0.0,
+                                              color: Colors.black,
+                                            ),
+                                          ),
+                                          TextSpan(
+                                            text: ' - ',
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.w500,
+                                              fontSize: 16.sp,
+                                              height: 1.0,
+                                              letterSpacing: 0.0,
+                                              color: Colors.black,
+                                            ),
+                                          ),
+                                          TextSpan(
+                                            text: jobItem.salary_to != null
+                                                ? double.tryParse(
+                                                            jobItem.salary_to!)
+                                                        ?.toInt()
+                                                        .toString() ??
+                                                    "0"
+                                                : "Salary not specified",
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.w500,
+                                              fontSize: 16.sp,
+                                              height: 1.0,
+                                              letterSpacing: 0.0,
+                                              color: Colors.black,
+                                            ),
+                                          ),
+                                          TextSpan(
+                                            text: '/',
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.w500,
+                                              fontSize: 16.sp,
+                                              height: 1.0,
+                                              letterSpacing: 0.0,
+                                              color: Colors.black,
+                                            ),
+                                          ),
+                                          TextSpan(
+                                            text: 'Day',
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.w500,
+                                              fontSize: 16.sp,
+                                              height: 1.5,
+                                              letterSpacing: 0.0,
+                                              color: Colors.black,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ],
                                 ),
@@ -126,26 +198,98 @@ class JobOffersCard extends StatelessWidget {
                           children: [
                             Row(
                               children: [
-                                SizedBox(
-                                  width: 2.w,
-                                ),
                                 Container(
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: 5.w, vertical: 3.h),
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(9.w),
-                                    border:
-                                        Border.all(color: Color(0xffCED7DE)),
-                                  ),
-                                  child: Text(
-                                    "₹ ${jobItem.salary ?? 'N/A'} Per Day",
-                                    style: TextStyle(
-                                        color: Color(0xff0A0A0B),
-                                        fontSize: 12.sp,
-                                        fontWeight: FontWeight.w400),
-                                  ),
-                                ),
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: 5.w, vertical: 3.h),
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(9.w),
+                                      border:
+                                          Border.all(color: Color(0xffCED7DE)),
+                                    ),
+                                    child: Row(
+                                      children: [
+                                        RichText(
+                                          text: TextSpan(
+                                            children: [
+                                              TextSpan(
+                                                text: '₹',
+                                                style: TextStyle(
+                                                  fontWeight: FontWeight.w400,
+                                                  fontSize: 12.sp,
+                                                  height: 1.0,
+                                                  letterSpacing: 0.0,
+                                                  color: Colors.black,
+                                                ),
+                                              ),
+                                              TextSpan(
+                                                text: jobItem.salary_from !=
+                                                        null
+                                                    ? double.tryParse(jobItem
+                                                                .salary_from!)
+                                                            ?.toInt()
+                                                            .toString() ??
+                                                        "0"
+                                                    : "Salary not specified",
+                                                style: TextStyle(
+                                                  fontWeight: FontWeight.w400,
+                                                  fontSize: 12.sp,
+                                                  height: 1.0,
+                                                  letterSpacing: 0.0,
+                                                  color: Colors.black,
+                                                ),
+                                              ),
+                                              TextSpan(
+                                                text: ' - ',
+                                                style: TextStyle(
+                                                  fontWeight: FontWeight.w400,
+                                                  fontSize: 12.sp,
+                                                  height: 1.0,
+                                                  letterSpacing: 0.0,
+                                                  color: Colors.black,
+                                                ),
+                                              ),
+                                              TextSpan(
+                                                text: jobItem.salary_to != null
+                                                    ? double.tryParse(jobItem
+                                                                .salary_to!)
+                                                            ?.toInt()
+                                                            .toString() ??
+                                                        "0"
+                                                    : "Salary not specified",
+                                                style: TextStyle(
+                                                  fontWeight: FontWeight.w400,
+                                                  fontSize: 12.sp,
+                                                  height: 1.0,
+                                                  letterSpacing: 0.0,
+                                                  color: Colors.black,
+                                                ),
+                                              ),
+                                              TextSpan(
+                                                text: ' Per ',
+                                                style: TextStyle(
+                                                  fontWeight: FontWeight.w400,
+                                                  fontSize: 12.sp,
+                                                  height: 1.0,
+                                                  letterSpacing: 0.0,
+                                                  color: Colors.black,
+                                                ),
+                                              ),
+                                              TextSpan(
+                                                text: 'Day',
+                                                style: TextStyle(
+                                                  fontWeight: FontWeight.w400,
+                                                  fontSize: 12.sp,
+                                                  height: 1.5,
+                                                  letterSpacing: 0.0,
+                                                  color: Colors.black,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    )),
                                 Text(" • ",
                                     style: TextStyle(
                                         fontSize: 12.sp,
