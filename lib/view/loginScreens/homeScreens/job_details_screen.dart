@@ -37,7 +37,8 @@ class _JobDetailsScreenState extends State<JobDetailsScreen> {
   Widget build(BuildContext context) {
     String fixImageUrl(String? url) {
       if (url == null || url.isEmpty) return "";
-      return url.replaceFirst("localhost", "workwista.com");
+      return url.replaceFirst("", "workwista.com");
+      // log("last url: ${url}");
     }
 
     final controller = context.watch<JobDetailsScreenController>();
@@ -55,6 +56,9 @@ class _JobDetailsScreenState extends State<JobDetailsScreen> {
       return Center(child: Text("Failed to load job details"));
     }
     final job = controller.jobDetails!.data;
+    final imageUrl = (job?.jobImage != null && job!.jobImage!.isNotEmpty)
+        ? 'https://workwista.com/${job.jobImage!.replaceFirst("file://", "").replaceFirst(RegExp(r"^/"), "")}'
+        : 'https://images.pexels.com/photos/125532/pexels-photo-125532.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2';
 
     return Scaffold(
       appBar: AppBar(
@@ -64,7 +68,7 @@ class _JobDetailsScreenState extends State<JobDetailsScreen> {
         centerTitle: true,
         title: InkWell(
           onTap: () {
-            log(job!.manual_location.toString());
+            log(job!.jobImage.toString());
           },
           child: Text(
             "Job Details",
@@ -93,11 +97,7 @@ class _JobDetailsScreenState extends State<JobDetailsScreen> {
                       decoration: BoxDecoration(
                           image: DecorationImage(
                             fit: BoxFit.cover,
-                            image: NetworkImage(
-                              fixImageUrl(job?.jobImage) != ""
-                                  ? fixImageUrl(job?.jobImage)
-                                  : 'https://images.pexels.com/photos/125532/pexels-photo-125532.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',
-                            ),
+                            image: NetworkImage(imageUrl),
                           ),
                           borderRadius: BorderRadius.circular(11.r),
                           color: Colors.amber),

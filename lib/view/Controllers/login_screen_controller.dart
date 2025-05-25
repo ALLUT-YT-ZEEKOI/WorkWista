@@ -96,8 +96,10 @@ class LoginScreenController with ChangeNotifier {
         final data = jsonDecode(response.body);
         final accessToken = data['access_token'];
         final refreshToken = data['refresh_token'];
+        final verified = data['verified'];
+
         final user = data['user'];
-        
+
         SharedPreferences prefs = await SharedPreferences.getInstance();
         await prefs.setString("access", accessToken);
         await prefs.setString("refresh", refreshToken);
@@ -105,16 +107,29 @@ class LoginScreenController with ChangeNotifier {
         // Log saved tokens
         log("✅ Saved Access Token: ${prefs.getString('access')}");
         log("✅ Saved Refresh Token: ${prefs.getString('refresh')}");
+        log("-------------------------------------");
+        log("logging user :  ${user.toString()}");
+        log("logging email :${user['email'].toString()}");
+        log("logging phone :${user['phone_number'].toString()}");
+        log("logging DOB :${user['phone_number'].toString()}");
+        log(verified.toString());
 
-
-    
-
-        // Navigate on success
-        Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder: (context) => CompleteProfileScreen(),
-            ));
+        if (verified == false) {
+          log("navigating to profile completion");
+          Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => CompleteProfileScreen(),
+              ));
+        } else if(verified == true){
+            log("navigating to main screen");
+          // Navigate on success
+          Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => CustomBottomNavbar(),
+              ));
+        }
       } else {
         final errorData = jsonDecode(response.body);
         log(errorData['error'] ?? 'server error');
@@ -127,64 +142,61 @@ class LoginScreenController with ChangeNotifier {
     }
   }
 
- Future<bool> onLogin({
-  required String email,
-  required String password,
-  required BuildContext context
-}) async {
-  final url = Uri.parse("https://workwista.com/users/api/token/");
-  isloading = true;
-  clearErrors(); // Clear previous errors
-  notifyListeners();
-
-  try {
-    final response = await http.post(url, body: {
-      "email": email, 
-      "password": password
-    });
-
-    if (response.statusCode == 200) {
-      LoginModel loginModel = loginModelFromJson(response.body);
-
-      if (loginModel.access != null && loginModel.access!.isNotEmpty) {
-        SharedPreferences prefs = await SharedPreferences.getInstance();
-        await prefs.setString("access", loginModel.access!);
-        await prefs.setString("refresh", loginModel.refresh!);
-        
-        log("✅ Saved Access Token: ${prefs.getString('access')}");
-        log("✅ Saved Refresh Token: ${prefs.getString('refresh')}");
-        
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => CustomBottomNavbar()),
-        );
-        return true;
-      } else {
-        generalError = "Invalid token received";
-      }
-    } else if (response.statusCode == 400) {
-      // Handle field-specific errors
-      final decoded = json.decode(response.body);
-      decoded.forEach((key, value) {
-        if (fieldErrors.containsKey(key)) {
- fieldErrors[key] = (value as List).join(', ');
-        } else {
-          generalError = (value as List).join(', ');
-        }
-      });
-    } else {
-      generalError = "Login failed: ${response.statusCode}";
-      log(response.body.toString());
-    }
-    
-    return false;
-  } catch (e) {
-    generalError = "Connection error: ${e.toString()}";
-    log(e.toString());
-    return false;
-  } finally {
-    isloading = false;
+  Future<bool> onLogin(
+      {required String email,
+      required String password,
+      required BuildContext context}) async {
+    final url = Uri.parse("https://workwista.com/users/api/token/");
+    isloading = true;
+    clearErrors(); // Clear previous errors
     notifyListeners();
+
+    try {
+      final response =
+          await http.post(url, body: {"email": email, "password": password});
+
+      if (response.statusCode == 200) {
+        LoginModel loginModel = loginModelFromJson(response.body);
+
+        if (loginModel.access != null && loginModel.access!.isNotEmpty) {
+          SharedPreferences prefs = await SharedPreferences.getInstance();
+          await prefs.setString("access", loginModel.access!);
+          await prefs.setString("refresh", loginModel.refresh!);
+
+          log("✅ Saved Access Token: ${prefs.getString('access')}");
+          log("✅ Saved Refresh Token: ${prefs.getString('refresh')}");
+
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => CustomBottomNavbar()),
+          );
+          return true;
+        } else {
+          generalError = "Invalid token received";
+        }
+      } else if (response.statusCode == 400) {
+        // Handle field-specific errors
+        final decoded = json.decode(response.body);
+        decoded.forEach((key, value) {
+          if (fieldErrors.containsKey(key)) {
+            fieldErrors[key] = (value as List).join(', ');
+          } else {
+            generalError = (value as List).join(', ');
+          }
+        });
+      } else {
+        generalError = "Login failed: ${response.statusCode}";
+        log(response.body.toString());
+      }
+
+      return false;
+    } catch (e) {
+      generalError = "Connection error: ${e.toString()}";
+      log(e.toString());
+      return false;
+    } finally {
+      isloading = false;
+      notifyListeners();
+    }
   }
-}
 }

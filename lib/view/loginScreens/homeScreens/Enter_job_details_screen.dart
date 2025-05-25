@@ -1063,9 +1063,11 @@ class _LocationSearchDialogState extends State<LocationSearchDialog> {
         borderRadius: BorderRadius.circular(16.r),
       ),
       child: Container(
-        width: double.infinity,
-        height: 500.h,
+        width: 200.w,
+        height: 400.h,
         padding: EdgeInsets.all(16.w),
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(22.r), color: Colors.white),
         child: Column(
           children: [
             // Header
