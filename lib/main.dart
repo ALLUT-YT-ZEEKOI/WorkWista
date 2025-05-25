@@ -3,14 +3,15 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:workwista/view/Controllers/add_job_controller.dart';
 import 'package:workwista/view/Controllers/apply_job_controller.dart';
+import 'package:workwista/view/Controllers/complete_profile_controller.dart';
 import 'package:workwista/view/Controllers/job_details_screen_controller.dart';
 import 'package:workwista/view/Controllers/jobs_screen_controller.dart';
 import 'package:workwista/view/Controllers/location_provider_controller.dart';
 import 'package:workwista/view/Controllers/login_screen_controller.dart';
 import 'package:workwista/view/Controllers/profile_screen_controller.dart';
 import 'package:workwista/view/Controllers/register_screen_controller.dart';
+import 'package:workwista/view/loginScreens/homeScreens/complete_profile_screen.dart';
 import 'package:workwista/view/loginScreens/splash_screen.dart';
-
 
 void main() {
   runApp(const MyApp());
@@ -47,6 +48,9 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(
           create: (context) => ProfileScreenController(),
         ),
+        // ChangeNotifierProvider(
+        //   create: (context) => CompleteProfileController(),
+        // ),
       ],
       child: ScreenUtilInit(
         designSize: Size(393, 852),

@@ -8,7 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:image_picker/image_picker.dart';
-import 'package:intl/intl.dart';
 
 import 'package:provider/provider.dart';
 import 'package:workwista/Utils/color_constants.dart';
@@ -29,6 +28,7 @@ class EnterJobDetailsScreen extends StatefulWidget {
 }
 
 class _EnterJobDetailsScreenState extends State<EnterJobDetailsScreen> {
+  bool _dateError = false;
   void _showLocationSearchDialog() {
     showDialog(
       context: context,
@@ -56,70 +56,92 @@ class _EnterJobDetailsScreenState extends State<EnterJobDetailsScreen> {
   final List<int> months = List.generate(12, (index) => index + 1);
   final List<int> years = List.generate(11, (index) => 2025 + index);
 
-  Widget _dateDropdown({
-    required String hint,
-    required int? value,
-    required List<int> items,
-    required void Function(int?) onChanged,
-  }) {
-    return DropdownButtonFormField2<int>(
-      value: value,
-      items: items.map((int item) {
-        return DropdownMenuItem<int>(
-          value: item,
-          child: Text(
-            item.toString().padLeft(2, '0'),
-            style: TextStyle(fontSize: 14.sp),
-          ),
-        );
-      }).toList(),
-      onChanged: onChanged,
-      decoration: InputDecoration(
-        isDense: true,
-        contentPadding: EdgeInsets.zero,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12.r),
-          borderSide: BorderSide(
-            color: ColorConstants.containerBorder,
-            width: 1.w,
-          ),
+ Widget _dateDropdown({
+  required String hint,
+  required int? value,
+  required List<int> items,
+  required void Function(int?) onChanged,
+}) {
+  return DropdownButtonFormField2<int>(
+    value: value,
+    items: items.map((int item) {
+      return DropdownMenuItem<int>(
+        value: item,
+        child: Text(
+          item.toString().padLeft(2, '0'),
+          style: TextStyle(fontSize: 14.sp),
         ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12.r),
-          borderSide: BorderSide(
-            color: ColorConstants.containerBorder,
-            width: 1.w,
-          ),
-        ),
-      ),
-      buttonStyleData: ButtonStyleData(
-        height: 50.h,
-        padding: EdgeInsets.only(left: 12.w, right: 8.w),
-      ),
-      dropdownStyleData: DropdownStyleData(
-        maxHeight: 200.h,
-        width: 112.w,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12.r),
-        ),
-        offset: const Offset(1, -6), // Adjust this to position dropdown
-      ),
-      iconStyleData: IconStyleData(
-        icon: Icon(
-          Icons.arrow_drop_down,
-          color: ColorConstants.descText,
-        ),
-        iconSize: 24.w,
-      ),
-      hint: Text(
-        hint,
-        style: TextStyle(
-          fontSize: 14.sp,
-          color: ColorConstants.descText,
+      );
+    }).toList(),
+    onChanged: (newValue) {
+      onChanged(newValue);
+      // Clear date error when user selects a value
+      if (_dateError) {
+        setState(() {
+          _dateError = false;
+        });
+      }
+    },
+    decoration: InputDecoration(
+      isDense: true,
+      contentPadding: EdgeInsets.zero,
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12.r),
+        borderSide: BorderSide(
+          color: _dateError ? Colors.red : ColorConstants.containerBorder,
+          width: _dateError ? 2.w : 1.w,
         ),
       ),
-    );
-  }
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12.r),
+        borderSide: BorderSide(
+          color: _dateError ? Colors.red : ColorConstants.containerBorder,
+          width: _dateError ? 2.w : 1.w,
+        ),
+      ),
+      errorBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12.r),
+        borderSide: BorderSide(
+          color: Colors.red,
+          width: 2.w,
+        ),
+      ),
+      focusedErrorBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12.r),
+        borderSide: BorderSide(
+          color: Colors.red,
+          width: 2.w,
+        ),
+      ),
+    ),
+    buttonStyleData: ButtonStyleData(
+      height: 50.h,
+      padding: EdgeInsets.only(left: 12.w, right: 8.w),
+    ),
+    dropdownStyleData: DropdownStyleData(
+      maxHeight: 200.h,
+      width: 112.w,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12.r),
+      ),
+      offset: const Offset(1, -6),
+    ),
+    iconStyleData: IconStyleData(
+      icon: Icon(
+        Icons.arrow_drop_down,
+        color: _dateError ? Colors.red : ColorConstants.descText,
+      ),
+      iconSize: 24.w,
+    ),
+    hint: Text(
+      hint,
+      style: TextStyle(
+        fontSize: 14.sp,
+        color: _dateError ? Colors.red : ColorConstants.descText,
+      ),
+    ),
+  );
+}
 
   void logDate() {
     if (selectedDay != null && selectedMonth != null && selectedYear != null) {
@@ -134,35 +156,82 @@ class _EnterJobDetailsScreenState extends State<EnterJobDetailsScreen> {
     }
   }
 
-  bool _validateSelections() {
-    bool isValid = true;
 
-    // Validate job type selection
-    if (_selectedJobTypeId == null || _selectedJobTypeId!.isEmpty) {
-      setState(() {
-        _jobTypeError = true;
-      });
-      isValid = false;
-    } else {
-      setState(() {
-        _jobTypeError = false;
-      });
-    }
 
-    // Validate work mode selection
-    if (_selectedWorkMode == null || _selectedWorkMode!.isEmpty) {
-      setState(() {
-        _workModeError = true;
-      });
-      isValid = false;
-    } else {
-      setState(() {
-        _workModeError = false;
-      });
-    }
 
-    return isValid;
+
+bool _validateForm() {
+  bool isValid = _formKey.currentState!.validate();
+  
+  // Validate job type selection
+  if (_selectedJobTypeId == null || _selectedJobTypeId!.isEmpty) {
+    setState(() => _jobTypeError = true);
+    isValid = false;
+  } else {
+    setState(() => _jobTypeError = false);
   }
+
+  // Validate work mode selection
+  if (_selectedWorkMode == null || _selectedWorkMode!.isEmpty) {
+    setState(() => _workModeError = true);
+    isValid = false;
+  } else {
+    setState(() => _workModeError = false);
+  }
+
+  // Validate date selection
+  if (selectedDay == null || selectedMonth == null || selectedYear == null) {
+    setState(() => _dateError = true);
+    isValid = false;
+  } else {
+    setState(() => _dateError = false);
+  }
+
+  return isValid;
+}
+
+
+ bool _validateSelections() {
+  bool isValid = true;
+
+  // Validate job type selection
+  if (_selectedJobTypeId == null || _selectedJobTypeId!.isEmpty) {
+    setState(() {
+      _jobTypeError = true;
+    });
+    isValid = false;
+  } else {
+    setState(() {
+      _jobTypeError = false;
+    });
+  }
+
+  // Validate work mode selection
+  if (_selectedWorkMode == null || _selectedWorkMode!.isEmpty) {
+    setState(() {
+      _workModeError = true;
+    });
+    isValid = false;
+  } else {
+    setState(() {
+      _workModeError = false;
+    });
+  }
+
+  // Validate date selection
+  if (selectedDay == null || selectedMonth == null || selectedYear == null) {
+    setState(() {
+      _dateError = true;
+    });
+    isValid = false;
+  } else {
+    setState(() {
+      _dateError = false;
+    });
+  }
+
+  return isValid;
+}
 
   bool _jobTypeError = false;
   bool _workModeError = false;
@@ -549,48 +618,8 @@ class _EnterJobDetailsScreenState extends State<EnterJobDetailsScreen> {
                     )
                   ]),
                   SizedBox(height: 18.h),
-                  Text(
-                    "Job date*",
-                    style:
-                        TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w700),
-                  ),
-                  SizedBox(
-                    height: 5.h,
-                  ),
-
-                  Row(
-                    children: [
-                      Expanded(
-                        child: _dateDropdown(
-                          hint: 'Day',
-                          value: selectedDay,
-                          items: days,
-                          onChanged: (value) =>
-                              setState(() => selectedDay = value),
-                        ),
-                      ),
-                      SizedBox(width: 10.w),
-                      Expanded(
-                        child: _dateDropdown(
-                          hint: 'Month',
-                          value: selectedMonth,
-                          items: months,
-                          onChanged: (value) =>
-                              setState(() => selectedMonth = value),
-                        ),
-                      ),
-                      SizedBox(width: 10.w),
-                      Expanded(
-                        child: _dateDropdown(
-                          hint: 'Year',
-                          value: selectedYear,
-                          items: years,
-                          onChanged: (value) =>
-                              setState(() => selectedYear = value),
-                        ),
-                      ),
-                    ],
-                  ),
+                //here
+                _buildDateSection(),
                   SizedBox(height: 18.h),
                   Text(
                     "Description*",
@@ -600,7 +629,7 @@ class _EnterJobDetailsScreenState extends State<EnterJobDetailsScreen> {
                   SizedBox(
                     height: 5.h,
                   ),
-                  ElevatedButton(onPressed: logDate, child: Text("log")),
+                  // ElevatedButton(onPressed: logDate, child: Text("log")),
                   _textFields(
                     context,
                     double.infinity,
@@ -634,29 +663,23 @@ class _EnterJobDetailsScreenState extends State<EnterJobDetailsScreen> {
                   SizedBox(height: 20.h),
                   GradientButton(
                     onPressed: () async {
-                      String formatted =
-                          '${selectedYear!}-${selectedMonth!.toString().padLeft(2, '0')}-${selectedDay!.toString().padLeft(2, '0')}';
-                      bool formValid = _formKey.currentState!.validate();
-                      bool selectionsValid = _validateSelections();
-                      log(formatted.toString());
-                      if (formValid && selectionsValid) {
-                        // All fields are filled correctly — proceed with add job
-                        await context.read<AddJobController>().onAddJob(
-                              title: _jobTitleController.text,
-                              description: _descriptionController.text,
-                              job_date: formatted,
-                              context: context,
-                              job_image: _selectedImage,
-                              salary_from: _salaryFromController.text,
-                              salary_to: _salaryToController.text,
-                              manual_location: _locationController.text,
-                              key_responsibility: _key_responsibilities.text,
-                              job_category: widget.category_id,
-                              job_type: _selectedJobTypeId!,
-                            );
-                      }
-                      // else: error borders will be shown automatically!
-                    },
+    if (_validateForm()) {
+      String formatted = '${selectedYear!}-${selectedMonth!.toString().padLeft(2, '0')}-${selectedDay!.toString().padLeft(2, '0')}';
+      await context.read<AddJobController>().onAddJob(
+        title: _jobTitleController.text,
+        description: _descriptionController.text,
+        job_date: formatted,
+        context: context,
+        job_image: _selectedImage,
+        salary_from: _salaryFromController.text,
+        salary_to: _salaryToController.text,
+        manual_location: _locationController.text,
+        key_responsibility: _key_responsibilities.text,
+        job_category: widget.category_id,
+        job_type: _selectedJobTypeId!,
+      );
+    }
+  },
                     height: 44.h,
                     width: 373.w,
                     name: "Next",
@@ -675,6 +698,66 @@ class _EnterJobDetailsScreenState extends State<EnterJobDetailsScreen> {
       ]),
     );
   }
+
+
+
+
+Widget _buildDateSection() {
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Text(
+        "Job date*",
+        style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w700),
+      ),
+      SizedBox(height: 5.h),
+      Row(
+        children: [
+          Expanded(
+            child: _dateDropdown(
+              hint: 'Day',
+              value: selectedDay,
+              items: days,
+              onChanged: (value) => setState(() => selectedDay = value),
+            ),
+          ),
+          SizedBox(width: 10.w),
+          Expanded(
+            child: _dateDropdown(
+              hint: 'Month',
+              value: selectedMonth,
+              items: months,
+              onChanged: (value) => setState(() => selectedMonth = value),
+            ),
+          ),
+          SizedBox(width: 10.w),
+          Expanded(
+            child: _dateDropdown(
+              hint: 'Year',
+              value: selectedYear,
+              items: years,
+              onChanged: (value) => setState(() => selectedYear = value),
+            ),
+          ),
+        ],
+      ),
+      // Error text for date selection
+      if (_dateError)
+        Padding(
+          padding: EdgeInsets.only(top: 4.h, left: 12.w),
+          child: Text(
+            'Please select complete date (day, month, year)',
+            style: TextStyle(
+              color: Colors.red,
+              fontSize: 12.sp,
+            ),
+          ),
+        ),
+    ],
+  );
+}
+
+
 
   Widget _buildSelectionContainer({
     required BuildContext context,
@@ -755,7 +838,7 @@ class _EnterJobDetailsScreenState extends State<EnterJobDetailsScreen> {
         maxLines: maxLines ?? 1,
         decoration: InputDecoration(
             // Disable error text to prevent height change
-            errorStyle: TextStyle(height: 0, fontSize: 0),
+            errorStyle: TextStyle(height: 0, fontSize:0.sp),
             errorBorder: OutlineInputBorder(
                 borderSide: BorderSide(
                     color: Colors.red, width: 2), // Make error more visible
@@ -800,6 +883,9 @@ class _LocationSearchDialogState extends State<LocationSearchDialog> {
   Timer? _debounce;
   bool _isLoading = false;
 
+  // Use the same API key as your working app
+  static const String googleApiKey = 'AIzaSyDoSohkihauQ2xyM6c0UtYp9pwl8rAOeX0';
+
   @override
   void dispose() {
     _searchController.dispose();
@@ -812,7 +898,7 @@ class _LocationSearchDialogState extends State<LocationSearchDialog> {
 
     _debounce = Timer(const Duration(milliseconds: 500), () {
       if (query.isNotEmpty) {
-        _searchLocation(query);
+        _searchPlaces(query);
       } else {
         setState(() {
           _searchResults.clear();
@@ -822,35 +908,155 @@ class _LocationSearchDialogState extends State<LocationSearchDialog> {
     });
   }
 
-  Future<void> _searchLocation(String query) async {
+  Future<void> _searchPlaces(String input) async {
     setState(() {
       _isLoading = true;
     });
 
     try {
-      final url = Uri.parse(
-        'https://nominatim.openstreetmap.org/search?q=$query&format=json&addressdetails=1&limit=10',
-      );
+      // Use the same URL structure as your working app - NO country restriction
+      final String url =
+          'https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${Uri.encodeComponent(input)}&key=$googleApiKey';
 
-      final response = await http.get(url, headers: {
-        'User-Agent': 'FlutterLocationApp/1.0 (your_email@example.com)',
-      });
+      print('Making request to: $url');
+      final response = await http.get(Uri.parse(url));
+      print('Response status: ${response.statusCode}');
 
       if (response.statusCode == 200) {
-        final List results = json.decode(response.body);
+        final data = json.decode(response.body);
+        print('API Status: ${data['status']}'); // Debug log
+        
+        // Check if the API response is successful
+        if (data['status'] == 'OK' && data['predictions'] != null) {
+          final predictions = data['predictions'] as List;
+
+          setState(() {
+            _searchResults = predictions
+                .map((prediction) => {
+                      'place_id': prediction['place_id'] ?? '',
+                      'description': prediction['description'] ?? '',
+                      'main_text': prediction['structured_formatting']?['main_text'] ?? 
+                                  prediction['description'] ?? '',
+                      'secondary_text': prediction['structured_formatting']?['secondary_text'] ?? '',
+                    })
+                .toList();
+            _isLoading = false;
+          });
+        } else {
+          // Handle API errors
+          print('Google Places API Error: ${data['status']}');
+          if (data['error_message'] != null) {
+            print('Error Message: ${data['error_message']}');
+          }
+          
+          // Show error message to user
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('Error searching locations: ${data['status']}'),
+                backgroundColor: Colors.red,
+              ),
+            );
+          }
+          
+          setState(() {
+            _searchResults.clear();
+            _isLoading = false;
+          });
+        }
+      } else {
+        print('HTTP Error: ${response.statusCode}');
+        print('Response body: ${response.body}');
+        
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Network error: ${response.statusCode}'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+        
         setState(() {
-          _searchResults = results
-              .map((e) => {
-                    'display_name': e['display_name'],
-                    'lat': e['lat'],
-                    'lon': e['lon'],
-                  })
-              .toList();
+          _searchResults.clear();
           _isLoading = false;
         });
       }
     } catch (e) {
       print('Search error: $e');
+      
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Search failed: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+      
+      setState(() {
+        _searchResults.clear();
+        _isLoading = false;
+      });
+    }
+  }
+
+  Future<void> _getPlaceDetails(String placeId, String description) async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      final String url =
+          'https://maps.googleapis.com/maps/api/place/details/json?place_id=$placeId&key=$googleApiKey&fields=geometry,formatted_address';
+
+      final response = await http.get(Uri.parse(url));
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        
+        if (data['status'] == 'OK' && data['result'] != null) {
+          final result = data['result'];
+          final geometry = result['geometry'];
+          final location = geometry?['location'];
+          final formattedAddress = result['formatted_address'];
+
+          if (location != null && formattedAddress != null) {
+            // Create location object to return
+            final locationData = {
+              'display_name': formattedAddress,
+              'description': description,
+              'lat': location['lat'].toString(),
+              'lon': location['lng'].toString(),
+              'place_id': placeId,
+            };
+
+            setState(() {
+              _isLoading = false;
+            });
+
+            widget.onLocationSelected(locationData);
+          } else {
+            throw Exception('Invalid location data received');
+          }
+        } else {
+          throw Exception('Place Details API Error: ${data['status']}');
+        }
+      } else {
+        throw Exception('HTTP Error: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Place details error: $e');
+      
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to get location details: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+      
       setState(() {
         _isLoading = false;
       });
@@ -910,7 +1116,7 @@ class _LocationSearchDialogState extends State<LocationSearchDialog> {
               onChanged: _onSearchChanged,
               onSubmitted: (query) {
                 _debounce?.cancel();
-                _searchLocation(query);
+                _searchPlaces(query);
               },
             ),
             SizedBox(height: 16.h),
@@ -941,19 +1147,29 @@ class _LocationSearchDialogState extends State<LocationSearchDialog> {
                                 color: Colors.blue,
                               ),
                               title: Text(
-                                item['display_name'],
-                                style: TextStyle(fontSize: 14.sp),
-                                maxLines: 2,
+                                item['main_text'] ?? item['description'] ?? 'Unknown location',
+                                style: TextStyle(
+                                  fontSize: 14.sp,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                                maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                               ),
-                              subtitle: Text(
-                                'Lat: ${item['lat']}, Lon: ${item['lon']}',
-                                style: TextStyle(
-                                  fontSize: 12.sp,
-                                  color: ColorConstants.descText,
-                                ),
+                              subtitle: (item['secondary_text']?.isNotEmpty == true)
+                                  ? Text(
+                                      item['secondary_text'],
+                                      style: TextStyle(
+                                        fontSize: 12.sp,
+                                        color: ColorConstants.descText,
+                                      ),
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                    )
+                                  : null,
+                              onTap: () => _getPlaceDetails(
+                                item['place_id'] ?? '',
+                                item['description'] ?? '',
                               ),
-                              onTap: () => widget.onLocationSelected(item),
                             );
                           },
                         ),
