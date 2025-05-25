@@ -31,19 +31,23 @@ class AllCategoryListingModel {
 class AllCategories {
     String? id;
     String? title;
+    String? category_image;
 
     AllCategories({
         this.id,
         this.title,
+        this.category_image
     });
 
     factory AllCategories.fromJson(Map<String, dynamic> json) => AllCategories(
         id: json["id"],
         title: json["title"],
+        category_image:json["category_image"],
     );
 
     Map<String, dynamic> toJson() => {
         "id": id,
         "title": title,
+        "category_image":category_image
     };
 }

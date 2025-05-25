@@ -61,6 +61,7 @@ class _JobDetailsScreenState extends State<JobDetailsScreen> {
         : 'https://images.pexels.com/photos/125532/pexels-photo-125532.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2';
 
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         elevation: 0, // remove shadow
         scrolledUnderElevation: 0,
@@ -68,7 +69,7 @@ class _JobDetailsScreenState extends State<JobDetailsScreen> {
         centerTitle: true,
         title: InkWell(
           onTap: () {
-            log(job!.jobImage.toString());
+            log(job!.manual_location.toString());
           },
           child: Text(
             "Job Details",
@@ -254,7 +255,11 @@ class _JobDetailsScreenState extends State<JobDetailsScreen> {
                               ),
                               Align(
                                 child: Text(
-                                  "Eranakulam",
+                                  job?.manual_location
+                                          ?.split(',')
+                                          .first
+                                          .trim() ??
+                                      "N/A",
                                   style: TextStyle(
                                       fontSize: 14.sp,
                                       fontWeight: FontWeight.w400,

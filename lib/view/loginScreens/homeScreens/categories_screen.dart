@@ -111,6 +111,18 @@ class CaetgoriesCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+  String _formatImageUrl(String? url) {
+  if (url == null || url.isEmpty) {
+    return 'https://images.pexels.com/photos/159839/office-home-house-desk-159839.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2';
+  }
+
+  // If URL starts with "/media/", prepend the domain
+  if (url.startsWith('/media/')) {
+    return 'https://workwista.com$url';
+  }
+
+  return url;
+}
     return SizedBox(
       child: InkWell(
         onTap: () {
@@ -128,8 +140,10 @@ class CaetgoriesCard extends StatelessWidget {
             decoration: BoxDecoration(
               image: DecorationImage(
                   fit: BoxFit.cover,
-                  image: NetworkImage(
-                      'https://images.pexels.com/photos/159839/office-home-house-desk-159839.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2')),
+                 image: NetworkImage(
+  _formatImageUrl(category.category_image)),
+
+                      ),
               color: Colors.white,
               borderRadius: BorderRadius.circular(8.r),
             ),

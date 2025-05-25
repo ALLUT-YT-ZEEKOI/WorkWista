@@ -122,6 +122,7 @@ class _EnterJobDetailsScreenState extends State<EnterJobDetailsScreen> {
         maxHeight: 200.h,
         width: 112.w,
         decoration: BoxDecoration(
+          color: Colors.white,
           borderRadius: BorderRadius.circular(12.r),
         ),
         offset: const Offset(1, -6),

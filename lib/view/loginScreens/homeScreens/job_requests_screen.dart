@@ -94,7 +94,11 @@ class _JobRequestsScreenState extends State<JobRequestsScreen> {
         }
 
         return Scaffold(
+          backgroundColor: Colors.white,
           appBar: AppBar(
+            elevation: 0, // remove shadow
+            scrolledUnderElevation: 0,
+            backgroundColor: Colors.white,
             title: Text(
               "Job Requests",
               style: TextStyle(
