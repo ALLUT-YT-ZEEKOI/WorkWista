@@ -36,9 +36,10 @@ class _JobDetailsScreenState extends State<JobDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     String fixImageUrl(String? url) {
-  if (url == null || url.isEmpty) return "";
-  return url.replaceFirst("localhost", "workwista.com");
-}
+      if (url == null || url.isEmpty) return "";
+      return url.replaceFirst("localhost", "workwista.com");
+    }
+
     final controller = context.watch<JobDetailsScreenController>();
 
     final PageController _controller = PageController();
@@ -63,7 +64,7 @@ class _JobDetailsScreenState extends State<JobDetailsScreen> {
         centerTitle: true,
         title: InkWell(
           onTap: () {
-            log(job!.jobImage.toString());
+            log(job!.manual_location.toString());
           },
           child: Text(
             "Job Details",
@@ -91,12 +92,13 @@ class _JobDetailsScreenState extends State<JobDetailsScreen> {
                       height: 203.h,
                       decoration: BoxDecoration(
                           image: DecorationImage(
-                              fit: BoxFit.cover,
-                             image: NetworkImage(
-  fixImageUrl(job?.jobImage) != ""
-      ? fixImageUrl(job?.jobImage)
-      : 'https://images.pexels.com/photos/125532/pexels-photo-125532.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',
-),),
+                            fit: BoxFit.cover,
+                            image: NetworkImage(
+                              fixImageUrl(job?.jobImage) != ""
+                                  ? fixImageUrl(job?.jobImage)
+                                  : 'https://images.pexels.com/photos/125532/pexels-photo-125532.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',
+                            ),
+                          ),
                           borderRadius: BorderRadius.circular(11.r),
                           color: Colors.amber),
                     ),

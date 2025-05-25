@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:workwista/view/Common%20Screens/custom_bottom_navbar.dart';
 import 'package:workwista/view/Model/login_model.dart';
+import 'package:workwista/view/loginScreens/homeScreens/complete_profile_screen.dart';
 
 class LoginScreenController with ChangeNotifier {
   bool isloading = false;
@@ -96,7 +97,7 @@ class LoginScreenController with ChangeNotifier {
         final accessToken = data['access_token'];
         final refreshToken = data['refresh_token'];
         final user = data['user'];
-
+        
         SharedPreferences prefs = await SharedPreferences.getInstance();
         await prefs.setString("access", accessToken);
         await prefs.setString("refresh", refreshToken);
@@ -104,11 +105,15 @@ class LoginScreenController with ChangeNotifier {
         // Log saved tokens
         log("✅ Saved Access Token: ${prefs.getString('access')}");
         log("✅ Saved Refresh Token: ${prefs.getString('refresh')}");
+
+
+    
+
         // Navigate on success
         Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-              builder: (context) => CustomBottomNavbar(),
+              builder: (context) => CompleteProfileScreen(),
             ));
       } else {
         final errorData = jsonDecode(response.body);

@@ -48,9 +48,9 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(
           create: (context) => ProfileScreenController(),
         ),
-        // ChangeNotifierProvider(
-        //   create: (context) => CompleteProfileController(),
-        // ),
+        ChangeNotifierProvider(
+          create: (context) => CompleteProfileController(),
+        ),
       ],
       child: ScreenUtilInit(
         designSize: Size(393, 852),

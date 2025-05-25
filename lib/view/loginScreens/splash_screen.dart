@@ -27,13 +27,12 @@ class _SplashScreenState extends State<SplashScreen> {
         String refresh_token = prefs.getString("refresh") ?? "";
 
         if (access_token.isNotEmpty && refresh_token.isNotEmpty) {
+          Navigator.pushReplacement(context,
+              MaterialPageRoute(builder: (context) => CustomBottomNavbar()));
+        } else {
           Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => CustomBottomNavbar()));
-        }else{
-Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => SignInScreen()));
+              context, MaterialPageRoute(builder: (context) => SignInScreen()));
         }
-
       },
     );
   }

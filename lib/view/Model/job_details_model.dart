@@ -34,6 +34,7 @@ class Data {
   String? description;
   String? key_responsibility;
   String? jobImage;
+  String? manual_location;
   String? jobType;
   String? jobCategory;
   String? salary_from;
@@ -49,6 +50,7 @@ class Data {
     this.jobImage,
     this.jobType,
     this.jobCategory,
+    this.manual_location,
     this.salary_from,
     this.salary_to,
     this.key_responsibility,
@@ -66,6 +68,7 @@ class Data {
         jobCategory: json["job_category"],
         salary_from: json["salary_from"],
         salary_to: json["salary_to"],
+        manual_location: json["manual_location"],
         key_responsibility: json["key_responsibility"],
         jobDate:
             json["job_date"] == null ? null : DateTime.parse(json["job_date"]),
@@ -84,6 +87,7 @@ class Data {
         "job_category": jobCategory,
         "salary_from": salary_from,
         "salary_to": salary_to,
+        "manual_location": manual_location,
         "key_responsibility": key_responsibility,
         "job_date":
             "${jobDate!.year.toString().padLeft(4, '0')}-${jobDate!.month.toString().padLeft(2, '0')}-${jobDate!.day.toString().padLeft(2, '0')}",

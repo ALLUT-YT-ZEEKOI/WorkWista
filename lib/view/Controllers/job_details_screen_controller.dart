@@ -17,7 +17,7 @@ class JobDetailsScreenController with ChangeNotifier {
     try {
       final prefs = await SharedPreferences.getInstance();
       String accessToken = prefs.getString("access") ?? "";
-      
+
       // First attempt with current access token
       var response = await _makeJobDetailsRequest(jobId, accessToken);
 
@@ -25,7 +25,7 @@ class JobDetailsScreenController with ChangeNotifier {
       if (response.statusCode == 401) {
         log("Access token expired, attempting refresh...");
         final refreshToken = prefs.getString("refresh") ?? "";
-        
+
         // Refresh the token
         final newAccessToken = await _refreshToken(refreshToken);
         if (newAccessToken != null) {
@@ -37,7 +37,9 @@ class JobDetailsScreenController with ChangeNotifier {
       // Process final response
       if (response.statusCode == 200) {
         jobDetails = jobDetailsModelFromJson(response.body);
+        log(response.body);
         log("Successfully loaded job details");
+        log(jobDetails!.data!.manual_location.toString());
       } else {
         errorMessage = "Failed to load job details (${response.statusCode})";
         _handleApiError(response.statusCode, response.body);
@@ -51,7 +53,8 @@ class JobDetailsScreenController with ChangeNotifier {
     }
   }
 
-  Future<http.Response> _makeJobDetailsRequest(String jobId, String accessToken) async {
+  Future<http.Response> _makeJobDetailsRequest(
+      String jobId, String accessToken) async {
     final url = Uri.parse('https://workwista.com/job/view/detail_job/$jobId/');
     return await http.get(
       url,
@@ -70,11 +73,11 @@ class JobDetailsScreenController with ChangeNotifier {
       if (response.statusCode == 200) {
         final newTokens = jsonDecode(response.body);
         final newAccessToken = newTokens['access'];
-        
+
         // Save new access token
         final prefs = await SharedPreferences.getInstance();
         await prefs.setString("access", newAccessToken);
-        
+
         log("Successfully refreshed access token");
         return newAccessToken;
       } else {

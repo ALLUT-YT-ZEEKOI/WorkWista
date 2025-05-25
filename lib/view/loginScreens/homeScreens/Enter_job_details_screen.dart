@@ -56,92 +56,92 @@ class _EnterJobDetailsScreenState extends State<EnterJobDetailsScreen> {
   final List<int> months = List.generate(12, (index) => index + 1);
   final List<int> years = List.generate(11, (index) => 2025 + index);
 
- Widget _dateDropdown({
-  required String hint,
-  required int? value,
-  required List<int> items,
-  required void Function(int?) onChanged,
-}) {
-  return DropdownButtonFormField2<int>(
-    value: value,
-    items: items.map((int item) {
-      return DropdownMenuItem<int>(
-        value: item,
-        child: Text(
-          item.toString().padLeft(2, '0'),
-          style: TextStyle(fontSize: 14.sp),
+  Widget _dateDropdown({
+    required String hint,
+    required int? value,
+    required List<int> items,
+    required void Function(int?) onChanged,
+  }) {
+    return DropdownButtonFormField2<int>(
+      value: value,
+      items: items.map((int item) {
+        return DropdownMenuItem<int>(
+          value: item,
+          child: Text(
+            item.toString().padLeft(2, '0'),
+            style: TextStyle(fontSize: 14.sp),
+          ),
+        );
+      }).toList(),
+      onChanged: (newValue) {
+        onChanged(newValue);
+        // Clear date error when user selects a value
+        if (_dateError) {
+          setState(() {
+            _dateError = false;
+          });
+        }
+      },
+      decoration: InputDecoration(
+        isDense: true,
+        contentPadding: EdgeInsets.zero,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12.r),
+          borderSide: BorderSide(
+            color: _dateError ? Colors.red : ColorConstants.containerBorder,
+            width: _dateError ? 2.w : 1.w,
+          ),
         ),
-      );
-    }).toList(),
-    onChanged: (newValue) {
-      onChanged(newValue);
-      // Clear date error when user selects a value
-      if (_dateError) {
-        setState(() {
-          _dateError = false;
-        });
-      }
-    },
-    decoration: InputDecoration(
-      isDense: true,
-      contentPadding: EdgeInsets.zero,
-      border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(12.r),
-        borderSide: BorderSide(
-          color: _dateError ? Colors.red : ColorConstants.containerBorder,
-          width: _dateError ? 2.w : 1.w,
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12.r),
+          borderSide: BorderSide(
+            color: _dateError ? Colors.red : ColorConstants.containerBorder,
+            width: _dateError ? 2.w : 1.w,
+          ),
+        ),
+        errorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12.r),
+          borderSide: BorderSide(
+            color: Colors.red,
+            width: 2.w,
+          ),
+        ),
+        focusedErrorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12.r),
+          borderSide: BorderSide(
+            color: Colors.red,
+            width: 2.w,
+          ),
         ),
       ),
-      enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(12.r),
-        borderSide: BorderSide(
-          color: _dateError ? Colors.red : ColorConstants.containerBorder,
-          width: _dateError ? 2.w : 1.w,
+      buttonStyleData: ButtonStyleData(
+        height: 50.h,
+        padding: EdgeInsets.only(left: 12.w, right: 8.w),
+      ),
+      dropdownStyleData: DropdownStyleData(
+        maxHeight: 200.h,
+        width: 112.w,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12.r),
+        ),
+        offset: const Offset(1, -6),
+      ),
+      iconStyleData: IconStyleData(
+        icon: Icon(
+          Icons.arrow_drop_down,
+          color: _dateError ? Colors.red : ColorConstants.descText,
+        ),
+        iconSize: 24.w,
+      ),
+      hint: Text(
+        hint,
+        style: TextStyle(
+          fontSize: 14.sp,
+          color: _dateError ? Colors.red : ColorConstants.descText,
         ),
       ),
-      errorBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(12.r),
-        borderSide: BorderSide(
-          color: Colors.red,
-          width: 2.w,
-        ),
-      ),
-      focusedErrorBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(12.r),
-        borderSide: BorderSide(
-          color: Colors.red,
-          width: 2.w,
-        ),
-      ),
-    ),
-    buttonStyleData: ButtonStyleData(
-      height: 50.h,
-      padding: EdgeInsets.only(left: 12.w, right: 8.w),
-    ),
-    dropdownStyleData: DropdownStyleData(
-      maxHeight: 200.h,
-      width: 112.w,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12.r),
-      ),
-      offset: const Offset(1, -6),
-    ),
-    iconStyleData: IconStyleData(
-      icon: Icon(
-        Icons.arrow_drop_down,
-        color: _dateError ? Colors.red : ColorConstants.descText,
-      ),
-      iconSize: 24.w,
-    ),
-    hint: Text(
-      hint,
-      style: TextStyle(
-        fontSize: 14.sp,
-        color: _dateError ? Colors.red : ColorConstants.descText,
-      ),
-    ),
-  );
-}
+    );
+  }
 
   void logDate() {
     if (selectedDay != null && selectedMonth != null && selectedYear != null) {
@@ -156,82 +156,77 @@ class _EnterJobDetailsScreenState extends State<EnterJobDetailsScreen> {
     }
   }
 
+  bool _validateForm() {
+    bool isValid = _formKey.currentState!.validate();
 
+    // Validate job type selection
+    if (_selectedJobTypeId == null || _selectedJobTypeId!.isEmpty) {
+      setState(() => _jobTypeError = true);
+      isValid = false;
+    } else {
+      setState(() => _jobTypeError = false);
+    }
 
+    // Validate work mode selection
+    if (_selectedWorkMode == null || _selectedWorkMode!.isEmpty) {
+      setState(() => _workModeError = true);
+      isValid = false;
+    } else {
+      setState(() => _workModeError = false);
+    }
 
+    // Validate date selection
+    if (selectedDay == null || selectedMonth == null || selectedYear == null) {
+      setState(() => _dateError = true);
+      isValid = false;
+    } else {
+      setState(() => _dateError = false);
+    }
 
-bool _validateForm() {
-  bool isValid = _formKey.currentState!.validate();
-  
-  // Validate job type selection
-  if (_selectedJobTypeId == null || _selectedJobTypeId!.isEmpty) {
-    setState(() => _jobTypeError = true);
-    isValid = false;
-  } else {
-    setState(() => _jobTypeError = false);
+    return isValid;
   }
 
-  // Validate work mode selection
-  if (_selectedWorkMode == null || _selectedWorkMode!.isEmpty) {
-    setState(() => _workModeError = true);
-    isValid = false;
-  } else {
-    setState(() => _workModeError = false);
+  bool _validateSelections() {
+    bool isValid = true;
+
+    // Validate job type selection
+    if (_selectedJobTypeId == null || _selectedJobTypeId!.isEmpty) {
+      setState(() {
+        _jobTypeError = true;
+      });
+      isValid = false;
+    } else {
+      setState(() {
+        _jobTypeError = false;
+      });
+    }
+
+    // Validate work mode selection
+    if (_selectedWorkMode == null || _selectedWorkMode!.isEmpty) {
+      setState(() {
+        _workModeError = true;
+      });
+      isValid = false;
+    } else {
+      setState(() {
+        _workModeError = false;
+      });
+    }
+
+    // Validate date selection
+    if (selectedDay == null || selectedMonth == null || selectedYear == null) {
+      setState(() {
+        _dateError = true;
+      });
+      isValid = false;
+    } else {
+      setState(() {
+        _dateError = false;
+      });
+    }
+
+    return isValid;
   }
-
-  // Validate date selection
-  if (selectedDay == null || selectedMonth == null || selectedYear == null) {
-    setState(() => _dateError = true);
-    isValid = false;
-  } else {
-    setState(() => _dateError = false);
-  }
-
-  return isValid;
-}
-
-
- bool _validateSelections() {
-  bool isValid = true;
-
-  // Validate job type selection
-  if (_selectedJobTypeId == null || _selectedJobTypeId!.isEmpty) {
-    setState(() {
-      _jobTypeError = true;
-    });
-    isValid = false;
-  } else {
-    setState(() {
-      _jobTypeError = false;
-    });
-  }
-
-  // Validate work mode selection
-  if (_selectedWorkMode == null || _selectedWorkMode!.isEmpty) {
-    setState(() {
-      _workModeError = true;
-    });
-    isValid = false;
-  } else {
-    setState(() {
-      _workModeError = false;
-    });
-  }
-
-  // Validate date selection
-  if (selectedDay == null || selectedMonth == null || selectedYear == null) {
-    setState(() {
-      _dateError = true;
-    });
-    isValid = false;
-  } else {
-    setState(() {
-      _dateError = false;
-    });
-  }
-
-  return isValid;
-}
 
   bool _jobTypeError = false;
   bool _workModeError = false;
@@ -564,16 +559,13 @@ bool _validateForm() {
                           _showLocationSearchDialog();
                         },
                         child: AbsorbPointer(
-                          child: _textFields(
-                            context,
-                            double.infinity,
-                            "Search location",
-                            50,
-                            _locationController,
-                            validator: (value) => value == null || value.isEmpty
-                                ? 'Required'
-                                : null,
-                          ),
+                          child: _textFields(context, double.infinity,
+                              "Search location", 50, _locationController,
+                              validator: (value) =>
+                                  value == null || value.isEmpty
+                                      ? 'Required'
+                                      : null,
+                              contentpadding: 0),
                         ),
                       ),
                     ),
@@ -618,8 +610,8 @@ bool _validateForm() {
                     )
                   ]),
                   SizedBox(height: 18.h),
-                //here
-                _buildDateSection(),
+                  //here
+                  _buildDateSection(),
                   SizedBox(height: 18.h),
                   Text(
                     "Description*",
@@ -663,23 +655,24 @@ bool _validateForm() {
                   SizedBox(height: 20.h),
                   GradientButton(
                     onPressed: () async {
-    if (_validateForm()) {
-      String formatted = '${selectedYear!}-${selectedMonth!.toString().padLeft(2, '0')}-${selectedDay!.toString().padLeft(2, '0')}';
-      await context.read<AddJobController>().onAddJob(
-        title: _jobTitleController.text,
-        description: _descriptionController.text,
-        job_date: formatted,
-        context: context,
-        job_image: _selectedImage,
-        salary_from: _salaryFromController.text,
-        salary_to: _salaryToController.text,
-        manual_location: _locationController.text,
-        key_responsibility: _key_responsibilities.text,
-        job_category: widget.category_id,
-        job_type: _selectedJobTypeId!,
-      );
-    }
-  },
+                      if (_validateForm()) {
+                        String formatted =
+                            '${selectedYear!}-${selectedMonth!.toString().padLeft(2, '0')}-${selectedDay!.toString().padLeft(2, '0')}';
+                        await context.read<AddJobController>().onAddJob(
+                              title: _jobTitleController.text,
+                              description: _descriptionController.text,
+                              job_date: formatted,
+                              context: context,
+                              job_image: _selectedImage,
+                              salary_from: _salaryFromController.text,
+                              salary_to: _salaryToController.text,
+                              manual_location: _locationController.text,
+                              key_responsibility: _key_responsibilities.text,
+                              job_category: widget.category_id,
+                              job_type: _selectedJobTypeId!,
+                            );
+                      }
+                    },
                     height: 44.h,
                     width: 373.w,
                     name: "Next",
@@ -699,65 +692,60 @@ bool _validateForm() {
     );
   }
 
-
-
-
-Widget _buildDateSection() {
-  return Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      Text(
-        "Job date*",
-        style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w700),
-      ),
-      SizedBox(height: 5.h),
-      Row(
-        children: [
-          Expanded(
-            child: _dateDropdown(
-              hint: 'Day',
-              value: selectedDay,
-              items: days,
-              onChanged: (value) => setState(() => selectedDay = value),
-            ),
-          ),
-          SizedBox(width: 10.w),
-          Expanded(
-            child: _dateDropdown(
-              hint: 'Month',
-              value: selectedMonth,
-              items: months,
-              onChanged: (value) => setState(() => selectedMonth = value),
-            ),
-          ),
-          SizedBox(width: 10.w),
-          Expanded(
-            child: _dateDropdown(
-              hint: 'Year',
-              value: selectedYear,
-              items: years,
-              onChanged: (value) => setState(() => selectedYear = value),
-            ),
-          ),
-        ],
-      ),
-      // Error text for date selection
-      if (_dateError)
-        Padding(
-          padding: EdgeInsets.only(top: 4.h, left: 12.w),
-          child: Text(
-            'Please select complete date (day, month, year)',
-            style: TextStyle(
-              color: Colors.red,
-              fontSize: 12.sp,
-            ),
-          ),
+  Widget _buildDateSection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          "Job date*",
+          style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w700),
         ),
-    ],
-  );
-}
-
-
+        SizedBox(height: 5.h),
+        Row(
+          children: [
+            Expanded(
+              child: _dateDropdown(
+                hint: 'Day',
+                value: selectedDay,
+                items: days,
+                onChanged: (value) => setState(() => selectedDay = value),
+              ),
+            ),
+            SizedBox(width: 10.w),
+            Expanded(
+              child: _dateDropdown(
+                hint: 'Month',
+                value: selectedMonth,
+                items: months,
+                onChanged: (value) => setState(() => selectedMonth = value),
+              ),
+            ),
+            SizedBox(width: 10.w),
+            Expanded(
+              child: _dateDropdown(
+                hint: 'Year',
+                value: selectedYear,
+                items: years,
+                onChanged: (value) => setState(() => selectedYear = value),
+              ),
+            ),
+          ],
+        ),
+        // Error text for date selection
+        if (_dateError)
+          Padding(
+            padding: EdgeInsets.only(top: 4.h, left: 12.w),
+            child: Text(
+              'Please select complete date (day, month, year)',
+              style: TextStyle(
+                color: Colors.red,
+                fontSize: 12.sp,
+              ),
+            ),
+          ),
+      ],
+    );
+  }
 
   Widget _buildSelectionContainer({
     required BuildContext context,
@@ -828,6 +816,7 @@ Widget _buildDateSection() {
     VoidCallback? ontap,
     String? Function(String?)? validator,
     int? maxLines,
+    double? contentpadding,
   }) {
     return SizedBox(
       width: width.w,
@@ -838,7 +827,7 @@ Widget _buildDateSection() {
         maxLines: maxLines ?? 1,
         decoration: InputDecoration(
             // Disable error text to prevent height change
-            errorStyle: TextStyle(height: 0, fontSize:0.sp),
+            errorStyle: TextStyle(height: 0, fontSize: 0.sp),
             errorBorder: OutlineInputBorder(
                 borderSide: BorderSide(
                     color: Colors.red, width: 2), // Make error more visible
@@ -857,8 +846,8 @@ Widget _buildDateSection() {
               borderRadius: BorderRadius.circular(12.r),
               borderSide: BorderSide(color: ColorConstants.containerBorder),
             ),
-            contentPadding:
-                EdgeInsets.symmetric(horizontal: 12.w, vertical: 16.h)),
+            contentPadding: EdgeInsets.symmetric(
+                horizontal: 12.w, vertical: contentpadding ?? 16.h)),
         onTap: ontap,
       ),
     );
@@ -925,7 +914,7 @@ class _LocationSearchDialogState extends State<LocationSearchDialog> {
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         print('API Status: ${data['status']}'); // Debug log
-        
+
         // Check if the API response is successful
         if (data['status'] == 'OK' && data['predictions'] != null) {
           final predictions = data['predictions'] as List;
@@ -935,9 +924,13 @@ class _LocationSearchDialogState extends State<LocationSearchDialog> {
                 .map((prediction) => {
                       'place_id': prediction['place_id'] ?? '',
                       'description': prediction['description'] ?? '',
-                      'main_text': prediction['structured_formatting']?['main_text'] ?? 
-                                  prediction['description'] ?? '',
-                      'secondary_text': prediction['structured_formatting']?['secondary_text'] ?? '',
+                      'main_text': prediction['structured_formatting']
+                              ?['main_text'] ??
+                          prediction['description'] ??
+                          '',
+                      'secondary_text': prediction['structured_formatting']
+                              ?['secondary_text'] ??
+                          '',
                     })
                 .toList();
             _isLoading = false;
@@ -948,7 +941,7 @@ class _LocationSearchDialogState extends State<LocationSearchDialog> {
           if (data['error_message'] != null) {
             print('Error Message: ${data['error_message']}');
           }
-          
+
           // Show error message to user
           if (mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
@@ -958,7 +951,7 @@ class _LocationSearchDialogState extends State<LocationSearchDialog> {
               ),
             );
           }
-          
+
           setState(() {
             _searchResults.clear();
             _isLoading = false;
@@ -967,7 +960,7 @@ class _LocationSearchDialogState extends State<LocationSearchDialog> {
       } else {
         print('HTTP Error: ${response.statusCode}');
         print('Response body: ${response.body}');
-        
+
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
@@ -976,7 +969,7 @@ class _LocationSearchDialogState extends State<LocationSearchDialog> {
             ),
           );
         }
-        
+
         setState(() {
           _searchResults.clear();
           _isLoading = false;
@@ -984,7 +977,7 @@ class _LocationSearchDialogState extends State<LocationSearchDialog> {
       }
     } catch (e) {
       print('Search error: $e');
-      
+
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -993,7 +986,7 @@ class _LocationSearchDialogState extends State<LocationSearchDialog> {
           ),
         );
       }
-      
+
       setState(() {
         _searchResults.clear();
         _isLoading = false;
@@ -1014,7 +1007,7 @@ class _LocationSearchDialogState extends State<LocationSearchDialog> {
 
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
-        
+
         if (data['status'] == 'OK' && data['result'] != null) {
           final result = data['result'];
           final geometry = result['geometry'];
@@ -1047,7 +1040,7 @@ class _LocationSearchDialogState extends State<LocationSearchDialog> {
       }
     } catch (e) {
       print('Place details error: $e');
-      
+
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -1056,7 +1049,7 @@ class _LocationSearchDialogState extends State<LocationSearchDialog> {
           ),
         );
       }
-      
+
       setState(() {
         _isLoading = false;
       });
@@ -1147,7 +1140,9 @@ class _LocationSearchDialogState extends State<LocationSearchDialog> {
                                 color: Colors.blue,
                               ),
                               title: Text(
-                                item['main_text'] ?? item['description'] ?? 'Unknown location',
+                                item['main_text'] ??
+                                    item['description'] ??
+                                    'Unknown location',
                                 style: TextStyle(
                                   fontSize: 14.sp,
                                   fontWeight: FontWeight.w500,
@@ -1155,17 +1150,18 @@ class _LocationSearchDialogState extends State<LocationSearchDialog> {
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                               ),
-                              subtitle: (item['secondary_text']?.isNotEmpty == true)
-                                  ? Text(
-                                      item['secondary_text'],
-                                      style: TextStyle(
-                                        fontSize: 12.sp,
-                                        color: ColorConstants.descText,
-                                      ),
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                    )
-                                  : null,
+                              subtitle:
+                                  (item['secondary_text']?.isNotEmpty == true)
+                                      ? Text(
+                                          item['secondary_text'],
+                                          style: TextStyle(
+                                            fontSize: 12.sp,
+                                            color: ColorConstants.descText,
+                                          ),
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                        )
+                                      : null,
                               onTap: () => _getPlaceDetails(
                                 item['place_id'] ?? '',
                                 item['description'] ?? '',

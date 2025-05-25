@@ -1,127 +1,128 @@
-// import 'dart:convert';
-// import 'dart:developer';
+import 'dart:convert';
+import 'dart:developer';
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
-// import 'package:flutter/material.dart';
-// import 'package:shared_preferences/shared_preferences.dart';
-// import 'package:http/http.dart' as http;
-// import 'package:workwista/view/Common%20Screens/custom_bottom_navbar.dart';
-// import 'package:workwista/view/Model/profile_update_model.dart';
+import 'package:workwista/view/Common%20Screens/custom_bottom_navbar.dart';
+import 'package:workwista/view/Model/profile_update_model.dart';
 
-// class CompleteProfileController with ChangeNotifier {
-//   bool isLoading = false;
-//   String? generalError;
+class CompleteProfileController with ChangeNotifier {
+  bool isLoading = false;
+  String? generalError;
 
-//   Map<String, String?> fieldErrors = {
-//     "phone_number": null,
-//     "DOB": null,
-//   };
+  Map<String, String?> fieldErrors = {
+    "phone_number": null,
+    "DOB": null,
+  };
 
-//   void clearErrors() {
-//     fieldErrors.updateAll((key, value) => null);
-//     generalError = null;
-//   }
+  void clearErrors() {
+    fieldErrors.updateAll((key, value) => null);
+    generalError = null;
+  }
 
-//   Future onUpdateProfile({
-//     required String phone_number,
-//     required String DOB,
-//     required BuildContext context,
-//   }) async {
-//     isLoading = true;
-//     clearErrors();
-//     notifyListeners();
+  Future<void> onUpdateProfile({
+    required String phone_number,
+    required String DOB,
+    required BuildContext context,
+  }) async {
+    isLoading = true;
+    clearErrors();
+    notifyListeners();
 
-//     final prefs = await SharedPreferences.getInstance();
-//     String accessToken = prefs.getString("access") ?? "";
-//     String refreshToken = prefs.getString("refresh") ?? "";
+    final prefs = await SharedPreferences.getInstance();
+    String accessToken = prefs.getString("access") ?? "";
+    String refreshToken = prefs.getString("refresh") ?? "";
 
-//     try {
-//       var response =
-//           await _makeProfileUpdateRequest(accessToken, phone_number, DOB);
+    try {
+      var response = await _makeProfileUpdateRequest(accessToken, phone_number, DOB);
 
-//       if (response.statusCode == 401) {
-//        log("Access token expired, refreshing...");
-//       final newAccessToken = await _refreshToken(refreshToken);
-//       if (newAccessToken ! = null) {
-//         response = await _makeProfileUpdateRequest(accessToken, phone_number, DOB);
-//       }
-//       }
+      if (response.statusCode == 401) {
+        log("Access token expired, refreshing...");
+        final newAccessToken = await _refreshToken(refreshToken);
+        if (newAccessToken != null) {
+          response = await _makeProfileUpdateRequest(newAccessToken, phone_number, DOB);
+        }
+      }
 
-//       if (response.statusCode == 201) {
-//         UpdateProfileModel updateModel = updateProfileModelFromJson(response.body);
-//         log("Profile updated successfully");
-//          Navigator.pushReplacement(
-//             context,
-//             MaterialPageRoute(
-//               builder: (context) => CustomBottomNavbar(),
-//             ));
-//               log(updateModel.message.toString());
-//       }else {
-//         generalError = "failed ${response.statusCode}";
+      if (response.statusCode == 200) {
+        UpdateProfileModel updateModel = updateProfileModelFromJson(response.body);
+        log("Profile updated successfully");
 
-//       }else if(response.statusCode = 400){
-//         final decoded = json.decode(response.body);
-//         decoded.forEach((key, value){
-//           if (fieldErrors.containsKey(key)) {
-//             fieldErrors[key] = (value as List).join(', ');
-//           } else {
-//             generalError = (value as List).join(', ');
-//           }
-//         });
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => CustomBottomNavbar()),
+        );
 
-//       }else{
-//               generalError = "failed: ${response.statusCode}";
-//         log(response.body.toString());
-//       }
-//     } catch (e) {
-//        generalError = "Connection error: ${e.toString()}";
-//       log(e.toString());
-//     }finally{
-//        isLoading = false;
-//       notifyListeners();
-//     }
-//   }
+        log(updateModel.message.toString());
+      } else if (response.statusCode == 400) {
+        final decoded = json.decode(response.body);
+        decoded.forEach((key, value) {
+          if (fieldErrors.containsKey(key)) {
+            fieldErrors[key] = (value as List).join(', ');
+          } else {
+            generalError = (value as List).join(', ');
+          }
+        });
+      } else {
+        generalError = "Failed to update profile (${response.statusCode})";
+        log(response.body);
+      }
+    } catch (e) {
+      generalError = "Connection error: ${e.toString()}";
+      log(e.toString());
+    } finally {
+      isLoading = false;
+      notifyListeners();
 
-//   Future<http.Response> _makeProfileUpdateRequest(
-//     String token,
-//     String phone_number,
-//     String DOB,
-//   ) async {
-//     final url = Uri.parse("https://workwista.com/complete/profile/");
-//     var request = http.MultipartRequest('POST', url);
+      if (generalError != null && context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(generalError!)),
+        );
+      }
+    }
+  }
 
-//     request.fields['phone_number'] = phone_number;
-//     request.fields['DOB'] = DOB;
-//     //pass the token
-//     request.headers['Authorization'] = 'Bearer $token';
+  Future<http.Response> _makeProfileUpdateRequest(
+    String token,
+    String phone_number,
+    String DOB,
+  ) async {
+    final url = Uri.parse("https://workwista.com/complete/profile/");
+    var request = http.MultipartRequest('POST', url);
 
-//     final streameedResponse = await request.send();
-//     return await http.Response.fromStream(streameedResponse);
-//   }
-// Future<String?> _refreshToken(String refreshToken) async {
-//     try {
-//       final url = Uri.parse('https://workwista.com/users/api/token/refresh/');
-//       final response = await http.post(
-//         url,
-//         body: {'refresh': refreshToken},
-//       );
+    request.fields['phone_number'] = phone_number;
+    request.fields['DOB'] = DOB;
+    request.headers['Authorization'] = 'Bearer $token';
 
-//       if (response.statusCode == 200) {
-//         final newTokens = jsonDecode(response.body);
-//         final newAccessToken = newTokens['access'];
+    final streamedResponse = await request.send();
+    return await http.Response.fromStream(streamedResponse);
+  }
 
-//         final prefs = await SharedPreferences.getInstance();
-//         await prefs.setString("access", newAccessToken);
+  Future<String?> _refreshToken(String refreshToken) async {
+    try {
+      final url = Uri.parse('https://workwista.com/users/api/token/refresh/');
+      final response = await http.post(
+        url,
+        body: {'refresh': refreshToken},
+      );
 
-//         log("Access token refreshed");
-//         return newAccessToken;
-//       } else {
-//         log("Token refresh failed (${response.statusCode})");
-//         return null;
-//       }
-//     } catch (e) {
-//       log("Token refresh exception: ${e.toString()}");
-//       return null;
-//     }
-//   }
+      if (response.statusCode == 200) {
+        final newTokens = jsonDecode(response.body);
+        final newAccessToken = newTokens['access'];
 
-// }
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setString("access", newAccessToken);
+
+        log("Access token refreshed");
+        return newAccessToken;
+      } else {
+        log("Token refresh failed (${response.statusCode})");
+        return null;
+      }
+    } catch (e) {
+      log("Token refresh exception: ${e.toString()}");
+      return null;
+    }
+  }
+}
