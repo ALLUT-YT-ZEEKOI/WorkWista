@@ -67,11 +67,9 @@ class _SignupscreenState extends State<Signupscreen> {
               Navigator.pop(context);
             },
             icon: Icon(Icons.arrow_back_ios)),
-        elevation: 0, // remove shadow
-        scrolledUnderElevation: 0,
-        backgroundColor: Colors.white,
+  
       ),
-      backgroundColor: Colors.white,
+  
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 0.h),
         child: SingleChildScrollView(

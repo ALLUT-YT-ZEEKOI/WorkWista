@@ -28,9 +28,7 @@ class SelectedCategoryJobsScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        elevation: 0, // remove shadow
-        scrolledUnderElevation: 0,
-        backgroundColor: Colors.white,
+
         centerTitle: true,
 
         titleTextStyle: TextStyle(

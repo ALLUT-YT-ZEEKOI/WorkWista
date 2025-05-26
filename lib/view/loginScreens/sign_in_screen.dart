@@ -31,7 +31,7 @@ class _SignInScreenState extends State<SignInScreen> {
     final controller = Provider.of<LoginScreenController>(context);
     return Scaffold(
       resizeToAvoidBottomInset: true,
-      backgroundColor: Colors.white,
+   
       body: SafeArea(
         child: SingleChildScrollView(
           scrollDirection: Axis.vertical,

@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:workwista/Utils/app_utils.dart';
 import 'package:workwista/view/Common%20Screens/custom_bottom_navbar.dart';
 import 'package:workwista/view/Model/add_job_model.dart';
 
@@ -53,27 +54,27 @@ class AddJobController with ChangeNotifier {
         final newAccessToken = await _refreshToken(refreshToken);
         if (newAccessToken != null) {
           response = await _makeJobPostRequest(
-            newAccessToken,
-            title,
-            description,
-            job_date,
-            job_image,
-            salary_from,
-            salary_to,
-            manual_location,
-           key_responsibility,
-           job_category,
-           job_type
-          );
+              newAccessToken,
+              title,
+              description,
+              job_date,
+              job_image,
+              salary_from,
+              salary_to,
+              manual_location,
+              key_responsibility,
+              job_category,
+              job_type);
         }
       }
 
       if (response.statusCode == 201) {
         AddJobModel addJobModel = addJobModelFromJson(response.body);
         log("Job posted successfully");
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("posted!")),
-        );
+        AppUtils.showSnackbar(
+            context: context,
+            message: "Job posted successfully",
+            bgcolor: Colors.lightGreen);
         Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(builder: (context) => CustomBottomNavbar()),
@@ -91,9 +92,9 @@ class AddJobController with ChangeNotifier {
       islaoding = false;
       notifyListeners();
       if (errorMessage != null && context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(errorMessage!)),
-        );
+        AppUtils.showSnackbar(
+            context: context, message: errorMessage.toString(), bgcolor: Colors.red);
+     
       }
     }
   }

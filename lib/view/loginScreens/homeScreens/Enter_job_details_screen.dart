@@ -296,11 +296,9 @@ class _EnterJobDetailsScreenState extends State<EnterJobDetailsScreen> {
     }
 
     return Scaffold(
-      backgroundColor: Colors.white,
+  
       appBar: AppBar(
-        elevation: 0, // remove shadow
-        scrolledUnderElevation: 0,
-        backgroundColor: Colors.white,
+       
         centerTitle: true,
         title: InkWell(
           onTap: () {

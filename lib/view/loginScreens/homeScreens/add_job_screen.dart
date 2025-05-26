@@ -31,11 +31,9 @@ class _AddJobScreenState extends State<AddJobScreen> {
   Widget build(BuildContext context) {
     final controller = Provider.of<JobsScreenController>(context);
     return Scaffold(
-      backgroundColor: Colors.white,
+      
       appBar: AppBar(
-        elevation: 0, // remove shadow
-        scrolledUnderElevation: 0,
-        backgroundColor: Colors.white,
+   
         title: Text(
           "Add Job",
           style: TextStyle(

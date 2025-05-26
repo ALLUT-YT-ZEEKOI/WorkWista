@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
 import 'package:workwista/view/Controllers/jobs_screen_controller.dart';
@@ -60,19 +61,15 @@ class _SearchScreenState extends State<SearchScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
       appBar: AppBar(
-        elevation: 0, // remove shadow
-        scrolledUnderElevation: 0,
-        backgroundColor: Colors.white,
-        title: const Text("Search Jobs"),
+        title: Text("Search Jobs"),
       ),
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 12),
+        padding: EdgeInsets.symmetric(horizontal: 10.w),
         child: Column(
           children: [
             SearchField(
-              height: 50,
+              height: 50.h,
               controller: _searchController,
               focusNode: _searchFocusNode,
               onChanged: (value) {
@@ -86,19 +83,19 @@ class _SearchScreenState extends State<SearchScreen> {
                 }
               },
             ),
-            const SizedBox(height: 16),
+            SizedBox(height: 16.h),
             // Recent Searches Section
             if (recentSearches.isNotEmpty && _searchController.text.isEmpty)
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Padding(
-                    padding: EdgeInsets.only(left: 8.0, bottom: 8),
+                  Padding(
+                    padding: EdgeInsets.only(left: 8.0.w, bottom: 8.h),
                     child: Text(
                       'Recent Searches',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
-                        fontSize: 16,
+                        fontSize: 16.sp,
                       ),
                     ),
                   ),

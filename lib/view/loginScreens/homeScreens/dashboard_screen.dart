@@ -1,5 +1,3 @@
-
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -29,20 +27,14 @@ class _DashboardState extends State<Dashboard>
   // late TabController _tabController;
   // late PageController _pageController;
   // int _currentIndex = 0;
-late ScrollController _scrollController;
+  late ScrollController _scrollController;
 
-
-
- 
-
-
-
- @override
+  @override
   void initState() {
     super.initState();
     _scrollController = ScrollController();
     _scrollController.addListener(_onScroll);
-    
+
     // Apply correct initial status bar color immediately
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       _updateStatusBarBasedOnOffset();
@@ -50,55 +42,46 @@ late ScrollController _scrollController;
       final jobsController = context.read<JobsScreenController>();
       await jobsController.getCategories();
       await jobsController.getJobs();
-      
 
       // Initialize location once when app starts
       final locationProvider = context.read<LocationProvider>();
       if (locationProvider.cityName == 'not found') {
         await locationProvider.getCurrentLocationAndCity();
       }
-     
     });
   }
 
-
-
-void _updateStatusBarBasedOnOffset() {
-  if (_scrollController.hasClients && _scrollController.offset > 100) {
-    SystemChrome.setSystemUIOverlayStyle(
-      SystemUiOverlayStyle(
-        statusBarColor: Colors.white,
-        statusBarIconBrightness: Brightness.dark,
-      ),
-    );
-  } else {
-    SystemChrome.setSystemUIOverlayStyle(
-      SystemUiOverlayStyle(
-        statusBarColor: Color(0xFFDAE6FC),
-        statusBarIconBrightness: Brightness.dark,
-      ),
-    );
+  void _updateStatusBarBasedOnOffset() {
+    if (_scrollController.hasClients && _scrollController.offset > 100) {
+      SystemChrome.setSystemUIOverlayStyle(
+        SystemUiOverlayStyle(
+          statusBarColor: Colors.white,
+          statusBarIconBrightness: Brightness.dark,
+        ),
+      );
+    } else {
+      SystemChrome.setSystemUIOverlayStyle(
+        SystemUiOverlayStyle(
+          statusBarColor: Color(0xFFDAE6FC),
+          statusBarIconBrightness: Brightness.dark,
+        ),
+      );
+    }
   }
-}
 
+  void _onScroll() {
+    _updateStatusBarBasedOnOffset();
+  }
 
-
-void _onScroll() {
-  _updateStatusBarBasedOnOffset();
-}
-
-   @override
+  @override
   void dispose() {
     _scrollController.dispose();
     super.dispose();
   }
 
-
-
-
   @override
   Widget build(BuildContext context) {
-  final locationProvider = Provider.of<LocationProvider>(context);
+    final locationProvider = Provider.of<LocationProvider>(context);
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHight = MediaQuery.of(context).size.width;
     final PageController _controller = PageController();
@@ -193,9 +176,9 @@ void _onScroll() {
                               SizedBox(width: 5.w),
                               InkWell(
                                 onTap: () {
-                                   // Retry location when tapped
+                                  // Retry location when tapped
                                   // Optionally allow manual refresh
-                locationProvider.getCurrentLocationAndCity();
+                                  locationProvider.getCurrentLocationAndCity();
                                 },
                                 child: Container(
                                   decoration: BoxDecoration(
@@ -214,7 +197,7 @@ void _onScroll() {
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceEvenly,
                                     children: [
-                                     locationProvider.isLoadingLocation
+                                      locationProvider.isLoadingLocation
                                           ? SizedBox(
                                               width: 16.w,
                                               height: 16.h,
@@ -223,17 +206,15 @@ void _onScroll() {
                                                 color: Colors.grey[600],
                                               ),
                                             )
-                                          :
-                                      Image.asset(
-                                        'assets/location.png',
-                                        height: 24.h,
-                                        width: 24.w,
-                                      ),
+                                          : Image.asset(
+                                              'assets/location.png',
+                                              height: 24.h,
+                                              width: 24.w,
+                                            ),
                                       Flexible(
-
                                         child: Text(
                                           overflow: TextOverflow.ellipsis,
-                                         locationProvider.cityName,
+                                          locationProvider.cityName,
                                           style: TextStyle(
                                             fontSize: 12.sp,
                                             fontWeight: FontWeight.w500,

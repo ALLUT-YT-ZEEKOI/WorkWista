@@ -5,6 +5,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:workwista/Utils/app_utils.dart';
 import 'package:workwista/view/Common%20Screens/custom_bottom_navbar.dart';
 import 'package:workwista/view/Model/login_model.dart';
 import 'package:workwista/view/loginScreens/homeScreens/complete_profile_screen.dart';
@@ -13,44 +14,7 @@ class LoginScreenController with ChangeNotifier {
   bool isloading = false;
   bool isloadingG = false;
   String? generalError;
-// No GoogleSignIn needed anymore - we'll use WebView
 
-//   // Only need to update the handleGoogleAuthCallback method
-//  Future<void> handleLoginResponse(Map<String, dynamic> data, BuildContext context) async {
-//     try {
-//       await _storeAuthData(data);
-//       if (context.mounted) {
-//         Navigator.pushReplacement(
-//           context,
-//           MaterialPageRoute(builder: (context) => CustomBottomNavbar()),
-//         );
-//       }
-//     } catch (e) {
-//       log('handleLoginResponse error: $e');
-//       if (context.mounted) {
-//         _showError(context, 'Login failed: ${e.toString()}');
-//       }
-//     }
-//   }
-
-//   Future<void> _storeAuthData(Map<String, dynamic> data) async {
-//     final prefs = await SharedPreferences.getInstance();
-//     await prefs.setString('access', data['access_token']);
-//     log("✅ Saved Access Token: ${prefs.getString('access')}");
-//     await prefs.setString('refresh', data['refresh_token']);
-//     await prefs.setString('user_email', data['user']['email'] ?? '');
-//     await prefs.setString('user_name', data['user']['name'] ?? '');
-//     await prefs.setString(
-//         'user_avatar', data['user']['profile_picture_google'] ?? '');
-//   }
-
-  // void _showError(BuildContext context, String message) {
-  //   if (context.mounted) {
-  //     ScaffoldMessenger.of(context).showSnackBar(
-  //       SnackBar(content: Text(message)),
-  //     );
-  //   }
-  // }
 
 // Field-wise error tracking
   Map<String, String?> fieldErrors = {
@@ -173,6 +137,10 @@ class LoginScreenController with ChangeNotifier {
           return true;
         } else {
           generalError = "Invalid token received";
+          AppUtils.showSnackbar(
+            context: context,
+            message:"Invalid token received",
+            bgcolor: Colors.red);
         }
       } else if (response.statusCode == 400) {
         // Handle field-specific errors
@@ -186,12 +154,20 @@ class LoginScreenController with ChangeNotifier {
         });
       } else {
         generalError = "Login failed: ${response.statusCode}";
+         AppUtils.showSnackbar(
+            context: context,
+            message:"Login failed: ${response.statusCode}",
+            bgcolor: Colors.red);
         log(response.body.toString());
       }
 
       return false;
     } catch (e) {
       generalError = "Connection error: ${e.toString()}";
+      AppUtils.showSnackbar(
+            context: context,
+            message:"Connection error: ${e.toString()}",
+            bgcolor: Colors.red);
       log(e.toString());
       return false;
     } finally {

@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:workwista/Utils/app_utils.dart';
 import 'package:workwista/view/Common%20Screens/custom_bottom_navbar.dart';
 import 'package:workwista/view/Model/apply_job_model.dart';
 
@@ -29,15 +30,15 @@ class ApplyJobController with ChangeNotifier {
       if (response.statusCode == 201) {
         ApplyJobModel applyJobModel = applyJobModelFromJson(response.body);
         log("success : ${applyJobModel.message}");
-       Navigator.pushAndRemoveUntil(
-  context,
-  MaterialPageRoute(
-    builder: (context) => CustomBottomNavbar(
-      successMessage: "Job request sent successfully",
-    ),
-  ),
-  (Route<dynamic> route) => false,
-);
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(
+            builder: (context) => CustomBottomNavbar(
+              successMessage: "Job request sent successfully",
+            ),
+          ),
+          (Route<dynamic> route) => false,
+        );
       } else {
         errorMessage = "You have already requested this job";
       }
@@ -50,9 +51,11 @@ class ApplyJobController with ChangeNotifier {
 
       // Show error message if exists
       if (errorMessage != null && context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(errorMessage!)),
-        );
+        AppUtils.showSnackbar(
+            context: context,
+            message: errorMessage.toString(),
+            bgcolor: Colors.red);
+      
       }
     }
   }

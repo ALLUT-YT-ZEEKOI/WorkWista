@@ -61,11 +61,9 @@ class _JobDetailsScreenState extends State<JobDetailsScreen> {
         : 'https://images.pexels.com/photos/125532/pexels-photo-125532.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2';
 
     return Scaffold(
-      backgroundColor: Colors.white,
+ 
       appBar: AppBar(
-        elevation: 0, // remove shadow
-        scrolledUnderElevation: 0,
-        backgroundColor: Colors.white,
+      
         centerTitle: true,
         title: InkWell(
           onTap: () {

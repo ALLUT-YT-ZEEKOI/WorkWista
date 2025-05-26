@@ -13,7 +13,7 @@ class Forgotpassword extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+    
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 40),
         child: Column(

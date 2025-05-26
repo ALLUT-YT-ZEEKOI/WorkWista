@@ -63,9 +63,6 @@ class _CategorySearchScreenState extends State<CategorySearchScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        elevation: 0, // remove shadow
-        scrolledUnderElevation: 0,
-        backgroundColor: Colors.white,
         title: Text("Search Jobs"),
       ),
       body: Padding(

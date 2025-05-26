@@ -5,7 +5,11 @@ class AppUtils {
       {required BuildContext context,
       required String message,
       Color bgcolor = Colors.red}) {
-    ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(backgroundColor: bgcolor, content: Text(message)));
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        backgroundColor: bgcolor,
+        content: Text(
+          message,
+          style: TextStyle(fontWeight: FontWeight.bold),
+        )));
   }
 }

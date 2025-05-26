@@ -58,6 +58,12 @@ class MyApp extends StatelessWidget {
           debugShowCheckedModeBanner: false,
           title: 'Flutter Demo',
           theme: ThemeData(
+            appBarTheme: AppBarTheme(
+              elevation: 0, // remove shadow
+              scrolledUnderElevation: 0,
+              backgroundColor: Colors.white,
+            ),
+            scaffoldBackgroundColor: Colors.white,
             fontFamily: 'MonoSans',
           ),
           home: SplashScreen(),

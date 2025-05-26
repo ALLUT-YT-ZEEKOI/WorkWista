@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:workwista/Utils/app_utils.dart';
 
 import 'package:workwista/view/Common%20Screens/custom_bottom_navbar.dart';
 import 'package:workwista/view/Model/profile_update_model.dart';
@@ -76,9 +77,11 @@ class CompleteProfileController with ChangeNotifier {
       notifyListeners();
 
       if (generalError != null && context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(generalError!)),
-        );
+        AppUtils.showSnackbar(
+            context: context,
+            message: generalError.toString(),
+            bgcolor: Colors.red);
+       
       }
     }
   }

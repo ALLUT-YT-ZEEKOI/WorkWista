@@ -51,10 +51,9 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
     final _formKey = GlobalKey<FormState>();
     final controller = Provider.of<CompleteProfileController>(context);
     return Scaffold(
+     
       appBar: AppBar(
-        elevation: 0, // remove shadow
-        scrolledUnderElevation: 0,
-        backgroundColor: Colors.white,
+      
       ),
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 20.w),

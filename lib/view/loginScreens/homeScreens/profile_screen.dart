@@ -6,7 +6,6 @@ import 'package:workwista/Utils/color_constants.dart';
 import 'package:workwista/view/Controllers/profile_screen_controller.dart';
 import 'package:workwista/view/loginScreens/sign_in_screen.dart';
 
-
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
 
@@ -45,11 +44,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final profile = controller.ProfileDetails!.data;
 
     return Scaffold(
-      backgroundColor: Colors.white,
+    
       appBar: AppBar(
-        elevation: 0, // remove shadow
-        scrolledUnderElevation: 0,
-        backgroundColor: Colors.white,
+      
         title: Text(
           "Profile",
           style: TextStyle(fontWeight: FontWeight.w700, fontSize: 24.sp),

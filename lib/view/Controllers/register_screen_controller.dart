@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:workwista/Utils/app_utils.dart';
 
 import 'package:workwista/view/Common%20Screens/custom_bottom_navbar.dart';
 import 'package:workwista/view/Model/register_model.dart';
@@ -69,6 +70,10 @@ class RegisterScreenController with ChangeNotifier {
           );
         } else {
           generalError = "Invalid token received";
+          AppUtils.showSnackbar(
+              context: context,
+              message: "Invalid token received",
+              bgcolor: Colors.red);
         }
       } else if (response.statusCode == 400) {
         final decoded = json.decode(response.body);
@@ -81,10 +86,18 @@ class RegisterScreenController with ChangeNotifier {
         });
       } else {
         generalError = "Registration failed: ${response.statusCode}";
+        AppUtils.showSnackbar(
+            context: context,
+            message: "Registration failed: ${response.statusCode}",
+            bgcolor: Colors.red);
         log(response.body.toString());
       }
     } catch (e) {
       generalError = "Connection error: ${e.toString()}";
+      AppUtils.showSnackbar(
+          context: context,
+          message: "Connection error: ${e.toString()}",
+          bgcolor: Colors.red);
       log(e.toString());
     } finally {
       isloading = false;

@@ -1,9 +1,9 @@
-import 'package:flutter/material.dart';
+// import 'package:flutter/material.dart';
 
-class GoogleAuthController with ChangeNotifier{
-  bool isloading = false;
-  String? erroMessage;
+// class GoogleAuthController with ChangeNotifier{
+//   bool isloading = false;
+//   String? erroMessage;
 
 
   
-}
+// }
