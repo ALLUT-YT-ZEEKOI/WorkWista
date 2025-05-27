@@ -403,6 +403,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                         InkWell(
                           onTap: () async {
+                            
                             // Clear tokens from SharedPreferences
                             SharedPreferences prefs =
                                 await SharedPreferences.getInstance();

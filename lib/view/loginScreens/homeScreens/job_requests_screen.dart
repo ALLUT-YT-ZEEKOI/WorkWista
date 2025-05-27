@@ -244,7 +244,7 @@ class _JobRequestsScreenState extends State<JobRequestsScreen> {
                           context,
                           MaterialPageRoute(
                             builder: (context) => CustomBottomNavbar(),
-                          ));// Go back to MyJobsScreen
+                          )); // Go back to MyJobsScreen
                     },
                   ),
                 ],

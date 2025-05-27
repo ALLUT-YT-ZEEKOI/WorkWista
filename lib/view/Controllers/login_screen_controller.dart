@@ -15,8 +15,7 @@ class LoginScreenController with ChangeNotifier {
   bool isloadingG = false;
   String? generalError;
 
-
-// Field-wise error tracking
+  // Field-wise error tracking
   Map<String, String?> fieldErrors = {
     "email": null,
     "password": null,
@@ -30,22 +29,30 @@ class LoginScreenController with ChangeNotifier {
   final GoogleSignIn _googleSignIn = GoogleSignIn(
       scopes: ['email', 'profile'],
       serverClientId:
-          '877049429462-45rfki3okpgcl8nrevnr3bc9vi0420ou.apps.googleusercontent.com' //web cleint id from cloud console
+          '877049429462-45rfki3okpgcl8nrevnr3bc9vi0420ou.apps.googleusercontent.com' //web client id from cloud console
       );
 
   Future<void> handleGoogleSignIn({required BuildContext context}) async {
     isloadingG = true;
     notifyListeners();
-    // final url = Uri.parse("https://workwista.com/google_mobile_auth/");
 
     try {
+      // First, sign out to clear any cached authentication
+      await _googleSignIn.signOut();
+      
+      // Then initiate a fresh sign-in which will show account picker
       final GoogleSignInAccount? account = await _googleSignIn.signIn();
-      final GoogleSignInAuthentication? auth = await account?.authentication;
+      
+      if (account == null) {
+        // User cancelled the sign-in
+        log('User cancelled Google Sign-In');
+        return;
+      }
+      
+      final GoogleSignInAuthentication? auth = await account.authentication;
       final String? idToken = auth?.idToken;
-      // log("id toke :${idToken.toString()}");
 
       if (idToken == null) {
-        // log("id toke :${idToken.toString()}");
         log('Failed to get ID Token');
         return;
       }
@@ -55,28 +62,33 @@ class LoginScreenController with ChangeNotifier {
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({'idToken': idToken}),
       );
-      log("id toke :${idToken.toString()}");
+      
+      log("ID Token: ${idToken.toString()}");
+      
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         final accessToken = data['access_token'];
         final refreshToken = data['refresh_token'];
         final verified = data['verified'];
-
         final user = data['user'];
 
         SharedPreferences prefs = await SharedPreferences.getInstance();
         await prefs.setString("access", accessToken);
         await prefs.setString("refresh", refreshToken);
         await prefs.setString("profile_data", jsonEncode(user));
+        
         // Log saved tokens
         log("✅ Saved Access Token: ${prefs.getString('access')}");
         log("✅ Saved Refresh Token: ${prefs.getString('refresh')}");
         log("-------------------------------------");
-        log("logging user :  ${user.toString()}");
-        log("logging email :${user['email'].toString()}");
-        log("logging phone :${user['phone_number'].toString()}");
-        log("logging DOB :${user['phone_number'].toString()}");
+        log("logging user: ${user.toString()}");
+        log("logging email: ${user['email'].toString()}");
+        log("logging phone: ${user['phone_number'].toString()}");
+        log("logging DOB: ${user['date_of_birth'].toString()}");
         log(verified.toString());
+
+        // Sign out again after successful authentication to clear cache for next time
+        await _googleSignIn.signOut();
 
         if (verified == false) {
           log("navigating to profile completion");
@@ -85,9 +97,8 @@ class LoginScreenController with ChangeNotifier {
               MaterialPageRoute(
                 builder: (context) => CompleteProfileScreen(),
               ));
-        } else if(verified == true){
-            log("navigating to main screen");
-          // Navigate on success
+        } else if (verified == true) {
+          log("navigating to main screen");
           Navigator.pushReplacement(
               context,
               MaterialPageRoute(
@@ -97,12 +108,32 @@ class LoginScreenController with ChangeNotifier {
       } else {
         final errorData = jsonDecode(response.body);
         log(errorData['error'] ?? 'server error');
+        AppUtils.showSnackbar(
+          context: context,
+          message: errorData['error'] ?? 'Server error occurred',
+          bgcolor: Colors.red
+        );
       }
     } catch (e) {
-      log('sign in error : $e');
+      log('Sign in error: $e');
+      AppUtils.showSnackbar(
+        context: context,
+        message: 'Sign in failed: ${e.toString()}',
+        bgcolor: Colors.red
+      );
     } finally {
       isloadingG = false;
       notifyListeners();
+    }
+  }
+
+  // Method to explicitly sign out (can be called when user logs out of the app)
+  Future<void> signOutGoogle() async {
+    try {
+      await _googleSignIn.signOut();
+      log('Google Sign-Out successful');
+    } catch (e) {
+      log('Google Sign-Out error: $e');
     }
   }
 
@@ -139,7 +170,7 @@ class LoginScreenController with ChangeNotifier {
           generalError = "Invalid token received";
           AppUtils.showSnackbar(
             context: context,
-            message:"Invalid token received",
+            message: "Invalid token received",
             bgcolor: Colors.red);
         }
       } else if (response.statusCode == 400) {
@@ -154,9 +185,9 @@ class LoginScreenController with ChangeNotifier {
         });
       } else {
         generalError = "Login failed: ${response.statusCode}";
-         AppUtils.showSnackbar(
+        AppUtils.showSnackbar(
             context: context,
-            message:"Login failed: ${response.statusCode}",
+            message: "Login failed: ${response.statusCode}",
             bgcolor: Colors.red);
         log(response.body.toString());
       }
@@ -165,9 +196,9 @@ class LoginScreenController with ChangeNotifier {
     } catch (e) {
       generalError = "Connection error: ${e.toString()}";
       AppUtils.showSnackbar(
-            context: context,
-            message:"Connection error: ${e.toString()}",
-            bgcolor: Colors.red);
+          context: context,
+          message: "Connection error: ${e.toString()}",
+          bgcolor: Colors.red);
       log(e.toString());
       return false;
     } finally {
