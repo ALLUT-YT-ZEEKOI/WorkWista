@@ -42,6 +42,7 @@ class Data {
   DateTime? jobDate;
   DateTime? jobCreated;
   String? recruter;
+  bool? is_requested;
 
   Data({
     this.id,
@@ -57,6 +58,7 @@ class Data {
     this.jobDate,
     this.jobCreated,
     this.recruter,
+    this.is_requested,
   });
 
   factory Data.fromJson(Map<String, dynamic> json) => Data(
@@ -76,6 +78,7 @@ class Data {
             ? null
             : DateTime.parse(json["job_created"]),
         recruter: json["recruter"],
+        is_requested: json["is_requested"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -93,5 +96,6 @@ class Data {
             "${jobDate!.year.toString().padLeft(4, '0')}-${jobDate!.month.toString().padLeft(2, '0')}-${jobDate!.day.toString().padLeft(2, '0')}",
         "job_created": jobCreated?.toIso8601String(),
         "recruter": recruter,
+        "is_requested":is_requested,
       };
 }

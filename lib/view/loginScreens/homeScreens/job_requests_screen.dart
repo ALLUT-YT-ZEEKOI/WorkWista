@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:workwista/Utils/color_constants.dart';
+import 'package:workwista/view/Common%20Screens/custom_bottom_navbar.dart';
 import 'package:workwista/view/Controllers/jobs_screen_controller.dart';
 import 'package:workwista/view/Model/job_requests_model.dart';
 import 'package:workwista/view/responsive_helper.dart';
@@ -44,59 +45,57 @@ class _JobRequestsScreenState extends State<JobRequestsScreen> {
           );
         }
 
-        if (controller.jobRequests?.data == null ||
-            controller.jobRequests!.data!.isEmpty) {
-          return Center(
-            child: Container(
-              width: ResponsiveHelper.width(372, context),
-              height: ResponsiveHelper.height(200, context),
-              decoration: BoxDecoration(
-                border: Border.all(width: 1, color: ColorConstants.descText),
-                borderRadius: BorderRadius.circular(14),
-                color: Colors.white,
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.work_outline,
-                    size: 40,
-                    color: Colors.grey[400],
-                  ),
-                  SizedBox(height: 16),
-                  Text(
-                    "No requests found",
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 18,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                  SizedBox(height: 8),
-                  Padding(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: ResponsiveHelper.width(40, context),
-                    ),
-                    child: Text(
-                      "When someone applies to your posted job, their request will appear here",
-                      style: TextStyle(
-                        color: ColorConstants.descText,
-                        fontSize: 14,
-                        fontWeight: FontWeight.w400,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          );
-        }
+        // if (controller.jobRequests?.data == null ||
+        //     controller.jobRequests!.data!.isEmpty) {
+        //   return Center(
+        //     child: Container(
+        //       width: ResponsiveHelper.width(372, context),
+        //       height: ResponsiveHelper.height(200, context),
+        //       decoration: BoxDecoration(
+        //         border: Border.all(width: 1, color: ColorConstants.descText),
+        //         borderRadius: BorderRadius.circular(14),
+        //         color: Colors.white,
+        //       ),
+        //       child: Column(
+        //         mainAxisAlignment: MainAxisAlignment.center,
+        //         children: [
+        //           Icon(
+        //             Icons.work_outline,
+        //             size: 40,
+        //             color: Colors.grey[400],
+        //           ),
+        //           SizedBox(height: 16),
+        //           Text(
+        //             "No requests found",
+        //             style: TextStyle(
+        //               color: Colors.black,
+        //               fontSize: 18,
+        //               fontWeight: FontWeight.w500,
+        //             ),
+        //           ),
+        //           SizedBox(height: 8),
+        //           Padding(
+        //             padding: EdgeInsets.symmetric(
+        //               horizontal: ResponsiveHelper.width(40, context),
+        //             ),
+        //             child: Text(
+        //               "When someone applies to your posted job, their request will appear here",
+        //               style: TextStyle(
+        //                 color: ColorConstants.descText,
+        //                 fontSize: 14,
+        //                 fontWeight: FontWeight.w400,
+        //               ),
+        //               textAlign: TextAlign.center,
+        //             ),
+        //           ),
+        //         ],
+        //       ),
+        //     ),
+        //   );
+        // }
 
         return Scaffold(
-      
           appBar: AppBar(
-      
             title: Text(
               "Job Requests",
               style: TextStyle(
@@ -222,7 +221,11 @@ class _JobRequestsScreenState extends State<JobRequestsScreen> {
                         listen: false,
                       );
                       await controller.respondToRequest(request.id!, "decline");
-                      Navigator.pop(context); // Go back to MyJobsScreen
+                      Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => CustomBottomNavbar(),
+                          )); // Go back to MyJobsScreen
                     },
                   ),
                   SizedBox(width: ResponsiveHelper.width(16, context)),
@@ -237,7 +240,11 @@ class _JobRequestsScreenState extends State<JobRequestsScreen> {
                         listen: false,
                       );
                       await controller.respondToRequest(request.id!, "accept");
-                      Navigator.pop(context); // Go back to MyJobsScreen
+                      Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => CustomBottomNavbar(),
+                          ));// Go back to MyJobsScreen
                     },
                   ),
                 ],

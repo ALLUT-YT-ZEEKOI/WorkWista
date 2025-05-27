@@ -55,15 +55,17 @@ class _JobDetailsScreenState extends State<JobDetailsScreen> {
     if (controller.jobDetails == null) {
       return Center(child: Text("Failed to load job details"));
     }
+
     final job = controller.jobDetails!.data;
     final imageUrl = (job?.jobImage != null && job!.jobImage!.isNotEmpty)
-        ? 'https://workwista.com/${job.jobImage!.replaceFirst("file://", "").replaceFirst(RegExp(r"^/"), "")}'
-        : 'https://images.pexels.com/photos/125532/pexels-photo-125532.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2';
+        ? job.jobImage!
+            .replaceFirst("http://localhost", "https://workwista.com")
+        : 'https://i.ibb.co/G3fLN9bk/no-image.png';
+
+    final ButtonName = job?.is_requested == true ? "Pending" : "Apply Job";
 
     return Scaffold(
- 
       appBar: AppBar(
-      
         centerTitle: true,
         title: InkWell(
           onTap: () {
@@ -90,16 +92,66 @@ class _JobDetailsScreenState extends State<JobDetailsScreen> {
                 child: PageView(
                   controller: _controller,
                   children: [
+                    // Replace your current PageView child with this:
                     Container(
                       width: 373.w,
                       height: 203.h,
                       decoration: BoxDecoration(
-                          image: DecorationImage(
-                            fit: BoxFit.cover,
-                            image: NetworkImage(imageUrl),
-                          ),
-                          borderRadius: BorderRadius.circular(11.r),
-                          color: Colors.amber),
+                        borderRadius: BorderRadius.circular(11.r),
+                        color: Colors.white,
+                      ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(11.r),
+                        child: Image.network(
+                          imageUrl,
+                          fit: BoxFit.cover,
+                          loadingBuilder: (BuildContext context, Widget child,
+                              ImageChunkEvent? loadingProgress) {
+                            if (loadingProgress == null) {
+                              return child; // Image has loaded
+                            }
+                            return Container(
+                              width: 373.w,
+                              height: 203.h,
+                              color: Colors.white,
+                              child: Center(
+                                child: CircularProgressIndicator(
+                                  value: loadingProgress.expectedTotalBytes !=
+                                          null
+                                      ? loadingProgress.cumulativeBytesLoaded /
+                                          loadingProgress.expectedTotalBytes!
+                                      : null,
+                                  strokeWidth: 2.0,
+                                  valueColor: AlwaysStoppedAnimation<Color>(
+                                      ColorConstants.indicatorBlue),
+                                ),
+                              ),
+                            );
+                          },
+                          errorBuilder: (BuildContext context, Object exception,
+                              StackTrace? stackTrace) {
+                            return Container(
+                              width: 373.w,
+                              height: 203.h,
+                              color: Colors.grey[200],
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(Icons.error_outline,
+                                      size: 40, color: Colors.grey[600]),
+                                  SizedBox(height: 8.h),
+                                  Text(
+                                    'Failed to load image',
+                                    style: TextStyle(
+                                        color: Colors.grey[600],
+                                        fontSize: 12.sp),
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                        ),
+                      ),
                     ),
                   ],
                 ),
@@ -433,7 +485,7 @@ class _JobDetailsScreenState extends State<JobDetailsScreen> {
                         Jobid: job?.id ?? "id not found",
                       );
                 },
-                name: "Apply job",
+                name: ButtonName,
                 width: 373.w,
                 height: 44.h,
               ),

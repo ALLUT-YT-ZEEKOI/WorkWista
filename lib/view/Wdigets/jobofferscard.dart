@@ -65,12 +65,18 @@ class JobOffersCard extends StatelessWidget {
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Text(
-                                      overflow: TextOverflow.ellipsis,
-                                      jobItem.title ?? "No title",
-                                      style: TextStyle(
-                                          fontSize: 18.sp,
-                                          fontWeight: FontWeight.w500),
+                                    Flexible(
+                                      child: Text(
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        jobItem.title ?? "No title",
+                                        style: TextStyle(
+                                            fontSize: 18.sp,
+                                            fontWeight: FontWeight.w500),
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      width: 15.w,
                                     ),
                                     RichText(
                                       text: TextSpan(

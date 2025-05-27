@@ -4,14 +4,12 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:workwista/Utils/color_constants.dart';
-
 import 'package:workwista/view/Controllers/jobs_screen_controller.dart';
+import 'package:workwista/view/Model/my_jobs_model.dart';
 import 'package:workwista/view/Model/posted_jobs_model.dart';
-
 import 'package:workwista/view/Wdigets/gradient_button.dart';
 import 'package:workwista/view/loginScreens/homeScreens/job_requests_screen.dart';
 import 'package:workwista/view/loginScreens/homeScreens/payment_screen.dart';
-
 import 'package:workwista/view/responsive_helper.dart';
 
 class MyJobsScreen extends StatefulWidget {
@@ -22,6 +20,10 @@ class MyJobsScreen extends StatefulWidget {
 }
 
 class _MyJobsScreenState extends State<MyJobsScreen> {
+  final PageController _pageController = PageController();
+  final PageController _pageController2 = PageController();
+  int _currentPage = 0;
+
   void _showNoRequestsDialog(BuildContext context) {
     showDialog(
       context: context,
@@ -54,164 +56,175 @@ class _MyJobsScreenState extends State<MyJobsScreen> {
     );
   }
 
-  bool showCurrentJobCard = true;
-
   @override
   void initState() {
     super.initState();
-    // Fetch posted jobs when screen loads
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<JobsScreenController>(context, listen: false).getPostedJobs();
+      final controller =
+          Provider.of<JobsScreenController>(context, listen: false);
+      // STEP 1: Call both APIs to get all data
+      controller.getMyJobs();
+      controller.getPostedJobs(); // This was missing!
     });
   }
 
   @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final PageController _controller = PageController();
-    final int _numPages = 2;
     return Consumer<JobsScreenController>(
       builder: (context, controller, child) {
-        return DefaultTabController(
-          length: 3,
-          child: Scaffold(
-        
-            appBar: AppBar(
-       
-              titleTextStyle: TextStyle(
-                  color: Colors.black,
-                  fontSize: 28.sp,
-                  fontWeight: FontWeight.w700),
-              title: Text("My jobs"),
-              actions: [
-                IconButton(
-                    onPressed: () {
-                      log("pressed");
-                    },
-                    icon: Icon(
-                      Icons.settings,
-                      size: 24,
-                    ))
-              ],
-            ),
-            body: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 27.h),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Your existing profile card
-                  SizedBox(
-                    height: 230,
-                    child: PageView(
-                      controller: _controller,
-                      children: [
-                        currentJobCard(context),
-                        currentJobCard(context),
-                      ],
-                    ),
-                  ),
-                  SizedBox(
-                    height: 8.h,
-                  ),
-                  Center(
-                    child: SmoothPageIndicator(
-                      controller: _controller,
-                      count: _numPages,
-                      effect: WormEffect(
-                        dotHeight: 3.h,
-                        dotWidth: 19.w,
-                        activeDotColor: ColorConstants.indicatorBlue,
-                        dotColor: Color(0xffD9D9D9),
+        // Combine all jobs for the page view
+        final jobberJobs = controller.asJobberJobs;
+        final recruiterJobs = controller.asRecruiterJobs;
+
+        return Scaffold(
+          appBar: AppBar(
+            titleTextStyle: TextStyle(
+                color: Colors.black,
+                fontSize: 28.sp,
+                fontWeight: FontWeight.w700),
+            title: Text("My jobs"),
+            actions: [
+              IconButton(
+                  onPressed: () {
+                    log("pressed");
+                  },
+                  icon: Icon(
+                    Icons.settings,
+                    size: 24,
+                  ))
+            ],
+          ),
+          body: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 27.h),
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 27.h),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // JOBBER JOBS PAGEVIEW
+                    if (jobberJobs.isNotEmpty) ...[
+                      Text("Jobs you are working on",
+                          style: TextStyle(
+                              fontSize: 18.sp,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black)),
+                      SizedBox(height: 10.h),
+                      SizedBox(
+                        height: 230,
+                        child: PageView(
+                          controller: _pageController,
+                          onPageChanged: (index) {
+                            setState(() {
+                              _currentPage = index;
+                            });
+                          },
+                          children: jobberJobs
+                              .map((job) => _buildJobCard(context, job))
+                              .toList(),
+                        ),
                       ),
+                      SizedBox(height: 8.h),
+                      Center(
+                        child: SmoothPageIndicator(
+                          controller: _pageController,
+                          count: jobberJobs.length,
+                          effect: WormEffect(
+                            dotHeight: 3.h,
+                            dotWidth: 19.w,
+                            activeDotColor: ColorConstants.indicatorBlue,
+                            dotColor: Color(0xffD9D9D9),
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 35.h),
+                    ],
+
+                    // RECRUITER JOBS PAGEVIEW
+                    if (recruiterJobs.isNotEmpty) ...[
+                      Text("Jobs you posted",
+                          style: TextStyle(
+                              fontSize: 18.sp,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black)),
+                      SizedBox(height: 10.h),
+                      SizedBox(
+                        height: 230,
+                        child: PageView.builder(
+                          controller: _pageController2,
+                          itemCount: recruiterJobs.length,
+                          itemBuilder: (context, index) =>
+                              _buildJobCard(context, recruiterJobs[index]),
+                        ),
+                      ),
+                      SizedBox(height: 8.h),
+                      Center(
+                        child: SmoothPageIndicator(
+                          controller: _pageController2,
+                          count: recruiterJobs.length,
+                          effect: WormEffect(
+                            dotHeight: 3.h,
+                            dotWidth: 19.w,
+                            activeDotColor: ColorConstants.indicatorBlue,
+                            dotColor: Color(0xffD9D9D9),
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 35.h),
+                    ],
+
+                    // POSTED JOBS LIST
+                    Text(
+                      "Posted Jobs",
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 20,
+                          fontWeight: FontWeight.w500),
                     ),
-                  ),
-                  const SizedBox(
-                    height: 0,
-                  ),
-                  // Container(
-                  //   height: 70,
-                  //   color: Colors.white,
-                  //   child: TabBar(
-                  //     indicator: BoxDecoration(
-                  //       color: Colors.grey[200],
-                  //     ),
-                  //     labelColor: Colors.black,
-                  //     unselectedLabelColor: Colors.black54,
-                  //     indicatorSize: TabBarIndicatorSize.tab,
-                  //     dividerColor: Colors.transparent,
-                  //     tabs: const [
-                  //       TabItem(title: "Recent", count: "17"),
-                  //       TabItem(title: "Posted", count: "5"),
-                  //       TabItem(title: "Done", count: "7"),
-                  //     ],
-                  //   ),
-                  // ),
-                  // Expanded(
-                  //   child: TabBarView(
-                  //     children: [
-                  //       // Recent Tab
-                  //       _buildJobList(controller.jobsList),
-                  //       // Posted Tab (filter as needed)
+                    SizedBox(height: 15.h),
 
-                  //       _buildJobList(controller.jobsList),
+                    // Convert the list into a scroll-friendly structure
+                    Consumer<JobsScreenController>(
+                      builder: (context, controller, _) {
+                        final postedJobsListWidget =
+                            _buildPostedJobsList(controller);
 
-                  //       // Done Tab (filter as needed)
-
-                  //       _buildJobList(controller.jobsList),
-                  //     ],
-                  //   ),
-                  // ),
-
-                  Text(
-                    "Posted Jobs",
-                    style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 20,
-                        fontWeight: FontWeight.w500),
-                  ),
-                  SizedBox(
-                    height: 35,
-                  ),
-                  Expanded(
-                    child: Consumer<JobsScreenController>(
-                      builder: (context, controller, child) {
-                        if (controller.isloading &&
-                            controller.postedJobsList.isEmpty) {
-                          return Center(child: CircularProgressIndicator());
-                        }
-
-                        if (controller.postedJobsList.isEmpty) {
-                          return Center(child: Text("No posted jobs found"));
+                        // If it's already a scrollable ListView, extract the children instead
+                        if (controller.postedJobsList.isEmpty ||
+                            controller.isloading) {
+                          return postedJobsListWidget;
                         }
 
                         return ListView.separated(
+                          shrinkWrap: true,
+                          physics: NeverScrollableScrollPhysics(),
                           itemCount: controller.postedJobsList.length,
                           separatorBuilder: (context, index) => Column(
-                            children: [
-                              Divider(),
-                              SizedBox(
-                                height: 10,
-                              )
-                            ],
+                            children: [Divider(), SizedBox(height: 10.h)],
                           ),
                           itemBuilder: (context, index) {
                             final postedJob = controller.postedJobsList[index];
                             return InkWell(
                               onTap: () {
-                                if (postedJob.id != null) {
-                                  if ((postedJob.requestsCount ?? 0) > 0) {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => JobRequestsScreen(
-                                          jobId: postedJob.id!,
-                                        ),
+                                if ((postedJob.requestsCount ?? 0) > 0) {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => JobRequestsScreen(
+                                        jobId: postedJob.id!,
                                       ),
-                                    ).then((_) {
-                                      controller.getPostedJobs();
-                                    });
-                                  } else {
-                                    _showNoRequestsDialog(context);
-                                  }
+                                    ),
+                                  ).then((_) {
+                                    controller.getPostedJobs();
+                                  });
+                                } else {
+                                  _showNoRequestsDialog(context);
                                 }
                               },
                               child: _buildPostedJobsCard(postedJob),
@@ -220,8 +233,8 @@ class _MyJobsScreenState extends State<MyJobsScreen> {
                         );
                       },
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),
@@ -230,7 +243,7 @@ class _MyJobsScreenState extends State<MyJobsScreen> {
     );
   }
 
-  Container currentJobCard(BuildContext context) {
+  Widget _buildJobCard(BuildContext context, JobList job) {
     return Container(
       padding:
           EdgeInsets.only(right: 17.w, left: 14.w, top: 21.h, bottom: 19.h),
@@ -248,20 +261,15 @@ class _MyJobsScreenState extends State<MyJobsScreen> {
               CircleAvatar(
                 backgroundColor: Colors.black,
                 radius: 22.r,
+                backgroundImage: NetworkImage(
+                    "https://images.pexels.com/photos/974314/pexels-photo-974314.jpeg?auto=compress&cs=tinysrgb&w=600"),
               ),
-              SizedBox(
-                width: 14.w,
-              ),
+              SizedBox(width: 14.w),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "Joseph",
-                    style:
-                        TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w500),
-                  ),
-                  Text(
-                    "plumbing Work",
+                    job.jobTitle ?? "No Title",
                     style:
                         TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w400),
                   ),
@@ -276,9 +284,7 @@ class _MyJobsScreenState extends State<MyJobsScreen> {
                         radius: 4.r,
                         backgroundColor: ColorConstants.nowOnline,
                       ),
-                      SizedBox(
-                        width: 9.w,
-                      ),
+                      SizedBox(width: 9.w),
                       Text(
                         "Online",
                         style: TextStyle(
@@ -288,36 +294,21 @@ class _MyJobsScreenState extends State<MyJobsScreen> {
                       )
                     ],
                   ),
-                  Text(
-                    "06/09/2025",
-                    style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 10.sp,
-                        fontWeight: FontWeight.w500),
-                  )
                 ],
               )
             ],
           ),
-          SizedBox(
-            height: 24.h,
-          ),
+          SizedBox(height: 24.h),
           Row(
             children: [
               Text(
-                "Ongoing",
+                job.isCompleted ?? false ? "Completed" : "Ongoing",
                 style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w500),
               ),
               Spacer(),
-              Text(
-                "Owner",
-                style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w500),
-              ),
             ],
           ),
-          SizedBox(
-            height: 14.h,
-          ),
+          SizedBox(height: 14.h),
           Container(
             width: ResponsiveHelper.width(double.infinity, context),
             height: 7.h,
@@ -328,16 +319,14 @@ class _MyJobsScreenState extends State<MyJobsScreen> {
             child: ClipRRect(
               borderRadius: BorderRadius.circular(23.r),
               child: LinearProgressIndicator(
-                value: 0.3,
+                value: job.isCompleted ?? false ? 1.0 : 0.3,
                 backgroundColor: Colors.transparent,
                 valueColor: AlwaysStoppedAnimation<Color>(
                     ColorConstants.ProgressBarColor),
               ),
             ),
           ),
-          SizedBox(
-            height: 2.h,
-          ),
+          SizedBox(height: 2.h),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
@@ -352,28 +341,26 @@ class _MyJobsScreenState extends State<MyJobsScreen> {
               ),
               Spacer(),
               Text(
-                "pay",
+                job.isPaid ?? false ? "Paid" : "Unpaid",
                 style: TextStyle(fontSize: 10.sp, fontWeight: FontWeight.w500),
               ),
             ],
           ),
-          SizedBox(
-            height: 13.h,
-          ),
+          SizedBox(height: 13.h),
           InkWell(
             onTap: () {},
             child: GradientButton(
                 radius: 10,
                 onPressed: () {
-                  log("Navigate to Payment screen");
-
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => PaymentScreen(),
-                      ));
+                  if (!(job.isPaid ?? false)) {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => PaymentScreen(),
+                        ));
+                  }
                 },
-                name: "Pay",
+                name: job.isUserJobber ?? false ? "Finish" : "Pay",
                 height: 38.h,
                 width: double.infinity.w),
           )
@@ -382,46 +369,106 @@ class _MyJobsScreenState extends State<MyJobsScreen> {
     );
   }
 
+  // STEP 3: Fixed method - now takes controller directly and uses correct data
+  Widget _buildPostedJobsList(JobsScreenController controller) {
+    // Show loading only when loading and list is empty
+    if (controller.isloading && controller.postedJobsList.isEmpty) {
+      return Center(child: CircularProgressIndicator());
+    }
+
+    // Check the correct list - postedJobsList
+    if (controller.postedJobsList.isEmpty) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.work_off, size: 64, color: Colors.grey),
+            SizedBox(height: 16.h),
+            Text(
+              "No posted jobs found",
+              style: TextStyle(
+                fontSize: 16.sp,
+                color: Colors.grey[600],
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+    // Build the list with the correct data
+    return ListView.separated(
+      itemCount: controller.postedJobsList.length, // Correct count
+      separatorBuilder: (context, index) => Column(
+        children: [Divider(), SizedBox(height: 10.h)],
+      ),
+      itemBuilder: (context, index) {
+        final postedJob = controller.postedJobsList[index]; // Correct data
+        return InkWell(
+          onTap: () {
+            if ((postedJob.requestsCount ?? 0) > 0) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => JobRequestsScreen(
+                    jobId: postedJob.id!,
+                  ),
+                ),
+              ).then((_) {
+                controller.getPostedJobs();
+              });
+            } else {
+              _showNoRequestsDialog(context);
+            }
+          },
+          child: _buildPostedJobsCard(postedJob),
+        );
+      },
+    );
+  }
+
+  // STEP 4: Fixed card styling - removed black background
   Widget _buildPostedJobsCard(PostedItem postedJob) {
-    // Now takes the job directly
     return Container(
+      padding: EdgeInsets.all(12.w),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(0),
+        color: Colors.white, // Changed from black to white
+        borderRadius: BorderRadius.circular(8.r),
+        border: Border.all(color: Colors.grey[300]!),
       ),
       child: Row(
         children: [
           CircleAvatar(
             radius: 21.r,
-            backgroundColor: Colors.black,
+            backgroundColor: Colors.grey[300],
             backgroundImage: NetworkImage(
                 "https://images.pexels.com/photos/974314/pexels-photo-974314.jpeg?auto=compress&cs=tinysrgb&w=600"),
           ),
-          SizedBox(
-            width: 10.w,
-          ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                postedJob.title ?? "No Title",
-                style: TextStyle(
-                  fontSize: 12.sp,
-                  fontWeight: FontWeight.w600,
+          SizedBox(width: 10.w),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  postedJob.title ?? "No Title",
+                  style: TextStyle(
+                    fontSize: 14.sp,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.black, // Ensure text is visible
+                  ),
                 ),
-              ),
-              SizedBox(height: 5.h),
-              _infoItem("${postedJob.requestsCount ?? 0}", "Requests"),
-            ],
+                SizedBox(height: 5.h),
+                _infoItem("${postedJob.requestsCount ?? 0}", "Requests"),
+              ],
+            ),
           ),
-          Spacer(),
-          Icon(Icons.arrow_forward_ios)
+          Icon(Icons.arrow_forward_ios, color: Colors.grey[600])
         ],
       ),
     );
   }
 
-// Inline widget for info items
   Widget _infoItem(String label, String value) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -452,44 +499,4 @@ class _MyJobsScreenState extends State<MyJobsScreen> {
       ],
     );
   }
-
-//   Widget _buildJobList(List<JobItem> jobs) {
-//     if (jobs.isEmpty) {
-//       return const Center(child: Text("No jobs found"));
-//     }
-
-//     return SingleChildScrollView(
-//       child: Column(
-//         children: jobs.map((job) => JobOffersCard(jobItem: job)).toList(),
-//       ),
-//     );
-//   }
-// }
-
-// class TabItem extends StatelessWidget {
-//   final String title;
-//   final String count;
-
-//   const TabItem({required this.title, required this.count});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Container(
-//       width: 124,
-//       height: 70,
-//       alignment: Alignment.center,
-//       child: Column(
-//         mainAxisAlignment: MainAxisAlignment.center,
-//         children: [
-//           Text(count,
-//               style:
-//                   const TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
-//           const SizedBox(height: 5),
-//           Text(title,
-//               style:
-//                   const TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
-//         ],
-//       ),
-//     );
-//   }
 }

@@ -25,11 +25,29 @@ class _SignupscreenState extends State<Signupscreen> {
   TextEditingController _CPasswordController = TextEditingController();
 
   Future<void> _selectDate(BuildContext context) async {
+    DateTime today = DateTime.now();
+    DateTime latestAllowed =
+        DateTime(today.year - 18, today.month, today.day); // Max date
+    DateTime earliestAllowed = DateTime(1900); // Arbitrary earliest date
+    DateTime defaultDate =
+        DateTime(today.year - 25); // Default selected date (optional)
     final DateTime? pickedDate = await showDatePicker(
       context: context,
-      initialDate: DateTime.now(), // current date
-      firstDate: DateTime(2000), // earliest date
-      lastDate: DateTime(2100), // latest date
+      initialDate: defaultDate,
+      firstDate: earliestAllowed,
+      lastDate: latestAllowed,
+      builder: (context, child) {
+        return Theme(
+            data: Theme.of(context).copyWith(
+                colorScheme: ColorScheme.light(
+                    primary: Colors.blue.shade900,
+                    onPrimary: Colors.white,
+                    onSurface: Colors.black),
+                textButtonTheme: TextButtonThemeData(
+                    style:
+                        TextButton.styleFrom(foregroundColor: Colors.black))),
+            child: child!);
+      },
     );
 
     if (pickedDate != null) {
@@ -67,9 +85,7 @@ class _SignupscreenState extends State<Signupscreen> {
               Navigator.pop(context);
             },
             icon: Icon(Icons.arrow_back_ios)),
-  
       ),
-  
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 0.h),
         child: SingleChildScrollView(

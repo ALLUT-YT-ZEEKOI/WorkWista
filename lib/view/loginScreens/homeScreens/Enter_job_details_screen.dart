@@ -296,9 +296,7 @@ class _EnterJobDetailsScreenState extends State<EnterJobDetailsScreen> {
     }
 
     return Scaffold(
-  
       appBar: AppBar(
-       
         centerTitle: true,
         title: InkWell(
           onTap: () {
@@ -499,16 +497,13 @@ class _EnterJobDetailsScreenState extends State<EnterJobDetailsScreen> {
                           SizedBox(
                             height: 5.h,
                           ),
-                          _textFields(
-                            context,
-                            double.infinity,
-                            "salary from",
-                            50,
-                            _salaryFromController,
-                            validator: (value) => value == null || value.isEmpty
-                                ? 'Required'
-                                : null,
-                          ),
+                          _textFields(context, double.infinity, "salary from",
+                              50, _salaryFromController,
+                              validator: (value) =>
+                                  value == null || value.isEmpty
+                                      ? 'Required'
+                                      : null,
+                              inputType: TextInputType.numberWithOptions()),
                         ],
                       ),
                     ),
@@ -527,16 +522,13 @@ class _EnterJobDetailsScreenState extends State<EnterJobDetailsScreen> {
                           SizedBox(
                             height: 5.h,
                           ),
-                          _textFields(
-                            context,
-                            double.infinity,
-                            "salary to",
-                            50,
-                            _salaryToController,
-                            validator: (value) => value == null || value.isEmpty
-                                ? 'Required'
-                                : null,
-                          ),
+                          _textFields(context, double.infinity, "salary to", 50,
+                              _salaryToController,
+                              validator: (value) =>
+                                  value == null || value.isEmpty
+                                      ? 'Required'
+                                      : null,
+                              inputType: TextInputType.numberWithOptions()),
                         ],
                       ),
                     ),
@@ -652,30 +644,33 @@ class _EnterJobDetailsScreenState extends State<EnterJobDetailsScreen> {
                   ),
 
                   SizedBox(height: 20.h),
-                  GradientButton(
-                    onPressed: () async {
-                      if (_validateForm()) {
-                        String formatted =
-                            '${selectedYear!}-${selectedMonth!.toString().padLeft(2, '0')}-${selectedDay!.toString().padLeft(2, '0')}';
-                        await context.read<AddJobController>().onAddJob(
-                              title: _jobTitleController.text,
-                              description: _descriptionController.text,
-                              job_date: formatted,
-                              context: context,
-                              job_image: _selectedImage,
-                              salary_from: _salaryFromController.text,
-                              salary_to: _salaryToController.text,
-                              manual_location: _locationController.text,
-                              key_responsibility: _key_responsibilities.text,
-                              job_category: widget.category_id,
-                              job_type: _selectedJobTypeId!,
-                            );
-                      }
-                    },
-                    height: 44.h,
-                    width: 373.w,
-                    name: "Next",
-                  ),
+                  context.read<AddJobController>().islaoding
+                      ? Center(child: CircularProgressIndicator())
+                      : GradientButton(
+                          onPressed: () async {
+                            if (_validateForm()) {
+                              String formatted =
+                                  '${selectedYear!}-${selectedMonth!.toString().padLeft(2, '0')}-${selectedDay!.toString().padLeft(2, '0')}';
+                              await context.read<AddJobController>().onAddJob(
+                                    title: _jobTitleController.text,
+                                    description: _descriptionController.text,
+                                    job_date: formatted,
+                                    context: context,
+                                    job_image: _selectedImage,
+                                    salary_from: _salaryFromController.text,
+                                    salary_to: _salaryToController.text,
+                                    manual_location: _locationController.text,
+                                    key_responsibility:
+                                        _key_responsibilities.text,
+                                    job_category: widget.category_id,
+                                    job_type: _selectedJobTypeId!,
+                                  );
+                            }
+                          },
+                          height: 44.h,
+                          width: 373.w,
+                          name: "Next",
+                        ),
 
                   InkWell(
                       onTap: () {
@@ -806,21 +801,18 @@ class _EnterJobDetailsScreenState extends State<EnterJobDetailsScreen> {
     );
   }
 
-  SizedBox _textFields(
-    BuildContext context,
-    double width,
-    String hint,
-    double height,
-    TextEditingController controller, {
-    VoidCallback? ontap,
-    String? Function(String?)? validator,
-    int? maxLines,
-    double? contentpadding,
-  }) {
+  SizedBox _textFields(BuildContext context, double width, String hint,
+      double height, TextEditingController controller,
+      {VoidCallback? ontap,
+      String? Function(String?)? validator,
+      int? maxLines,
+      double? contentpadding,
+      TextInputType? inputType}) {
     return SizedBox(
       width: width.w,
       height: height.h,
       child: TextFormField(
+        keyboardType: inputType ?? TextInputType.text,
         validator: validator,
         controller: controller,
         maxLines: maxLines ?? 1,
