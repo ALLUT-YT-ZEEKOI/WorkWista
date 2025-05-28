@@ -44,9 +44,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final profile = controller.ProfileDetails!.data;
 
     return Scaffold(
-    
       appBar: AppBar(
-      
         title: Text(
           "Profile",
           style: TextStyle(fontWeight: FontWeight.w700, fontSize: 24.sp),
@@ -54,7 +52,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: EdgeInsets.symmetric(vertical: 12),
+          padding: EdgeInsets.symmetric(vertical: 0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -403,7 +401,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                         InkWell(
                           onTap: () async {
-                            
                             // Clear tokens from SharedPreferences
                             SharedPreferences prefs =
                                 await SharedPreferences.getInstance();

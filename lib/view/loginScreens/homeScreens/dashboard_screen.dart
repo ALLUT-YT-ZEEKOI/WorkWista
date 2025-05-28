@@ -407,85 +407,85 @@ class _DashboardState extends State<Dashboard>
                                 },
                               ),
                             ),
-                  Padding(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 10.w,
-                    ),
-                    child: Column(
-                      children: [
-                        Row(
-                          children: [
-                            Text(
-                              "Companies nearby",
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 18.sp,
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
-                            Spacer(),
-                            Text(
-                              "View More",
-                              style: TextStyle(
-                                color: ColorConstants.viewMoreText,
-                                fontSize: 12.sp,
-                                fontWeight: FontWeight.w400,
-                              ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 18.h),
-                        SizedBox(
-                          height: 150.h,
-                          child: ListView.separated(
-                            scrollDirection: Axis.horizontal,
-                            itemCount: 5,
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 10.w,
-                            ),
-                            separatorBuilder: (context, index) => SizedBox(
-                              width: 10.w,
-                            ),
-                            itemBuilder: (context, index) {
-                              return Material(
-                                child: CompaniesCard(),
-                              );
-                            },
-                          ),
-                        ),
-                        SizedBox(height: 22.h),
-                        SizedBox(
-                          height: 200.h,
-                          child: PageView(
-                            controller: _controller,
-                            children: [
-                              GreenCard(),
-                              GreenCard(),
-                              GreenCard(),
-                            ],
-                          ),
-                        ),
-                        SizedBox(
-                          height: 10.h,
-                        ),
-                        Center(
-                          child: SmoothPageIndicator(
-                            controller: _controller,
-                            count: _numPages,
-                            effect: WormEffect(
-                              dotHeight: screenHight * 0.020.h,
-                              dotWidth: screenWidth * 0.016.w,
-                              activeDotColor: Colors.black,
-                              dotColor: Colors.black,
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          height: 50.h,
-                        )
-                      ],
-                    ),
-                  )
+                  // Padding(
+                  //   padding: EdgeInsets.symmetric(
+                  //     horizontal: 10.w,
+                  //   ),
+                  //   child: Column(
+                  //     children: [
+                  //       Row(
+                  //         children: [
+                  //           Text(
+                  //             "Companies nearby",
+                  //             style: TextStyle(
+                  //               color: Colors.black,
+                  //               fontSize: 18.sp,
+                  //               fontWeight: FontWeight.w700,
+                  //             ),
+                  //           ),
+                  //           Spacer(),
+                  //           Text(
+                  //             "View More",
+                  //             style: TextStyle(
+                  //               color: ColorConstants.viewMoreText,
+                  //               fontSize: 12.sp,
+                  //               fontWeight: FontWeight.w400,
+                  //             ),
+                  //           ),
+                  //         ],
+                  //       ),
+                  //       SizedBox(height: 18.h),
+                  //       SizedBox(
+                  //         height: 150.h,
+                  //         child: ListView.separated(
+                  //           scrollDirection: Axis.horizontal,
+                  //           itemCount: 5,
+                  //           padding: EdgeInsets.symmetric(
+                  //             horizontal: 10.w,
+                  //           ),
+                  //           separatorBuilder: (context, index) => SizedBox(
+                  //             width: 10.w,
+                  //           ),
+                  //           itemBuilder: (context, index) {
+                  //             return Material(
+                  //               child: CompaniesCard(),
+                  //             );
+                  //           },
+                  //         ),
+                  //       ),
+                  //       SizedBox(height: 22.h),
+                  //       SizedBox(
+                  //         height: 200.h,
+                  //         child: PageView(
+                  //           controller: _controller,
+                  //           children: [
+                  //             GreenCard(),
+                  //             GreenCard(),
+                  //             GreenCard(),
+                  //           ],
+                  //         ),
+                  //       ),
+                  //       SizedBox(
+                  //         height: 10.h,
+                  //       ),
+                  //       Center(
+                  //         child: SmoothPageIndicator(
+                  //           controller: _controller,
+                  //           count: _numPages,
+                  //           effect: WormEffect(
+                  //             dotHeight: screenHight * 0.020.h,
+                  //             dotWidth: screenWidth * 0.016.w,
+                  //             activeDotColor: Colors.black,
+                  //             dotColor: Colors.black,
+                  //           ),
+                  //         ),
+                  //       ),
+                  //       SizedBox(
+                  //         height: 50.h,
+                  //       )
+                  //     ],
+                  //   ),
+                  // )
                 ],
               ),
             ),

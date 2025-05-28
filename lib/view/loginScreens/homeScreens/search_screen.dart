@@ -127,7 +127,7 @@ class _SearchScreenState extends State<SearchScreen> {
 
                   if (_searchController.text.isEmpty) {
                     return const Center(
-                      child: Text("Search for jobs by title"),
+                      child: Text("Search for jobs"),
                     );
                   }
 

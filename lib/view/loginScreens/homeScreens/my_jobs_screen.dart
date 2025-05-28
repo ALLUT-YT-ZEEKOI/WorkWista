@@ -147,7 +147,9 @@ class _MyJobsScreenState extends State<MyJobsScreen> {
                       SizedBox(height: 35.h),
                     ],
                     // COMPLETED JOB SECTION
-                    if (completedJobData != null) ...[
+                    if (completedJobData != null && completedJobData.isUserJobber==true) ...[
+                      
+
                       Text("Completed Jobs",
                           style: TextStyle(
                               fontSize: 18.sp,

@@ -202,9 +202,109 @@ class JobOffersCard extends StatelessWidget {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Row(
-                              children: [
-                                Container(
+                            SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: Row(
+                                children: [
+                                  Container(
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: 5.w, vertical: 3.h),
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius:
+                                            BorderRadius.circular(9.w),
+                                        border: Border.all(
+                                            color: Color(0xffCED7DE)),
+                                      ),
+                                      child: Row(
+                                        children: [
+                                          RichText(
+                                            text: TextSpan(
+                                              children: [
+                                                TextSpan(
+                                                  text: '₹',
+                                                  style: TextStyle(
+                                                    fontWeight: FontWeight.w400,
+                                                    fontSize: 12.sp,
+                                                    height: 1.0,
+                                                    letterSpacing: 0.0,
+                                                    color: Colors.black,
+                                                  ),
+                                                ),
+                                                TextSpan(
+                                                  text: jobItem.salary_from !=
+                                                          null
+                                                      ? double.tryParse(jobItem
+                                                                  .salary_from!)
+                                                              ?.toInt()
+                                                              .toString() ??
+                                                          "0"
+                                                      : "Salary not specified",
+                                                  style: TextStyle(
+                                                    fontWeight: FontWeight.w400,
+                                                    fontSize: 12.sp,
+                                                    height: 1.0,
+                                                    letterSpacing: 0.0,
+                                                    color: Colors.black,
+                                                  ),
+                                                ),
+                                                TextSpan(
+                                                  text: ' - ',
+                                                  style: TextStyle(
+                                                    fontWeight: FontWeight.w400,
+                                                    fontSize: 12.sp,
+                                                    height: 1.0,
+                                                    letterSpacing: 0.0,
+                                                    color: Colors.black,
+                                                  ),
+                                                ),
+                                                TextSpan(
+                                                  text: jobItem.salary_to !=
+                                                          null
+                                                      ? double.tryParse(jobItem
+                                                                  .salary_to!)
+                                                              ?.toInt()
+                                                              .toString() ??
+                                                          "0"
+                                                      : "Salary not specified",
+                                                  style: TextStyle(
+                                                    fontWeight: FontWeight.w400,
+                                                    fontSize: 12.sp,
+                                                    height: 1.0,
+                                                    letterSpacing: 0.0,
+                                                    color: Colors.black,
+                                                  ),
+                                                ),
+                                                TextSpan(
+                                                  text: ' Per ',
+                                                  style: TextStyle(
+                                                    fontWeight: FontWeight.w400,
+                                                    fontSize: 12.sp,
+                                                    height: 1.0,
+                                                    letterSpacing: 0.0,
+                                                    color: Colors.black,
+                                                  ),
+                                                ),
+                                                TextSpan(
+                                                  text: 'Day',
+                                                  style: TextStyle(
+                                                    fontWeight: FontWeight.w400,
+                                                    fontSize: 12.sp,
+                                                    height: 1.5,
+                                                    letterSpacing: 0.0,
+                                                    color: Colors.black,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      )),
+                                  Text(" • ",
+                                      style: TextStyle(
+                                          fontSize: 12.sp,
+                                          color: Color(0xff0A0A0B))),
+                                  Container(
                                     padding: EdgeInsets.symmetric(
                                         horizontal: 5.w, vertical: 3.h),
                                     decoration: BoxDecoration(
@@ -215,170 +315,75 @@ class JobOffersCard extends StatelessWidget {
                                     ),
                                     child: Row(
                                       children: [
-                                        RichText(
-                                          text: TextSpan(
-                                            children: [
-                                              TextSpan(
-                                                text: '₹',
-                                                style: TextStyle(
-                                                  fontWeight: FontWeight.w400,
-                                                  fontSize: 12.sp,
-                                                  height: 1.0,
-                                                  letterSpacing: 0.0,
-                                                  color: Colors.black,
-                                                ),
-                                              ),
-                                              TextSpan(
-                                                text: jobItem.salary_from !=
-                                                        null
-                                                    ? double.tryParse(jobItem
-                                                                .salary_from!)
-                                                            ?.toInt()
-                                                            .toString() ??
-                                                        "0"
-                                                    : "Salary not specified",
-                                                style: TextStyle(
-                                                  fontWeight: FontWeight.w400,
-                                                  fontSize: 12.sp,
-                                                  height: 1.0,
-                                                  letterSpacing: 0.0,
-                                                  color: Colors.black,
-                                                ),
-                                              ),
-                                              TextSpan(
-                                                text: ' - ',
-                                                style: TextStyle(
-                                                  fontWeight: FontWeight.w400,
-                                                  fontSize: 12.sp,
-                                                  height: 1.0,
-                                                  letterSpacing: 0.0,
-                                                  color: Colors.black,
-                                                ),
-                                              ),
-                                              TextSpan(
-                                                text: jobItem.salary_to != null
-                                                    ? double.tryParse(jobItem
-                                                                .salary_to!)
-                                                            ?.toInt()
-                                                            .toString() ??
-                                                        "0"
-                                                    : "Salary not specified",
-                                                style: TextStyle(
-                                                  fontWeight: FontWeight.w400,
-                                                  fontSize: 12.sp,
-                                                  height: 1.0,
-                                                  letterSpacing: 0.0,
-                                                  color: Colors.black,
-                                                ),
-                                              ),
-                                              TextSpan(
-                                                text: ' Per ',
-                                                style: TextStyle(
-                                                  fontWeight: FontWeight.w400,
-                                                  fontSize: 12.sp,
-                                                  height: 1.0,
-                                                  letterSpacing: 0.0,
-                                                  color: Colors.black,
-                                                ),
-                                              ),
-                                              TextSpan(
-                                                text: 'Day',
-                                                style: TextStyle(
-                                                  fontWeight: FontWeight.w400,
-                                                  fontSize: 12.sp,
-                                                  height: 1.5,
-                                                  letterSpacing: 0.0,
-                                                  color: Colors.black,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
+                                        Icon(
+                                          Icons.access_time,
+                                          size: 16.w,
+                                          color: Color(0xff0A0A0B),
+                                        ),
+                                        SizedBox(width: 4.w),
+                                        Text(
+                                          "Full-Time",
+                                          style: TextStyle(
+                                              color: Color(0xff0A0A0B),
+                                              fontSize: 12.sp,
+                                              fontWeight: FontWeight.w400),
                                         ),
                                       ],
-                                    )),
-                                Text(" • ",
-                                    style: TextStyle(
-                                        fontSize: 12.sp,
-                                        color: Color(0xff0A0A0B))),
-                                Container(
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: 5.w, vertical: 3.h),
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(9.w),
-                                    border:
-                                        Border.all(color: Color(0xffCED7DE)),
+                                    ),
                                   ),
-                                  child: Row(
-                                    children: [
-                                      Icon(
-                                        Icons.access_time,
-                                        size: 16.w,
-                                        color: Color(0xff0A0A0B),
-                                      ),
-                                      SizedBox(width: 4.w),
-                                      Text(
-                                        "Full-Time",
-                                        style: TextStyle(
-                                            color: Color(0xff0A0A0B),
-                                            fontSize: 12.sp,
-                                            fontWeight: FontWeight.w400),
-                                      ),
-                                    ],
+                                  Text(" • ",
+                                      style: TextStyle(
+                                          fontSize: 12.sp,
+                                          color: Color(0xff0A0A0B))),
+                                  Container(
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: 5.w, vertical: 3.h),
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(9.w),
+                                      border:
+                                          Border.all(color: Color(0xffCED7DE)),
+                                    ),
+                                    child: Row(
+                                      children: [
+                                        Icon(
+                                          Icons.location_on,
+                                          size: 16.w,
+                                          color: Color(0xff0A0A0B),
+                                        ),
+                                        SizedBox(width: 4.w),
+                                        Text(
+                                          "Onsite",
+                                          style: TextStyle(
+                                              color: Color(0xff0A0A0B),
+                                              fontSize: 12.sp,
+                                              fontWeight: FontWeight.w400),
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                ),
-                                Text(" • ",
-                                    style: TextStyle(
-                                        fontSize: 12.sp,
-                                        color: Color(0xff0A0A0B))),
-                                Container(
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: 5.w, vertical: 3.h),
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(9.w),
-                                    border:
-                                        Border.all(color: Color(0xffCED7DE)),
+                                  SizedBox(
+                                    width: 5.w,
                                   ),
-                                  child: Row(
-                                    children: [
-                                      Icon(
-                                        Icons.location_on,
-                                        size: 16.w,
-                                        color: Color(0xff0A0A0B),
-                                      ),
-                                      SizedBox(width: 4.w),
-                                      Text(
-                                        "Onsite",
-                                        style: TextStyle(
-                                            color: Color(0xff0A0A0B),
-                                            fontSize: 12.sp,
-                                            fontWeight: FontWeight.w400),
-                                      ),
-                                    ],
+                                  Container(
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: 5.w, vertical: 3.h),
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(9.w),
+                                      border:
+                                          Border.all(color: Color(0xffCED7DE)),
+                                    ),
+                                    child: Text(
+                                      "+5",
+                                      style: TextStyle(
+                                          color: Color(0xff0A0A0B),
+                                          fontSize: 12.sp,
+                                          fontWeight: FontWeight.w400),
+                                    ),
                                   ),
-                                ),
-                                SizedBox(
-                                  width: 5.w,
-                                ),
-                                Container(
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: 5.w, vertical: 3.h),
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(9.w),
-                                    border:
-                                        Border.all(color: Color(0xffCED7DE)),
-                                  ),
-                                  child: Text(
-                                    "+5",
-                                    style: TextStyle(
-                                        color: Color(0xff0A0A0B),
-                                        fontSize: 12.sp,
-                                        fontWeight: FontWeight.w400),
-                                  ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
                           ],
                         ),
