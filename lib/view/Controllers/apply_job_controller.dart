@@ -45,6 +45,9 @@ class ApplyJobController with ChangeNotifier {
         
         log(response.body.toString());
       }
+
+
+      
     } catch (e) {
       errorMessage = "Connection error: ${e.toString()}";
       log(e.toString());

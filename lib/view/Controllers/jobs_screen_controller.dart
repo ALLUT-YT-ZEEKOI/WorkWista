@@ -6,6 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:workwista/view/Model/all_category_listing_model.dart';
 import 'package:workwista/view/Model/all_jobs_listing_model.dart';
+import 'package:workwista/view/Model/job_completion_model.dart';
 import 'package:workwista/view/Model/job_item_model.dart';
 import 'package:workwista/view/Model/job_requests_model.dart';
 import 'package:workwista/view/Model/job_types_model.dart';
@@ -25,12 +26,105 @@ class JobsScreenController with ChangeNotifier {
   String? errorMessage;
   JobRequestsModel? jobRequests;
   List<AllCategories> filteredCategories = [];
-   MyJobsModel? myJobs;
+  MyJobsModel? myJobs;
 
+  JobCompletionModel? completedJob;
+  bool isCompletingJob = false;
 
+  Future<bool> completeJob(String jobId) async {
+  isCompletingJob = true;
+  notifyListeners();
 
+  try {
+    final prefs = await SharedPreferences.getInstance();
+    String accessToken = prefs.getString("access") ?? "";
 
-Future<void> getMyJobs() async {
+    var response = await _makeCompleteJobRequest(jobId, accessToken);
+
+    if (response.statusCode == 401) {
+      log("Access token expired, attempting refresh...");
+      final refreshToken = prefs.getString("refresh") ?? "";
+      final newAccessToken = await _refreshToken(refreshToken);
+      if (newAccessToken != null) {
+        response = await _makeCompleteJobRequest(jobId, newAccessToken);
+      }
+    }
+
+    if (response.statusCode == 200) {
+      completedJob = jobCompletionModelFromJson(response.body);
+      await getMyJobs();
+      return true;
+    } else {
+      errorMessage = "Failed to complete job (${response.statusCode})";
+      _handleApiError(response.statusCode);
+      return false;
+    }
+  } catch (e) {
+    errorMessage = "Error completing job: ${e.toString()}";
+    log(errorMessage!);
+    return false;
+  } finally {
+    isCompletingJob = false;
+    notifyListeners();
+  }
+}
+
+  Future<http.Response> _makeCompleteJobRequest(
+      String jobId, String accessToken) async {
+    final url = Uri.parse('https://workwista.com/job/complete/$jobId/');
+
+    // Prepare the body data
+    Map<String, dynamic> body = {
+      "is_completed": true,
+    };
+
+    return await http.post(
+      url,
+      headers: {
+        "Authorization": "Bearer $accessToken",
+        "Content-Type": "application/json",
+      },
+      body: jsonEncode(body),
+    );
+  }
+
+  // Helper method to get button text based on job status
+  String getJobButtonText(JobList job) {
+    if (job.isUserJobber ?? false) {
+      // User is the jobber
+      if (job.isCompleted ?? false) {
+        return job.isPaid ?? false ? "Paid" : "Waiting for Payment";
+      } else {
+        return "Finish";
+      }
+    } else {
+      // User is the recruiter
+      if (job.isCompleted ?? false) {
+        return job.isPaid ?? false ? "Paid" : "Pay";
+      } else {
+        return "Waiting for completion";
+      }
+    }
+  }
+
+  // Helper method to check if button should be enabled
+  bool isJobButtonEnabled(JobList job) {
+    if (job.isUserJobber ?? false) {
+      // Jobber can finish the job if it's not completed
+      return !(job.isCompleted ?? false);
+    } else {
+      // Recruiter can pay if job is completed but not paid
+      return (job.isCompleted ?? false) && !(job.isPaid ?? false);
+    }
+  }
+
+  // Clear completion data when needed
+  void clearCompletionData() {
+    completedJob = null;
+    notifyListeners();
+  }
+
+  Future<void> getMyJobs() async {
     isloading = true;
     notifyListeners();
 
@@ -74,8 +168,9 @@ Future<void> getMyJobs() async {
     }
   }
 
-Future<http.Response> _makeMyJobsRequest(String accessToken) async {
-    final url = Uri.parse('https://workwista.com/job/showcard/'); // Update with actual endpoint
+  Future<http.Response> _makeMyJobsRequest(String accessToken) async {
+    final url = Uri.parse(
+        'https://workwista.com/job/showcard/'); // Update with actual endpoint
     return await http.get(
       url,
       headers: {"Authorization": "Bearer $accessToken"},
@@ -85,15 +180,15 @@ Future<http.Response> _makeMyJobsRequest(String accessToken) async {
   // Helper methods to get specific job lists
   List<JobList> get asJobberJobs => myJobs?.asJobber ?? [];
   List<JobList> get asRecruiterJobs => myJobs?.asRecruter ?? [];
-  
+
+CompletedJobData? get completedJobData => completedJob?.data;
   // Helper methods to check if lists are empty
   bool get hasJobberJobs => asJobberJobs.isNotEmpty;
   bool get hasRecruiterJobs => asRecruiterJobs.isNotEmpty;
   bool get hasAnyJobs => hasJobberJobs || hasRecruiterJobs;
-  
+
   // Helper method to get total jobs count
   int get totalJobsCount => asJobberJobs.length + asRecruiterJobs.length;
-
 
   void filterCategories(String query) {
     if (query.isEmpty) {
