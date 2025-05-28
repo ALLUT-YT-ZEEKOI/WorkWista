@@ -40,7 +40,10 @@ class ApplyJobController with ChangeNotifier {
           (Route<dynamic> route) => false,
         );
       } else {
-        errorMessage = "You have already requested this job";
+        
+        errorMessage = response.body;
+        
+        log(response.body.toString());
       }
     } catch (e) {
       errorMessage = "Connection error: ${e.toString()}";
@@ -55,7 +58,6 @@ class ApplyJobController with ChangeNotifier {
             context: context,
             message: errorMessage.toString(),
             bgcolor: Colors.red);
-      
       }
     }
   }

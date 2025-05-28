@@ -360,7 +360,11 @@ class _MyJobsScreenState extends State<MyJobsScreen> {
                         ));
                   }
                 },
-                name: job.isUserJobber ?? false ? "Finish" : "Pay",
+                name: job.isUserJobber ?? false
+                    ? "Finish"
+                    : (job.isCompleted ?? false
+                        ? "Pay"
+                        : "Waiting for completion"),
                 height: 38.h,
                 width: double.infinity.w),
           )

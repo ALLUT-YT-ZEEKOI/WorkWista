@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:workwista/Utils/color_constants.dart';
 import 'package:workwista/view/Common%20Screens/custom_bottom_navbar.dart';
@@ -100,24 +102,20 @@ class _JobRequestsScreenState extends State<JobRequestsScreen> {
               "Job Requests",
               style: TextStyle(
                   color: Colors.black,
-                  fontSize: 23,
-                  fontWeight: FontWeight.w600),
+                  fontSize: 28.sp,
+                  fontWeight: FontWeight.w700),
             ),
           ),
           body: Padding(
-            padding: EdgeInsets.symmetric(
-                horizontal: ResponsiveHelper.width(14, context),
-                vertical: ResponsiveHelper.height(14, context)),
+            padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SizedBox(
-                  height: 35,
-                ),
                 Expanded(
                   child: ListView.separated(
                     itemCount: controller.jobRequests!.data!.length,
-                    separatorBuilder: (context, index) => SizedBox(height: 20),
+                    separatorBuilder: (context, index) =>
+                        SizedBox(height: 30.h),
                     itemBuilder: (context, index) {
                       final request = controller.jobRequests!.data![index];
                       return _buildRequestCard(request);
@@ -136,17 +134,20 @@ class _JobRequestsScreenState extends State<JobRequestsScreen> {
     return Column(
       children: [
         Container(
-          height: ResponsiveHelper.height(104, context),
+          height: 105.h,
           decoration: BoxDecoration(color: Colors.white),
           child: Column(
             children: [
               Row(
                 children: [
                   CircleAvatar(
-                    radius: 17.5,
-                    backgroundColor: Colors.black,
+                    radius: 17.5.r,
+                    backgroundColor: Colors.white,
+                    backgroundImage: NetworkImage(
+                        scale: 0.2,
+                        'https://images.pexels.com/photos/32270249/pexels-photo-32270249/free-photo-of-portrait-of-a-thoughtful-young-man-in-black.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2'),
                   ),
-                  SizedBox(width: ResponsiveHelper.width(9, context)),
+                  SizedBox(width: 9.w),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -158,14 +159,15 @@ class _JobRequestsScreenState extends State<JobRequestsScreen> {
                                 TextSpan(
                                   text: '${request.applicantName} ',
                                   style: TextStyle(
-                                    fontSize: 12,
+                                    overflow: TextOverflow.ellipsis,
+                                    fontSize: 12.sp,
                                     fontWeight: FontWeight.w600,
                                   ),
                                   children: <TextSpan>[
                                     TextSpan(
                                       text: 'requested to your job role',
                                       style: TextStyle(
-                                        fontSize: 12,
+                                        fontSize: 12.sp,
                                         fontWeight: FontWeight.w400,
                                       ),
                                     ),
@@ -174,7 +176,7 @@ class _JobRequestsScreenState extends State<JobRequestsScreen> {
                               ),
                             ),
                             CircleAvatar(
-                              radius: 5,
+                              radius: 3.5.r,
                               backgroundColor: ColorConstants.dotBlue,
                             ),
                           ],
@@ -182,11 +184,15 @@ class _JobRequestsScreenState extends State<JobRequestsScreen> {
                         Row(
                           children: [
                             Text(
-                              overflow: TextOverflow.fade,
-                              "Date ${request.requesteDate?.toString() ?? 'unknown date'}",
+                              overflow: TextOverflow.ellipsis,
+                              request.requesteDate != null
+                                  ? DateFormat('dd MMM yyyy, hh:mm a').format(
+                                      DateTime.parse(
+                                          request.requesteDate.toString()))
+                                  : 'Unknown date',
                               style: TextStyle(
                                 color: ColorConstants.descText,
-                                fontSize: 14,
+                                fontSize: 12.sp,
                                 fontWeight: FontWeight.w400,
                               ),
                             ),
@@ -206,14 +212,14 @@ class _JobRequestsScreenState extends State<JobRequestsScreen> {
                   ),
                 ],
               ),
-              SizedBox(height: 24),
+              SizedBox(height: 24.h),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   // Decline button
                   _buildActionButton(
                     text: "Decline",
-                    color: Colors.white,
+                    color: ColorConstants.declineBtn,
                     textColor: Colors.black,
                     onPressed: () async {
                       final controller = Provider.of<JobsScreenController>(
@@ -252,7 +258,7 @@ class _JobRequestsScreenState extends State<JobRequestsScreen> {
             ],
           ),
         ),
-        SizedBox(height: 20),
+        SizedBox(height: 15.h),
         Divider(
           height: 1,
           thickness: 1,
@@ -269,11 +275,12 @@ class _JobRequestsScreenState extends State<JobRequestsScreen> {
     required VoidCallback onPressed,
   }) {
     return Container(
-      height: 32,
-      width: ResponsiveHelper.width(170, context),
+      height: 39.h,
+      width: 175.w,
       decoration: BoxDecoration(
+        border: Border.all(width: 1.w, color: Color(0xffD3D3D3)),
         color: color,
-        borderRadius: BorderRadius.circular(6),
+        borderRadius: BorderRadius.circular(6.r),
       ),
       child: TextButton(
         onPressed: onPressed,
@@ -282,7 +289,7 @@ class _JobRequestsScreenState extends State<JobRequestsScreen> {
           style: TextStyle(
             color: textColor,
             fontWeight: FontWeight.w500,
-            fontSize: 14,
+            fontSize: 14.sp,
           ),
         ),
       ),

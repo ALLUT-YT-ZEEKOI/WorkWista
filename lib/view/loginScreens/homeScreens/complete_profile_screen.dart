@@ -20,11 +20,29 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
   TextEditingController _dobController = TextEditingController();
 
   Future<void> _selectDate(BuildContext context) async {
+    DateTime today = DateTime.now();
+    DateTime latestAllowed =
+        DateTime(today.year - 18, today.month, today.day); // Max date
+    DateTime earliestAllowed = DateTime(1900); // Arbitrary earliest date
+    DateTime defaultDate =
+        DateTime(today.year - 25); // Default selected date (optional)
     final DateTime? pickedDate = await showDatePicker(
       context: context,
-      initialDate: DateTime.now(), // current date
-      firstDate: DateTime(2000), // earliest date
-      lastDate: DateTime(2100), // latest date
+      initialDate: defaultDate,
+      firstDate: earliestAllowed,
+      lastDate: latestAllowed,
+      builder: (context, child) {
+        return Theme(
+            data: Theme.of(context).copyWith(
+                colorScheme: ColorScheme.light(
+                    primary: Colors.blue.shade900,
+                    onPrimary: Colors.white,
+                    onSurface: Colors.black),
+                textButtonTheme: TextButtonThemeData(
+                    style:
+                        TextButton.styleFrom(foregroundColor: Colors.black))),
+            child: child!);
+      },
     );
 
     if (pickedDate != null) {
@@ -35,7 +53,7 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
       });
 
       // Now you can use the formattedDate string wherever needed
-      log("Selected date: $formattedDate");
+      print("Selected date: $formattedDate");
     }
   }
 
@@ -51,10 +69,7 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
     final _formKey = GlobalKey<FormState>();
     final controller = Provider.of<CompleteProfileController>(context);
     return Scaffold(
-     
-      appBar: AppBar(
-      
-      ),
+      appBar: AppBar(),
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 20.w),
         child: Form(

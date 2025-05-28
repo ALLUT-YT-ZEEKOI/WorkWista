@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:workwista/Utils/app_utils.dart';
 import 'package:workwista/view/loginScreens/homeScreens/add_job_screen.dart';
 import 'package:workwista/view/loginScreens/homeScreens/categories_screen.dart';
 import 'package:workwista/view/loginScreens/homeScreens/dashboard_screen.dart';
@@ -20,9 +21,10 @@ class _CustomBottomNavbarState extends State<CustomBottomNavbar> {
     if (widget.successMessage != null) {
       // Show SnackBar after widget builds
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(widget.successMessage!)),
-        );
+        AppUtils.showSnackbar(
+            context: context,
+            message: widget.successMessage.toString(),
+            bgcolor: Colors.green);
       });
     }
   }
