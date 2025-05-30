@@ -32,42 +32,42 @@ class JobsScreenController with ChangeNotifier {
   bool isCompletingJob = false;
 
   Future<bool> completeJob(String jobId) async {
-  isCompletingJob = true;
-  notifyListeners();
-
-  try {
-    final prefs = await SharedPreferences.getInstance();
-    String accessToken = prefs.getString("access") ?? "";
-
-    var response = await _makeCompleteJobRequest(jobId, accessToken);
-
-    if (response.statusCode == 401) {
-      log("Access token expired, attempting refresh...");
-      final refreshToken = prefs.getString("refresh") ?? "";
-      final newAccessToken = await _refreshToken(refreshToken);
-      if (newAccessToken != null) {
-        response = await _makeCompleteJobRequest(jobId, newAccessToken);
-      }
-    }
-
-    if (response.statusCode == 200) {
-      completedJob = jobCompletionModelFromJson(response.body);
-      await getMyJobs();
-      return true;
-    } else {
-      errorMessage = "Failed to complete job (${response.statusCode})";
-      _handleApiError(response.statusCode);
-      return false;
-    }
-  } catch (e) {
-    errorMessage = "Error completing job: ${e.toString()}";
-    log(errorMessage!);
-    return false;
-  } finally {
-    isCompletingJob = false;
+    isCompletingJob = true;
     notifyListeners();
+
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      String accessToken = prefs.getString("access") ?? "";
+
+      var response = await _makeCompleteJobRequest(jobId, accessToken);
+
+      if (response.statusCode == 401) {
+        log("Access token expired, attempting refresh...");
+        final refreshToken = prefs.getString("refresh") ?? "";
+        final newAccessToken = await _refreshToken(refreshToken);
+        if (newAccessToken != null) {
+          response = await _makeCompleteJobRequest(jobId, newAccessToken);
+        }
+      }
+
+      if (response.statusCode == 200) {
+        completedJob = jobCompletionModelFromJson(response.body);
+        await getMyJobs();
+        return true;
+      } else {
+        errorMessage = "Failed to complete job (${response.statusCode})";
+        _handleApiError(response.statusCode);
+        return false;
+      }
+    } catch (e) {
+      errorMessage = "Error completing job: ${e.toString()}";
+      log(errorMessage!);
+      return false;
+    } finally {
+      isCompletingJob = false;
+      notifyListeners();
+    }
   }
-}
 
   Future<http.Response> _makeCompleteJobRequest(
       String jobId, String accessToken) async {
@@ -88,33 +88,57 @@ class JobsScreenController with ChangeNotifier {
     );
   }
 
-  // Helper method to get button text based on job status
   String getJobButtonText(JobList job) {
+    final now = DateTime.now();
+    final jobDate = DateTime(2025, 06, 05); // Example: June 1, 2025
+
+    // Compare dates without time
+    final currentDate = DateTime(now.year, now.month, now.day);
+    final jobStartDate = DateTime(jobDate.year, jobDate.month, jobDate.day);
+
+    if (currentDate.isBefore(jobStartDate)) {
+      return "Job Not Started";
+    }
+
+    // If today is the job date, and user is jobber → "Finish"
+    if (currentDate == jobStartDate && (job.isUserJobber ?? false)) {
+      return "Finish";
+    }
+
+    // Existing logic for after the job date
     if (job.isUserJobber ?? false) {
-      // User is the jobber
-      if (job.isCompleted ?? false) {
-        return job.isPaid ?? false ? "Paid" : "Waiting for Payment";
-      } else {
-        return "Finish";
-      }
+      return (job.isCompleted ?? false)
+          ? (job.isPaid ?? false ? "Paid" : "Waiting for Payment")
+          : "Finish";
     } else {
-      // User is the recruiter
-      if (job.isCompleted ?? false) {
-        return job.isPaid ?? false ? "Paid" : "Pay";
-      } else {
-        return "Waiting for completion";
-      }
+      return (job.isCompleted ?? false)
+          ? (job.isPaid ?? false ? "Paid" : "Pay")
+          : "Waiting for completion";
     }
   }
 
-  // Helper method to check if button should be enabled
   bool isJobButtonEnabled(JobList job) {
+    final now = DateTime.now();
+    final jobDate = DateTime(2025, 06, 05); // Example: June 1, 2025
+
+    final currentDate = DateTime(now.year, now.month, now.day);
+    final jobStartDate = DateTime(jobDate.year, jobDate.month, jobDate.day);
+
+    if (currentDate.isBefore(jobStartDate)) {
+      return false; // Disable if job hasn't started
+    }
+
+    // Enable if it's the job date and user is jobber
+    if (currentDate == jobStartDate && (job.isUserJobber ?? false)) {
+      return true;
+    }
+
+    // Existing logic for after job date
     if (job.isUserJobber ?? false) {
-      // Jobber can finish the job if it's not completed
-      return !(job.isCompleted ?? false);
+      return !(job.isCompleted ?? false); // Enable if job is not completed
     } else {
-      // Recruiter can pay if job is completed but not paid
-      return (job.isCompleted ?? false) && !(job.isPaid ?? false);
+      return (job.isCompleted ?? false) &&
+          !(job.isPaid ?? false); // Enable if completed but unpaid
     }
   }
 
@@ -181,7 +205,7 @@ class JobsScreenController with ChangeNotifier {
   List<JobList> get asJobberJobs => myJobs?.asJobber ?? [];
   List<JobList> get asRecruiterJobs => myJobs?.asRecruter ?? [];
 
-CompletedJobData? get completedJobData => completedJob?.data;
+  CompletedJobData? get completedJobData => completedJob?.data;
   // Helper methods to check if lists are empty
   bool get hasJobberJobs => asJobberJobs.isNotEmpty;
   bool get hasRecruiterJobs => asRecruiterJobs.isNotEmpty;

@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:workwista/Utils/color_constants.dart';
@@ -24,7 +25,8 @@ class _MyJobsScreenState extends State<MyJobsScreen> {
   final PageController _pageController = PageController();
   final PageController _pageController2 = PageController();
   int _currentPage = 0;
-
+  final DateTime currentdate = DateTime.now();
+  DateTime JobDate = DateTime(2025, 05, 29);
   void _showNoRequestsDialog(BuildContext context) {
     showDialog(
       context: context,
@@ -75,6 +77,25 @@ class _MyJobsScreenState extends State<MyJobsScreen> {
     super.dispose();
   }
 
+// In _MyJobsScreenState class
+bool _isJobStarted() {
+  return DateTime.now().isAfter(JobDate);
+}
+
+String _getJobStatusText(JobList job) {
+  if (!_isJobStarted()) return "Not Started";
+  if (job.isCompleted ?? false) return "Completed";
+  return "Ongoing";
+}
+
+Color _getJobStatusColor(JobList job) {
+  if (!_isJobStarted()) return Colors.grey;
+  if (job.isCompleted ?? false) return Colors.green;
+  return Colors.orange;
+}
+
+
+
   @override
   Widget build(BuildContext context) {
     return Consumer<JobsScreenController>(
@@ -89,7 +110,16 @@ class _MyJobsScreenState extends State<MyJobsScreen> {
                 color: Colors.black,
                 fontSize: 28.sp,
                 fontWeight: FontWeight.w700),
-            title: Text("My jobs"),
+            title: InkWell(
+                onTap: () {
+                  final String formattedJDate =
+                      DateFormat('yyyy-MM-dd').format(JobDate);
+                  log("formatted jobdate :${formattedJDate}");
+                  final String formattedCDate =
+                      DateFormat('yyyy-MM-dd').format(currentdate);
+                  log("formatted current date :${formattedCDate}");
+                },
+                child: Text("My jobs")),
             actions: [
               IconButton(
                   onPressed: () {
@@ -147,9 +177,8 @@ class _MyJobsScreenState extends State<MyJobsScreen> {
                       SizedBox(height: 35.h),
                     ],
                     // COMPLETED JOB SECTION
-                    if (completedJobData != null && completedJobData.isUserJobber==true) ...[
-                      
-
+                    if (completedJobData != null &&
+                        completedJobData.isUserJobber == true) ...[
                       Text("Completed Jobs",
                           style: TextStyle(
                               fontSize: 18.sp,
@@ -599,43 +628,42 @@ class _MyJobsScreenState extends State<MyJobsScreen> {
   }
 
   Future<void> _handleJobAction(BuildContext context, JobList job,
-    JobsScreenController controller) async {
-  if (job.isUserJobber ?? false) {
-    // User is jobber - handle finish job
-    if (!(job.isCompleted ?? false)) {
-      // Directly complete the job without confirmation
-      final success = await controller.completeJob(job.id!);
-      if (success && mounted) {
-        // Show success snackbar
-        _showSnackBar(context, "Job completed successfully!", false);
-      } else if (mounted) {
-        // Show error snackbar
-         _showSnackBar(context, controller.errorMessage ?? "Failed to complete job", true);
+      JobsScreenController controller) async {
+    if (job.isUserJobber ?? false) {
+      // User is jobber - handle finish job
+      if (!(job.isCompleted ?? false)) {
+        // Directly complete the job without confirmation
+        final success = await controller.completeJob(job.id!);
+        if (success && mounted) {
+          // Show success snackbar
+          _showSnackBar(context, "Job completed successfully!", false);
+        } else if (mounted) {
+          // Show error snackbar
+          _showSnackBar(context,
+              controller.errorMessage ?? "Failed to complete job", true);
+        }
+      }
+    } else {
+      // User is recruiter - handle payment (unchanged)
+      if ((job.isCompleted ?? false) && !(job.isPaid ?? false)) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => PaymentScreen(),
+          ),
+        );
       }
     }
-  } else {
-    // User is recruiter - handle payment (unchanged)
-    if ((job.isCompleted ?? false) && !(job.isPaid ?? false)) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => PaymentScreen(),
-        ),
-      );
-    }
   }
-}
 
-void _showSnackBar(BuildContext context, String message, bool isError) {
-  ScaffoldMessenger.of(context).showSnackBar(
-    SnackBar(
-      content: Text(message),
-      backgroundColor: isError ? Colors.red : Colors.green,
-    ),
-  );
-}
-
-
+  void _showSnackBar(BuildContext context, String message, bool isError) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: isError ? Colors.red : Colors.green,
+      ),
+    );
+  }
 
   // STEP 3:  - now takes controller directly and uses correct data
   Widget _buildPostedJobsList(JobsScreenController controller) {
