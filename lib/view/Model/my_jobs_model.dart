@@ -49,18 +49,19 @@ class JobList {
   bool? isUserJobber;
   bool? isUserRecruter;
   bool? isPaid;
+  DateTime? job_date;
 
-  JobList({
-    this.id,
-    this.jobTitle,
-    this.recruterName,
-    this.isCompleted,
-    this.jobberName,
-    this.workerPhoneNumber,
-    this.isUserJobber,
-    this.isUserRecruter,
-    this.isPaid,
-  });
+  JobList(
+      {this.id,
+      this.jobTitle,
+      this.recruterName,
+      this.isCompleted,
+      this.jobberName,
+      this.workerPhoneNumber,
+      this.isUserJobber,
+      this.isUserRecruter,
+      this.isPaid,
+      this.job_date});
 
   factory JobList.fromJson(Map<String, dynamic> json) => JobList(
         id: json["id"],
@@ -72,6 +73,8 @@ class JobList {
         isUserJobber: json["is_user_jobber"],
         isUserRecruter: json["is_user_recruter"],
         isPaid: json["is_paid"],
+        job_date:
+            json["job_date"] == null ? null : DateTime.parse(json["job_date"]),
       );
 
   Map<String, dynamic> toJson() => {
@@ -84,5 +87,7 @@ class JobList {
         "is_user_jobber": isUserJobber,
         "is_user_recruter": isUserRecruter,
         "is_paid": isPaid,
+        "job_date":
+            "${job_date!.year.toString().padLeft(4, '0')}-${job_date!.month.toString().padLeft(2, '0')}-${job_date!.day.toString().padLeft(2, '0')}",
       };
 }

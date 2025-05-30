@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 import 'package:http/http.dart' as http;
 import 'package:flutter/foundation.dart';
+import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:workwista/view/Model/all_category_listing_model.dart';
@@ -89,58 +90,77 @@ class JobsScreenController with ChangeNotifier {
   }
 
   String getJobButtonText(JobList job) {
-    final now = DateTime.now();
-    final jobDate = DateTime(2025, 06, 05); // Example: June 1, 2025
-
-    // Compare dates without time
-    final currentDate = DateTime(now.year, now.month, now.day);
-    final jobStartDate = DateTime(jobDate.year, jobDate.month, jobDate.day);
-
-    if (currentDate.isBefore(jobStartDate)) {
-      return "Job Not Started";
-    }
-
-    // If today is the job date, and user is jobber → "Finish"
-    if (currentDate == jobStartDate && (job.isUserJobber ?? false)) {
-      return "Finish";
-    }
-
-    // Existing logic for after the job date
-    if (job.isUserJobber ?? false) {
-      return (job.isCompleted ?? false)
-          ? (job.isPaid ?? false ? "Paid" : "Waiting for Payment")
-          : "Finish";
-    } else {
-      return (job.isCompleted ?? false)
-          ? (job.isPaid ?? false ? "Paid" : "Pay")
-          : "Waiting for completion";
-    }
+  final now = DateTime.now();
+  
+  // Handle null job_date case
+  if (job.job_date == null) {
+    return "No Date Set";
   }
 
-  bool isJobButtonEnabled(JobList job) {
-    final now = DateTime.now();
-    final jobDate = DateTime(2025, 06, 05); // Example: June 1, 2025
+  // Format dates for comparison (ignoring time)
+  final currentDate = DateTime(now.year, now.month, now.day);
+  final jobDate = job.job_date!;
+  final jobStartDate = DateTime(jobDate.year, jobDate.month, jobDate.day);
 
-    final currentDate = DateTime(now.year, now.month, now.day);
-    final jobStartDate = DateTime(jobDate.year, jobDate.month, jobDate.day);
+  // Debug log to see the dates being compared
+  debugPrint("Current: ${DateFormat('yyyy-MM-dd').format(currentDate)}");
+  debugPrint("Job: ${DateFormat('yyyy-MM-dd').format(jobStartDate)}");
 
-    if (currentDate.isBefore(jobStartDate)) {
-      return false; // Disable if job hasn't started
-    }
-
-    // Enable if it's the job date and user is jobber
-    if (currentDate == jobStartDate && (job.isUserJobber ?? false)) {
-      return true;
-    }
-
-    // Existing logic for after job date
-    if (job.isUserJobber ?? false) {
-      return !(job.isCompleted ?? false); // Enable if job is not completed
-    } else {
-      return (job.isCompleted ?? false) &&
-          !(job.isPaid ?? false); // Enable if completed but unpaid
-    }
+  if (currentDate.isBefore(jobStartDate)) {
+    return "Job Not Started (${DateFormat('yyyy-MM-dd').format(jobStartDate)})";
   }
+
+  // If today is the job date, and user is jobber → "Finish"
+  if (currentDate == jobStartDate && (job.isUserJobber ?? false)) {
+    return "Finish (Today)";
+  }
+
+  // Existing logic for after the job date
+  if (job.isUserJobber ?? false) {
+    return (job.isCompleted ?? false)
+        ? (job.isPaid ?? false ? "Paid" : "Waiting for Payment")
+        : "Finish (${DateFormat('yyyy-MM-dd').format(jobStartDate)})";
+  } else {
+    return (job.isCompleted ?? false)
+        ? (job.isPaid ?? false ? "Paid" : "Pay")
+        : "Waiting for completion (${DateFormat('yyyy-MM-dd').format(jobStartDate)})";
+  }
+}
+
+ bool isJobButtonEnabled(JobList job) {
+  final now = DateTime.now();
+  
+  // Handle null job_date case
+  if (job.job_date == null) {
+    return false; // Disable if no date is set
+  }
+
+  // Format dates for comparison (ignoring time)
+  final currentDate = DateTime(now.year, now.month, now.day);
+  final jobDate = job.job_date!;
+  final jobStartDate = DateTime(jobDate.year, jobDate.month, jobDate.day);
+
+  // Debug log to see the dates being compared
+  debugPrint("Current: ${DateFormat('yyyy-MM-dd').format(currentDate)}");
+  debugPrint("Job: ${DateFormat('yyyy-MM-dd').format(jobStartDate)}");
+
+  if (currentDate.isBefore(jobStartDate)) {
+    return false; // Disable if job hasn't started
+  }
+
+  // Enable if it's the job date and user is jobber
+  if (currentDate == jobStartDate && (job.isUserJobber ?? false)) {
+    return true;
+  }
+
+  // Existing logic for after job date
+  if (job.isUserJobber ?? false) {
+    return !(job.isCompleted ?? false); // Enable if job is not completed
+  } else {
+    return (job.isCompleted ?? false) && 
+           !(job.isPaid ?? false); // Enable if completed but unpaid
+  }
+}
 
   // Clear completion data when needed
   void clearCompletionData() {

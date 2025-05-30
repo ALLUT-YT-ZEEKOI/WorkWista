@@ -78,23 +78,21 @@ class _MyJobsScreenState extends State<MyJobsScreen> {
   }
 
 // In _MyJobsScreenState class
-bool _isJobStarted() {
-  return DateTime.now().isAfter(JobDate);
-}
+  bool _isJobStarted() {
+    return DateTime.now().isAfter(JobDate);
+  }
 
-String _getJobStatusText(JobList job) {
-  if (!_isJobStarted()) return "Not Started";
-  if (job.isCompleted ?? false) return "Completed";
-  return "Ongoing";
-}
+  String _getJobStatusText(JobList job) {
+    if (!_isJobStarted()) return "Not Started";
+    if (job.isCompleted ?? false) return "Completed";
+    return "Ongoing";
+  }
 
-Color _getJobStatusColor(JobList job) {
-  if (!_isJobStarted()) return Colors.grey;
-  if (job.isCompleted ?? false) return Colors.green;
-  return Colors.orange;
-}
-
-
+  Color _getJobStatusColor(JobList job) {
+    if (!_isJobStarted()) return Colors.grey;
+    if (job.isCompleted ?? false) return Colors.green;
+    return Colors.orange;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -122,9 +120,7 @@ Color _getJobStatusColor(JobList job) {
                 child: Text("My jobs")),
             actions: [
               IconButton(
-                  onPressed: () {
-                    log("pressed");
-                  },
+                  onPressed: () {},
                   icon: Icon(
                     Icons.settings,
                     size: 24,
@@ -490,6 +486,17 @@ Color _getJobStatusColor(JobList job) {
                             fontWeight: FontWeight.w300,
                             color: Colors.grey[600]),
                       ),
+                      SizedBox(height: 4.h),
+                      Text(
+                        job.job_date != null
+                            ? DateFormat('yyyy-MM-dd').format(job.job_date!)
+                            : "No date",
+                        style: TextStyle(
+                          fontSize: 10.sp,
+                          fontWeight: FontWeight.w300,
+                          color: Colors.grey[600],
+                        ),
+                      ),
                     ],
                   ),
                   Spacer(),
@@ -610,16 +617,16 @@ Color _getJobStatusColor(JobList job) {
                       ),
                     )
                   : GradientButton(
-  radius: 10,
-  onPressed: controller.isJobButtonEnabled(job)
-      ? () async {
-          await _handleJobAction(context, job, controller);
-        }
-      : null,
-  name: controller.getJobButtonText(job),
-  height: 38.h,
-  width: double.infinity.w,
-),
+                      radius: 10,
+                      onPressed: controller.isJobButtonEnabled(job)
+                          ? () async {
+                              await _handleJobAction(context, job, controller);
+                            }
+                          : null,
+                      name: controller.getJobButtonText(job),
+                      height: 38.h,
+                      width: double.infinity.w,
+                    ),
             ],
           ),
         );

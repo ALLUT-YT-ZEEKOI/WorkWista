@@ -266,6 +266,7 @@ class _JobDetailsScreenState extends State<JobDetailsScreen> {
                     fontSize: 16.sp,
                     fontWeight: FontWeight.w500),
               ),
+              Text(job!.jobDate.toString()),
               SizedBox(
                 height: 16.h,
               ),
@@ -305,7 +306,7 @@ class _JobDetailsScreenState extends State<JobDetailsScreen> {
                               ),
                               Align(
                                 child: Text(
-                                  job?.manual_location
+                                  job.manual_location
                                           ?.split(',')
                                           .first
                                           .trim() ??
@@ -409,7 +410,7 @@ class _JobDetailsScreenState extends State<JobDetailsScreen> {
                             ),
                             Align(
                               child: Text(
-                                job?.jobType ?? "Type not specified",
+                                job.jobType ?? "Type not specified",
                                 style: TextStyle(
                                     fontSize: 14.sp,
                                     fontWeight: FontWeight.w400,
@@ -437,7 +438,7 @@ class _JobDetailsScreenState extends State<JobDetailsScreen> {
               Text(
                 maxLines: 4,
                 overflow: TextOverflow.ellipsis,
-                job?.description ?? "Description not specified",
+                job.description ?? "Description not specified",
                 style: TextStyle(
                     color: ColorConstants.descText,
                     fontSize: 16.sp,
@@ -463,8 +464,8 @@ class _JobDetailsScreenState extends State<JobDetailsScreen> {
                       .h, // Adjust this value based on your font size & line height
                 ),
                 child: Text(
-                  job?.key_responsibility?.isNotEmpty == true
-                      ? job!.key_responsibility!
+                  job.key_responsibility?.isNotEmpty == true
+                      ? job.key_responsibility!
                       : "Not specified",
                   maxLines: 4,
                   overflow: TextOverflow.ellipsis,
@@ -482,7 +483,7 @@ class _JobDetailsScreenState extends State<JobDetailsScreen> {
                 onPressed: () async {
                   await context.read<ApplyJobController>().onApplyJob(
                         context: context,
-                        Jobid: job?.id ?? "id not found",
+                        Jobid: job.id ?? "id not found",
                       );
                 },
                 name: ButtonName,
