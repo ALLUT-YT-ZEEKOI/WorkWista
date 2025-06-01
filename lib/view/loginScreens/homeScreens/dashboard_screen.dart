@@ -2,13 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
-import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+
 import 'package:workwista/Utils/color_constants.dart';
 import 'package:workwista/view/Controllers/jobs_screen_controller.dart';
 import 'package:workwista/view/Controllers/location_provider_controller.dart';
-import 'package:workwista/view/Wdigets/companiescard.dart';
 
-import 'package:workwista/view/Wdigets/greencard.dart';
 import 'package:workwista/view/Wdigets/jobofferscard.dart';
 import 'package:workwista/view/Wdigets/search_field.dart';
 import 'package:workwista/view/loginScreens/homeScreens/categories_screen.dart';
@@ -82,8 +80,7 @@ class _DashboardState extends State<Dashboard>
   @override
   Widget build(BuildContext context) {
     final locationProvider = Provider.of<LocationProvider>(context);
-    final screenWidth = MediaQuery.of(context).size.width;
-    final screenHight = MediaQuery.of(context).size.width;
+
     final PageController _controller = PageController();
     final int _numPages = 3;
     // final controller = Provider.of<JobsScreenController>(context);
@@ -125,25 +122,16 @@ class _DashboardState extends State<Dashboard>
                               ),
                               Row(
                                 children: [
-                                  CircleAvatar(
-                                    radius: 23.w,
-                                    backgroundColor: Colors.white,
-                                    child: Image(
-                                      image: AssetImage('assets/bell.png'),
-                                      width: 30.w,
-                                    ),
+                                  Image(
+                                    image: AssetImage('assets/bell.png'),
+                                    width: 21.w,
                                   ),
                                   SizedBox(
                                     width: 12.w,
                                   ),
-                                  CircleAvatar(
-                                    radius: 23.w,
-                                    backgroundColor: Colors.white,
-                                    child: Image(
-                                      image: AssetImage(
-                                          'assets/ant-design_message-outlined.png'),
-                                      width: 30.w,
-                                    ),
+                                  Icon(
+                                    Icons.person_outline,
+                                    size: 24.w,
                                   ),
                                 ],
                               ),
@@ -206,11 +194,8 @@ class _DashboardState extends State<Dashboard>
                                                 color: Colors.grey[600],
                                               ),
                                             )
-                                          : Image.asset(
-                                              'assets/location.png',
-                                              height: 24.h,
-                                              width: 24.w,
-                                            ),
+                                          : Icon(Icons.my_location,
+                                              color: Colors.blue),
                                       Flexible(
                                         child: Text(
                                           overflow: TextOverflow.ellipsis,

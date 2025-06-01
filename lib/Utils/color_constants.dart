@@ -15,5 +15,5 @@ class ColorConstants {
   static Color dotBlue = Color(0xff1E83FF);
   static Color greyText = Color(0xff919191);
   static Color declineBtn = Color(0xffF6F6F6);
- 
+ static Color reqCountColor = Color(0xff1E83FF);
 }

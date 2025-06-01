@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:workwista/Utils/app_utils.dart';
 import 'package:workwista/view/loginScreens/homeScreens/add_job_screen.dart';
 import 'package:workwista/view/loginScreens/homeScreens/categories_screen.dart';
 import 'package:workwista/view/loginScreens/homeScreens/dashboard_screen.dart';
-import 'package:workwista/view/loginScreens/homeScreens/my_jobs_screen.dart';
+import 'package:workwista/view/loginScreens/homeScreens/job_status_screen.dart';
 import 'package:workwista/view/loginScreens/homeScreens/profile_screen.dart';
 
 class CustomBottomNavbar extends StatefulWidget {
@@ -70,31 +71,9 @@ class _CustomBottomNavbarState extends State<CustomBottomNavbar> {
             ),
             BottomNavigationBarItem(
               icon: Image.asset(
-                'assets/briefcase.png',
+                'assets/job_status.png',
               ),
               activeIcon: ShaderMask(
-                shaderCallback: (Rect bounds) {
-                  return LinearGradient(
-                    colors: [
-                      Color(0xFF48AAFF), // #48AAFF
-                      Color(0xFF2B6699), // #2B6699
-                    ],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ).createShader(bounds);
-                },
-                blendMode: BlendMode.srcIn,
-                child: Image.asset(
-                  'assets/briefcase_fill.png',
-                  color: Colors
-                      .white, // Important: Set to white for gradient to show
-                ),
-              ),
-              label: 'My Jobs',
-            ),
-            BottomNavigationBarItem(
-                icon: Image.asset('assets/add.png'),
-                activeIcon: ShaderMask(
                   shaderCallback: (Rect bounds) {
                     return LinearGradient(
                       colors: [
@@ -106,10 +85,22 @@ class _CustomBottomNavbarState extends State<CustomBottomNavbar> {
                     ).createShader(bounds);
                   },
                   blendMode: BlendMode.srcIn,
+                  child: Icon(Icons.filter_tilt_shift)),
+              label: 'Job Status',
+            ),
+            BottomNavigationBarItem(
+                icon: Padding(
+                  padding: EdgeInsets.only(top: 0.h),
                   child: Image.asset(
-                    'assets/add.png',
-                    color: Colors
-                        .white, // Important: Set to white for gradient to show
+                    'assets/add_btn.png',
+                    scale: 1.1,
+                  ),
+                ),
+                activeIcon: Padding(
+                  padding: EdgeInsets.only(top: 0.h),
+                  child: Image.asset(
+                    scale: 1.1,
+                    'assets/add_btn.png',
                   ),
                 ),
                 label: ''),

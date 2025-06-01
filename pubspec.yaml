@@ -52,6 +52,7 @@ dependencies:
   dropdown_button2: ^2.3.9
   geocoding: ^3.0.0
   carousel_slider: ^4.2.1
+
   
 dev_dependencies:
   flutter_test:
@@ -108,6 +109,8 @@ flutter:
     - assets/phonepebg.png
     - assets/north_east.png
     - assets/no_image.png
+    - assets/job_status.png
+    - assets/add_btn.png
     
 
 

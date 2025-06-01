@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
@@ -6,11 +7,19 @@ import 'package:workwista/Utils/color_constants.dart';
 import 'package:workwista/view/Common%20Screens/custom_bottom_navbar.dart';
 import 'package:workwista/view/Controllers/jobs_screen_controller.dart';
 import 'package:workwista/view/Model/job_requests_model.dart';
+import 'package:workwista/view/Wdigets/expandable_test.dart';
+
 import 'package:workwista/view/responsive_helper.dart';
 
 class JobRequestsScreen extends StatefulWidget {
   final String jobId;
-  const JobRequestsScreen({super.key, required this.jobId});
+  final int? reqCount;
+  final String? jobTitle;
+  const JobRequestsScreen(
+      {super.key,
+      required this.reqCount,
+      required this.jobTitle,
+      required this.jobId});
 
   @override
   State<JobRequestsScreen> createState() => _JobRequestsScreenState();
@@ -47,63 +56,45 @@ class _JobRequestsScreenState extends State<JobRequestsScreen> {
           );
         }
 
-        // if (controller.jobRequests?.data == null ||
-        //     controller.jobRequests!.data!.isEmpty) {
-        //   return Center(
-        //     child: Container(
-        //       width: ResponsiveHelper.width(372, context),
-        //       height: ResponsiveHelper.height(200, context),
-        //       decoration: BoxDecoration(
-        //         border: Border.all(width: 1, color: ColorConstants.descText),
-        //         borderRadius: BorderRadius.circular(14),
-        //         color: Colors.white,
-        //       ),
-        //       child: Column(
-        //         mainAxisAlignment: MainAxisAlignment.center,
-        //         children: [
-        //           Icon(
-        //             Icons.work_outline,
-        //             size: 40,
-        //             color: Colors.grey[400],
-        //           ),
-        //           SizedBox(height: 16),
-        //           Text(
-        //             "No requests found",
-        //             style: TextStyle(
-        //               color: Colors.black,
-        //               fontSize: 18,
-        //               fontWeight: FontWeight.w500,
-        //             ),
-        //           ),
-        //           SizedBox(height: 8),
-        //           Padding(
-        //             padding: EdgeInsets.symmetric(
-        //               horizontal: ResponsiveHelper.width(40, context),
-        //             ),
-        //             child: Text(
-        //               "When someone applies to your posted job, their request will appear here",
-        //               style: TextStyle(
-        //                 color: ColorConstants.descText,
-        //                 fontSize: 14,
-        //                 fontWeight: FontWeight.w400,
-        //               ),
-        //               textAlign: TextAlign.center,
-        //             ),
-        //           ),
-        //         ],
-        //       ),
-        //     ),
-        //   );
-        // }
-
         return Scaffold(
           appBar: AppBar(
-            title: Text(
-              "Job Requests",
-              style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 28.sp,
-                  fontWeight: FontWeight.w700),
+            automaticallyImplyLeading: false, // disable default back button
+            title: Stack(
+              alignment: Alignment.center,
+              children: [
+                Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      "View job",
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 20.sp,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    Text(
+                      "${widget.reqCount} Request",
+                      style: TextStyle(
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.w400,
+                          color: ColorConstants.reqCountColor),
+                    ),
+                  ],
+                ),
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Transform.translate(
+                    offset: Offset(-12, 0), // Move 12 pixels to the left
+                    child: IconButton(
+                      icon: Icon(Icons.arrow_back, color: Colors.black),
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
           body: Padding(
@@ -111,6 +102,150 @@ class _JobRequestsScreenState extends State<JobRequestsScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                Container(
+                  padding:
+                      EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
+                  height: 240.h,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(13.r),
+                      border: Border.all(width: 1.w, color: Color(0xff8FC1FF))),
+                  child: Column(
+                    children: [
+                      Row(
+                        children: [
+                          CircleAvatar(
+                            radius: 22.5.r,
+                            backgroundColor: Colors.amber,
+                          ),
+                          SizedBox(
+                            width: 9.w,
+                          ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "job title",
+                                style: TextStyle(
+                                    fontSize: 18.sp,
+                                    fontWeight: FontWeight.w500),
+                              ),
+                              Row(
+                                children: [
+                                  Image.asset(
+                                    "assets/location2.png",
+                                    scale: 1.2,
+                                  ),
+                                  SizedBox(
+                                    width: 2.w,
+                                  ),
+                                  Text("location")
+                                ],
+                              )
+                            ],
+                          ),
+                          Spacer(),
+                          Column(
+                            children: [
+                              Text(
+                                "500 - 1500",
+                                style: TextStyle(
+                                    fontSize: 16.sp,
+                                    fontWeight: FontWeight.w400),
+                              ),
+                              Text(
+                                "06/05/2025",
+                                style: TextStyle(
+                                    fontSize: 10.sp,
+                                    fontWeight: FontWeight.w500),
+                              )
+                            ],
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Text.rich(
+                        TextSpan(
+                          text: "Become a vital part of our skilled carpentry team as a Carpenter! "
+                                      "In this position, you'll craft beautiful wooden structures, collaborate "
+                                      "with clients to understand their vision, "
+                                  .substring(0, 100) +
+                              "... ",
+                          style: TextStyle(
+                              color: Color(0xff92A5B5),
+                              fontSize: 14,
+                              fontWeight: FontWeight.w400),
+                          children: [
+                            TextSpan(
+                              text: "more",
+                              style: TextStyle(
+                                color: Colors.blue,
+                                fontWeight: FontWeight.w500,
+                              ),
+                              recognizer: TapGestureRecognizer()
+                                ..onTap = () {
+                                  // Handle "more" tap if needed
+                                },
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(
+                        height: 23.h,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Container(
+                            height: 40,
+                            width: 149,
+                            decoration: BoxDecoration(
+                                color: Color(0xffDAEAFF),
+                                borderRadius: BorderRadius.circular(12.r)),
+                            child: Center(
+                              child: Text(
+                                "Close Job",
+                                style: TextStyle(
+                                    fontSize: 14.sp,
+                                    fontWeight: FontWeight.w700,
+                                    color: Color(0xff1E83FF)),
+                              ),
+                            ),
+                          ),
+                          Container(
+                            height: 40,
+                            width: 149,
+                            decoration: BoxDecoration(
+                                color: Color(0xffE4626F),
+                                borderRadius: BorderRadius.circular(12.r)),
+                            child: Center(
+                              child: Text(
+                                "Close Job",
+                                style: TextStyle(
+                                    fontSize: 14.sp,
+                                    fontWeight: FontWeight.w700,
+                                    color: Color(0xffFFFFFF)),
+                              ),
+                            ),
+                          )
+                        ],
+                      )
+                    ],
+                  ),
+                ),
+                SizedBox(
+                  height: 12.h,
+                ),
+                Text(
+                  "Requests",
+                  style:
+                      TextStyle(fontSize: 20.sp, fontWeight: FontWeight.w500),
+                ),
+                SizedBox(
+                  height: 12.h,
+                ),
                 Expanded(
                   child: ListView.separated(
                     itemCount: controller.jobRequests!.data!.length,
