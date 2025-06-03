@@ -5,6 +5,7 @@ import 'package:workwista/view/loginScreens/homeScreens/add_job_screen.dart';
 import 'package:workwista/view/loginScreens/homeScreens/categories_screen.dart';
 import 'package:workwista/view/loginScreens/homeScreens/dashboard_screen.dart';
 import 'package:workwista/view/loginScreens/homeScreens/job_status_screen.dart';
+import 'package:workwista/view/loginScreens/homeScreens/my_jobs_screen.dart';
 import 'package:workwista/view/loginScreens/homeScreens/profile_screen.dart';
 
 class CustomBottomNavbar extends StatefulWidget {
@@ -35,10 +36,10 @@ class _CustomBottomNavbarState extends State<CustomBottomNavbar> {
   // List of screens to display based on the selected index
   final List<Widget> _screens = [
     Dashboard(),
-    MyJobsScreen(),
+    JobStatusScreen(),
     AddJobScreen(),
     CategoriesScreen(),
-    ProfileScreen()
+    MyJobsScreen()
   ];
 
   @override
@@ -124,9 +125,8 @@ class _CustomBottomNavbarState extends State<CustomBottomNavbar> {
               label: 'Categories',
             ),
             BottomNavigationBarItem(
-              icon: Icon(
-                Icons.person_outline,
-                color: Colors.black,
+              icon: Image.asset(
+                'assets/briefcase.png',
               ),
               activeIcon: ShaderMask(
                   shaderCallback: (Rect bounds) {
@@ -140,10 +140,12 @@ class _CustomBottomNavbarState extends State<CustomBottomNavbar> {
                     ).createShader(bounds);
                   },
                   blendMode: BlendMode.srcIn,
-                  child: Icon(
-                    Icons.person,
+                  child: Image.asset(
+                    'assets/briefcase_fill.png',
+                    color: Colors
+                        .white, // Important: Set to white for gradient to show
                   )),
-              label: 'Profile',
+              label: 'My Jobs',
             ),
           ],
           selectedItemColor: Colors.blue, // Customize selected color

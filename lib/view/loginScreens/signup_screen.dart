@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
@@ -262,7 +263,12 @@ class _SignupscreenState extends State<Signupscreen> {
                     bool formvalid = _formKey.currentState!.validate();
 
                     if (formvalid) {
+                      final FirebaseMessaging _firebaseMessaging =
+                          FirebaseMessaging.instance;
+                      String? token = await _firebaseMessaging.getToken();
+                      log("FCM token passed : $token");
                       await context.read<RegisterScreenController>().onRegister(
+                        fcm_token: token,
                           name: _nameController.text,
                           context: context,
                           email: _emailController.text,

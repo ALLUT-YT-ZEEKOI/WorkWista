@@ -11,6 +11,7 @@ import 'package:workwista/view/Wdigets/jobofferscard.dart';
 import 'package:workwista/view/Wdigets/search_field.dart';
 import 'package:workwista/view/loginScreens/homeScreens/categories_screen.dart';
 import 'package:workwista/view/loginScreens/homeScreens/job_details_screen.dart';
+import 'package:workwista/view/loginScreens/homeScreens/profile_screen.dart';
 import 'package:workwista/view/loginScreens/homeScreens/search_screen.dart';
 
 class Dashboard extends StatefulWidget {
@@ -129,9 +130,19 @@ class _DashboardState extends State<Dashboard>
                                   SizedBox(
                                     width: 12.w,
                                   ),
-                                  Icon(
-                                    Icons.person_outline,
-                                    size: 24.w,
+                                  InkWell(
+                                    onTap: () {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                ProfileScreen(),
+                                          ));
+                                    },
+                                    child: Icon(
+                                      Icons.person_outline,
+                                      size: 24.w,
+                                    ),
                                   ),
                                 ],
                               ),
@@ -276,7 +287,6 @@ class _DashboardState extends State<Dashboard>
                               onTap: () {
                                 jobsScreenControllerObj
                                     .onCategorySelected(index);
-                                // No need for additional calls here since onCategorySelected now handles it
                               },
                               child: Container(
                                 constraints: BoxConstraints(

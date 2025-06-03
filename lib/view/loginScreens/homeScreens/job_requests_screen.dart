@@ -7,17 +7,22 @@ import 'package:workwista/Utils/color_constants.dart';
 import 'package:workwista/view/Common%20Screens/custom_bottom_navbar.dart';
 import 'package:workwista/view/Controllers/jobs_screen_controller.dart';
 import 'package:workwista/view/Model/job_requests_model.dart';
-import 'package:workwista/view/Wdigets/expandable_test.dart';
 
 import 'package:workwista/view/responsive_helper.dart';
 
 class JobRequestsScreen extends StatefulWidget {
   final String jobId;
   final int? reqCount;
-  final String? jobTitle;
+  final String jobTitle;
+  final String salary_from;
+  final String salary_to;
+  final DateTime? jobdate;
   const JobRequestsScreen(
       {super.key,
       required this.reqCount,
+      required this.salary_from,
+      required this.salary_to,
+      required this.jobdate,
       required this.jobTitle,
       required this.jobId});
 
@@ -116,7 +121,9 @@ class _JobRequestsScreenState extends State<JobRequestsScreen> {
                         children: [
                           CircleAvatar(
                             radius: 22.5.r,
-                            backgroundColor: Colors.amber,
+                            backgroundColor: Colors.white,
+                            backgroundImage: NetworkImage(
+                                'https://images.pexels.com/photos/2586823/pexels-photo-2586823.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2'),
                           ),
                           SizedBox(
                             width: 9.w,
@@ -125,7 +132,7 @@ class _JobRequestsScreenState extends State<JobRequestsScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                "job title",
+                                widget.jobTitle,
                                 style: TextStyle(
                                     fontSize: 18.sp,
                                     fontWeight: FontWeight.w500),
@@ -133,13 +140,20 @@ class _JobRequestsScreenState extends State<JobRequestsScreen> {
                               Row(
                                 children: [
                                   Image.asset(
+                                    color: Color(0xff92A5B5),
                                     "assets/location2.png",
                                     scale: 1.2,
                                   ),
                                   SizedBox(
                                     width: 2.w,
                                   ),
-                                  Text("location")
+                                  Text(
+                                    "location",
+                                    style: TextStyle(
+                                        color: Color(0xff92A5B5),
+                                        fontSize: 14.sp,
+                                        fontWeight: FontWeight.w400),
+                                  )
                                 ],
                               )
                             ],
@@ -147,14 +161,27 @@ class _JobRequestsScreenState extends State<JobRequestsScreen> {
                           Spacer(),
                           Column(
                             children: [
-                              Text(
-                                "500 - 1500",
-                                style: TextStyle(
-                                    fontSize: 16.sp,
-                                    fontWeight: FontWeight.w400),
+                              Row(
+                                children: [
+                                  Text(
+                                    widget.salary_from,
+                                    style: TextStyle(
+                                        fontSize: 16.sp,
+                                        fontWeight: FontWeight.w400),
+                                  ),
+                                  Text(
+                                    " - ${widget.salary_to}",
+                                    style: TextStyle(
+                                        fontSize: 16.sp,
+                                        fontWeight: FontWeight.w400),
+                                  ),
+                                ],
                               ),
                               Text(
-                                "06/05/2025",
+                                widget.jobdate != null
+                                    ? DateFormat('yyyy-MM-dd')
+                                        .format(widget.jobdate!)
+                                    : "No date",
                                 style: TextStyle(
                                     fontSize: 10.sp,
                                     fontWeight: FontWeight.w500),

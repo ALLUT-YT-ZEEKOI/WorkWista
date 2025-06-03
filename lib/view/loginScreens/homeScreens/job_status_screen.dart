@@ -14,14 +14,14 @@ import 'package:workwista/view/loginScreens/homeScreens/job_requests_screen.dart
 import 'package:workwista/view/loginScreens/homeScreens/payment_screen.dart';
 import 'package:workwista/view/responsive_helper.dart';
 
-class MyJobsScreen extends StatefulWidget {
-  const MyJobsScreen({super.key});
+class JobStatusScreen extends StatefulWidget {
+  const JobStatusScreen({super.key});
 
   @override
-  State<MyJobsScreen> createState() => _MyJobsScreenState();
+  State<JobStatusScreen> createState() => _JobStatusScreenState();
 }
 
-class _MyJobsScreenState extends State<MyJobsScreen> {
+class _JobStatusScreenState extends State<JobStatusScreen> {
   final PageController _pageController = PageController();
   final PageController _pageController2 = PageController();
   int _currentPage = 0;
@@ -249,7 +249,13 @@ class _MyJobsScreenState extends State<MyJobsScreen> {
                                     context,
                                     MaterialPageRoute(
                                       builder: (context) => JobRequestsScreen(
-                                        jobTitle: postedJob.title,
+                                        salary_from: postedJob.salary_from ??
+                                            "not found",
+                                        salary_to:
+                                            postedJob.salary_to ?? "not founf",
+                                        jobdate: postedJob.jobDate,
+                                        jobTitle:
+                                            postedJob.title ?? "not found",
                                         reqCount: postedJob.requestsCount,
                                         jobId: postedJob.id!,
                                       ),
@@ -710,7 +716,10 @@ class _MyJobsScreenState extends State<MyJobsScreen> {
                 context,
                 MaterialPageRoute(
                   builder: (context) => JobRequestsScreen(
-                    jobTitle: postedJob.title,
+                    salary_from: postedJob.salary_from ?? "not found",
+                    salary_to: postedJob.salary_to ?? "not found",
+                    jobTitle: postedJob.title ?? "not found",
+                    jobdate: postedJob.jobDate,
                     reqCount: postedJob.requestsCount,
                     jobId: postedJob.id!,
                   ),

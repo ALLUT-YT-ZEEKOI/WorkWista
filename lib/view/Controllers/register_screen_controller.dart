@@ -20,6 +20,7 @@ class RegisterScreenController with ChangeNotifier {
     "DOB": null,
     "password": null,
     "confirm_pass": null,
+
   };
 
   void clearErrors() {
@@ -35,6 +36,7 @@ class RegisterScreenController with ChangeNotifier {
     required String DOB,
     required String password,
     required String confirm_pass,
+    required String? fcm_token
   }) async {
     final url = Uri.parse("https://workwista.com/users/register/");
     isloading = true;
@@ -48,7 +50,8 @@ class RegisterScreenController with ChangeNotifier {
         "phone_number": phone_number,
         "DOB": DOB,
         "password": password,
-        "confirm_pass": confirm_pass
+        "confirm_pass": confirm_pass,
+        "fcm_token":fcm_token,
       });
 
       if (response.statusCode == 200) {
