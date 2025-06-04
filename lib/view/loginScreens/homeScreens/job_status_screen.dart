@@ -168,11 +168,16 @@ class _JobStatusScreenState extends State<JobStatusScreen> {
                     // COMPLETED JOB SECTION
                     if (completedJobData != null &&
                         completedJobData.isUserJobber == true) ...[
-                      Text("Completed Jobs",
-                          style: TextStyle(
-                              fontSize: 18.sp,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.black)),
+                      InkWell(
+                        onTap: () {
+                          log(completedJobData.isUserJobber.toString());
+                        },
+                        child: Text("Completed Jobs",
+                            style: TextStyle(
+                                fontSize: 18.sp,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.black)),
+                      ),
                       SizedBox(height: 10.h),
                       _buildCompletedJobCard(context, completedJobData),
                       SizedBox(height: 35.h),
@@ -285,6 +290,7 @@ class _JobStatusScreenState extends State<JobStatusScreen> {
 
   Widget _buildCompletedJobCard(
       BuildContext context, CompletedJobData completedJob) {
+    log(completedJob.id.toString());
     return Container(
       padding:
           EdgeInsets.only(right: 17.w, left: 14.w, top: 21.h, bottom: 19.h),
@@ -310,14 +316,14 @@ class _JobStatusScreenState extends State<JobStatusScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    completedJob.jobTitle ?? "No Title",
+                    completedJob.job!.title ?? "No Title",
                     style:
                         TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w400),
                   ),
                   SizedBox(height: 4.h),
                   Text(
                     completedJob.isUserJobber ?? false
-                        ? "Recruiter: ${completedJob.recruterName ?? 'Unknown'}"
+                        ? "Recruiter: ${completedJob.job!.jobRecruter ?? 'Unknown'}"
                         : "Worker: ${completedJob.jobberName ?? 'Unknown'}",
                     style: TextStyle(
                         fontSize: 10.sp,
@@ -367,7 +373,9 @@ class _JobStatusScreenState extends State<JobStatusScreen> {
                   padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 2.h),
                   decoration: BoxDecoration(
                     color: completedJob.isPaid ?? false
+                        // ignore: deprecated_member_use
                         ? Colors.green.withOpacity(0.1)
+                        // ignore: deprecated_member_use
                         : Colors.orange.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(10.r),
                     border: Border.all(
@@ -445,7 +453,7 @@ class _JobStatusScreenState extends State<JobStatusScreen> {
     );
   }
 
-  Widget _buildJobCard(BuildContext context, JobList job) {
+  Widget _buildJobCard(BuildContext context, JobList jobList) {
     return Consumer<JobsScreenController>(
       builder: (context, controller, child) {
         return Container(
@@ -473,15 +481,15 @@ class _JobStatusScreenState extends State<JobStatusScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        job.jobTitle ?? "No Title",
+                        jobList.job!.title ?? "No Title",
                         style: TextStyle(
                             fontSize: 12.sp, fontWeight: FontWeight.w400),
                       ),
                       SizedBox(height: 4.h),
                       Text(
-                        job.isUserJobber ?? false
-                            ? "Recruiter: ${job.recruterName ?? 'Unknown'}"
-                            : "Worker: ${job.jobberName ?? 'Unknown'}",
+                        jobList.isUserJobber ?? false
+                            ? "Recruiter: ${jobList.job!.job_recruter ?? 'Unknown'}"
+                            : "Worker: ${jobList.jobberName ?? 'Unknown'}",
                         style: TextStyle(
                             fontSize: 10.sp,
                             fontWeight: FontWeight.w300,
@@ -489,8 +497,9 @@ class _JobStatusScreenState extends State<JobStatusScreen> {
                       ),
                       SizedBox(height: 4.h),
                       Text(
-                        job.job_date != null
-                            ? DateFormat('yyyy-MM-dd').format(job.job_date!)
+                        jobList.job!.jobDate != null
+                            ? DateFormat('yyyy-MM-dd')
+                                .format(jobList.job!.jobDate!)
                             : "No date",
                         style: TextStyle(
                           fontSize: 10.sp,
@@ -527,37 +536,39 @@ class _JobStatusScreenState extends State<JobStatusScreen> {
               Row(
                 children: [
                   Text(
-                    job.isCompleted ?? false ? "Completed" : "Ongoing",
+                    jobList.isCompleted ?? false ? "Completed" : "Ongoing",
                     style: TextStyle(
                         fontSize: 12.sp,
                         fontWeight: FontWeight.w500,
-                        color: job.isCompleted ?? false
+                        color: jobList.isCompleted ?? false
                             ? Colors.green
                             : Colors.orange),
                   ),
                   Spacer(),
-                  if (job.isCompleted ?? false)
+                  if (jobList.isCompleted ?? false)
                     Container(
                       padding:
                           EdgeInsets.symmetric(horizontal: 8.w, vertical: 2.h),
                       decoration: BoxDecoration(
-                        color: job.isPaid ?? false
+                        color: jobList.isPaid ?? false
+                            // ignore: deprecated_member_use
                             ? Colors.green.withOpacity(0.1)
+                            // ignore: deprecated_member_use
                             : Colors.orange.withOpacity(0.1),
                         borderRadius: BorderRadius.circular(10.r),
                         border: Border.all(
-                          color: job.isPaid ?? false
+                          color: jobList.isPaid ?? false
                               ? Colors.green
                               : Colors.orange,
                           width: 1,
                         ),
                       ),
                       child: Text(
-                        job.isPaid ?? false ? "Paid" : "Payment Pending",
+                        jobList.isPaid ?? false ? "Paid" : "Payment Pending",
                         style: TextStyle(
                           fontSize: 10.sp,
                           fontWeight: FontWeight.w500,
-                          color: job.isPaid ?? false
+                          color: jobList.isPaid ?? false
                               ? Colors.green
                               : Colors.orange,
                         ),
@@ -576,7 +587,7 @@ class _JobStatusScreenState extends State<JobStatusScreen> {
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(23.r),
                   child: LinearProgressIndicator(
-                    value: job.isCompleted ?? false ? 1.0 : 0.3,
+                    value: jobList.isCompleted ?? false ? 1.0 : 0.3,
                     backgroundColor: Colors.transparent,
                     valueColor: AlwaysStoppedAnimation<Color>(
                         ColorConstants.ProgressBarColor),
@@ -600,11 +611,13 @@ class _JobStatusScreenState extends State<JobStatusScreen> {
                   ),
                   Spacer(),
                   Text(
-                    job.isPaid ?? false ? "Paid" : "Unpaid",
+                    jobList.isPaid ?? false ? "Paid" : "Unpaid",
                     style: TextStyle(
                         fontSize: 10.sp,
                         fontWeight: FontWeight.w500,
-                        color: job.isPaid ?? false ? Colors.green : Colors.red),
+                        color: jobList.isPaid ?? false
+                            ? Colors.green
+                            : Colors.red),
                   ),
                 ],
               ),
@@ -619,12 +632,13 @@ class _JobStatusScreenState extends State<JobStatusScreen> {
                     )
                   : GradientButton(
                       radius: 10,
-                      onPressed: controller.isJobButtonEnabled(job)
+                      onPressed: controller.isJobButtonEnabled(jobList)
                           ? () async {
-                              await _handleJobAction(context, job, controller);
+                              await _handleJobAction(
+                                  context, jobList, controller);
                             }
                           : null,
-                      name: controller.getJobButtonText(job),
+                      name: controller.getJobButtonText(jobList),
                       height: 38.h,
                       width: double.infinity.w,
                     ),
@@ -635,13 +649,14 @@ class _JobStatusScreenState extends State<JobStatusScreen> {
     );
   }
 
-  Future<void> _handleJobAction(BuildContext context, JobList job,
+  Future<void> _handleJobAction(BuildContext context, JobList jobList,
       JobsScreenController controller) async {
-    if (job.isUserJobber ?? false) {
+    if (jobList.isUserJobber ?? false) {
       // User is jobber - handle finish job
-      if (!(job.isCompleted ?? false)) {
+      if (!(jobList.isCompleted ?? false)) {
         // Directly complete the job without confirmation
-        final success = await controller.completeJob(job.id!);
+        final success = await controller.completeJob(jobList.id);
+        log(jobList.job?.id.toString() ?? "");
         if (success && mounted) {
           // Show success snackbar
           _showSnackBar(context, "Job completed successfully!", false);
@@ -653,7 +668,7 @@ class _JobStatusScreenState extends State<JobStatusScreen> {
       }
     } else {
       // User is recruiter - handle payment (unchanged)
-      if ((job.isCompleted ?? false) && !(job.isPaid ?? false)) {
+      if ((jobList.isCompleted ?? false) && !(jobList.isPaid ?? false)) {
         Navigator.push(
           context,
           MaterialPageRoute(

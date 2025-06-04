@@ -3,12 +3,16 @@ import 'dart:developer';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:workwista/view/Model/my_jobs_completed_jobs_model.dart';
+import 'package:workwista/view/Model/my_jobs_pending_jobs_model.dart';
 import 'package:workwista/view/Model/my_jobs_posted_jobs_model.dart';
 import 'package:workwista/view/Model/my_jobs_rejected_jobs_model.dart';
 
 class MyJobsScreenController with ChangeNotifier {
   List<MyJobsPostedItem> myJobspostedJobsList = [];
   List<MyJobsRejectedItem> myJobsrejectedJobsList = [];
+  List<MyJobsPendingItem> myJobspendingJobsList = [];
+  List<MyJobsCompletedItem> myJobscompletedJobsList = [];
   bool isloading = false;
   String? errorMessage;
 
@@ -41,7 +45,125 @@ class MyJobsScreenController with ChangeNotifier {
     }
   }
 
-Future<void> getMyJobsRejectedJobs() async {
+Future<void> getMyJobsCompletedJobs() async {
+    isloading = true;
+    errorMessage = null;
+    notifyListeners();
+
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      String accessToken = prefs.getString('access') ?? "";
+
+      //first attepmt with current acces token
+
+      var response = await _makeMyJobsCompletedJobsRequest(accessToken);
+
+      //if unauthorized --- refresh the token
+      if (response.statusCode == 400) {
+        log("Access token expired, attempting refresh...");
+        final refreshToken = prefs.getString("refresh") ?? "";
+
+        //refresh the token
+        final newAccessToken = await _refreshToken(refreshToken);
+        if (newAccessToken != null) {
+          //retry with new access token
+          response = await _makeMyJobsCompletedJobsRequest(newAccessToken);
+        }
+      }
+
+      //process the final response
+
+      if (response.statusCode == 200) {
+        final MyJobsCompletedJobsModel myJobsCompletedJobsModel =
+            myJobsCompletedJobsModelFromJson(response.body);
+        myJobscompletedJobsList = myJobsCompletedJobsModel.data ?? [];
+        log("Successfully loaded myjobs-completed jobs");
+      } else {
+        errorMessage =
+            "Failed to load myjobs-completed jobs (${response.statusCode})";
+        _handleApiError(response.statusCode);
+      }
+    } catch (e) {
+      errorMessage = "Error fetching myJobs-completed jobs : ${e.toString()}";
+      log(errorMessage!);
+      myJobscompletedJobsList = [];
+    } finally {
+      isloading = false;
+      notifyListeners();
+    }
+  }
+
+ Future<http.Response> _makeMyJobsCompletedJobsRequest(
+      String accessToken) async {
+    final url = Uri.parse("https://workwista.com/job/view/completed-jobs/");
+    return await http.get(
+      url,
+      headers: {"Authorization": "Bearer $accessToken"},
+    );
+  }
+
+
+
+Future<void> getMyJobsPendingJobs() async {
+    isloading = true;
+    errorMessage = null;
+    notifyListeners();
+
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      String accessToken = prefs.getString('access') ?? "";
+
+      //first attepmt with current acces token
+
+      var response = await _makeMyJobsPendingJobsRequest(accessToken);
+
+      //if unauthorized --- refresh the token
+      if (response.statusCode == 400) {
+        log("Access token expired, attempting refresh...");
+        final refreshToken = prefs.getString("refresh") ?? "";
+
+        //refresh the token
+        final newAccessToken = await _refreshToken(refreshToken);
+        if (newAccessToken != null) {
+          //retry with new access token
+          response = await _makeMyJobsPendingJobsRequest(newAccessToken);
+        }
+      }
+
+      //process the final response
+
+      if (response.statusCode == 200) {
+        final MyJobsPendingJobsModel myJobsPendingJobsModel =
+            myJobsPendingJobsModelFromJson(response.body);
+        myJobspendingJobsList = myJobsPendingJobsModel.data ?? [];
+        log("Successfully loaded myjobs-pending jobs");
+      } else {
+        errorMessage =
+            "Failed to load myjobs-pending jobs (${response.statusCode})";
+        _handleApiError(response.statusCode);
+      }
+    } catch (e) {
+      errorMessage = "Error fetching myJobs-pending jobs : ${e.toString()}";
+      log(errorMessage!);
+      myJobspendingJobsList = [];
+    } finally {
+      isloading = false;
+      notifyListeners();
+    }
+  }
+
+ Future<http.Response> _makeMyJobsPendingJobsRequest(
+      String accessToken) async {
+    final url = Uri.parse("https://workwista.com/job/view/pending-jobs/");
+    return await http.get(
+      url,
+      headers: {"Authorization": "Bearer $accessToken"},
+    );
+  }
+
+
+
+  Future<void> getMyJobsRejectedJobs() async {
     isloading = true;
     errorMessage = null;
     notifyListeners();
@@ -74,33 +196,29 @@ Future<void> getMyJobsRejectedJobs() async {
             myJobsRejectedJobsModelFromJson(response.body);
         myJobsrejectedJobsList = myJobsRejectedJobsModel.data ?? [];
         log("Successfully loaded myjobs-rejected jobs");
-
-      }else{
-        errorMessage = "Failed to load myjobs-rejected jobs (${response.statusCode})";
+      } else {
+        errorMessage =
+            "Failed to load myjobs-rejected jobs (${response.statusCode})";
         _handleApiError(response.statusCode);
       }
     } catch (e) {
       errorMessage = "Error fetching myJobs-rejected jobs : ${e.toString()}";
       log(errorMessage!);
       myJobsrejectedJobsList = [];
-    }finally {
+    } finally {
       isloading = false;
       notifyListeners();
     }
   }
 
-
- Future<http.Response> _makeMyJobsRejectedJobsRequest(String accessToken) async {
-
-      final url = Uri.parse("https://workwista.com/job/view/rejected-jobs/");
-      return await http.get(
-        url,
-        headers: {"Authorization": "Bearer $accessToken"},
-
-      );
-      
-    }
-
+  Future<http.Response> _makeMyJobsRejectedJobsRequest(
+      String accessToken) async {
+    final url = Uri.parse("https://workwista.com/job/view/rejected-jobs/");
+    return await http.get(
+      url,
+      headers: {"Authorization": "Bearer $accessToken"},
+    );
+  }
 
   Future<void> getMyJobsPostedJobs() async {
     isloading = true;
@@ -135,37 +253,33 @@ Future<void> getMyJobsRejectedJobs() async {
             myJobsPostedJobsModelFromJson(response.body);
         myJobspostedJobsList = myJobsPostedJobsModel.data ?? [];
         log("Successfully loaded myjobs-posted jobs");
-
-      }else{
-        errorMessage = "Failed to load myjobs-posted jobs (${response.statusCode})";
+        log(myJobspostedJobsList.toString());
+      } else {
+        errorMessage =
+            "Failed to load myjobs-posted jobs (${response.statusCode})";
         _handleApiError(response.statusCode);
       }
     } catch (e) {
       errorMessage = "Error fetching myJobs-posted jobs : ${e.toString()}";
       log(errorMessage!);
       myJobspostedJobsList = [];
-    }finally {
+    } finally {
       isloading = false;
       notifyListeners();
     }
   }
 
-    Future<http.Response> _makeMyJobsPostedJobsRequest(String accessToken) async {
+  Future<http.Response> _makeMyJobsPostedJobsRequest(String accessToken) async {
+    final url = Uri.parse("https://workwista.com/job/view/posted-jobs/");
+    return await http.get(
+      url,
+      headers: {"Authorization": "Bearer $accessToken"},
+    );
+  }
 
-      final url = Uri.parse("https://workwista.com/job/view/posted-jobs/");
-      return await http.get(
-        url,
-        headers: {"Authorization": "Bearer $accessToken"},
-
-      );
-      
-    }
-
-
- void _handleApiError(int statusCode) {
+  void _handleApiError(int statusCode) {
     log("API Error: $statusCode");
     myJobspostedJobsList = [];
     notifyListeners();
   }
-
 }

@@ -32,7 +32,7 @@ class JobsScreenController with ChangeNotifier {
   JobCompletionModel? completedJob;
   bool isCompletingJob = false;
 
-  Future<bool> completeJob(String jobId) async {
+  Future<bool> completeJob(String? jobId) async {
     isCompletingJob = true;
     notifyListeners();
 
@@ -71,7 +71,7 @@ class JobsScreenController with ChangeNotifier {
   }
 
   Future<http.Response> _makeCompleteJobRequest(
-      String jobId, String accessToken) async {
+      String? jobId, String accessToken) async {
     final url = Uri.parse('https://workwista.com/job/complete/$jobId/');
 
     // Prepare the body data
@@ -89,18 +89,18 @@ class JobsScreenController with ChangeNotifier {
     );
   }
 
-  String getJobButtonText(JobList job) {
+  String getJobButtonText(JobList jobList) {
     final now = DateTime.now();
 
     // Handle null job_date case
-    if (job.job_date == null) {
+    if (jobList.job!.jobDate == null) {
       return "No Date Set";
     }
 
     // Format dates for comparison (ignoring time)
     final currentDate = DateTime(now.year, now.month, now.day);
-    final jobDate = job.job_date!;
-    final jobStartDate = DateTime(jobDate.year, jobDate.month, jobDate.day);
+    final jobDate = jobList.job!.jobDate;
+    final jobStartDate = DateTime(jobDate!.year, jobDate.month, jobDate.day);
 
     // Debug log to see the dates being compared
     debugPrint("Current: ${DateFormat('yyyy-MM-dd').format(currentDate)}");
@@ -111,34 +111,34 @@ class JobsScreenController with ChangeNotifier {
     }
 
     // If today is the job date, and user is jobber → "Finish"
-    if (currentDate == jobStartDate && (job.isUserJobber ?? false)) {
+    if (currentDate == jobStartDate && (jobList.isUserJobber ?? false)) {
       return "Finish (Today)";
     }
 
     // Existing logic for after the job date
-    if (job.isUserJobber ?? false) {
-      return (job.isCompleted ?? false)
-          ? (job.isPaid ?? false ? "Paid" : "Waiting for Payment")
+    if (jobList.isUserJobber ?? false) {
+      return (jobList.isCompleted ?? false)
+          ? (jobList.isPaid ?? false ? "Paid" : "Waiting for Payment")
           : "Finish (${DateFormat('yyyy-MM-dd').format(jobStartDate)})";
     } else {
-      return (job.isCompleted ?? false)
-          ? (job.isPaid ?? false ? "Paid" : "Pay")
+      return (jobList.isCompleted ?? false)
+          ? (jobList.isPaid ?? false ? "Paid" : "Pay")
           : "Waiting for completion (${DateFormat('yyyy-MM-dd').format(jobStartDate)})";
     }
   }
 
-  bool isJobButtonEnabled(JobList job) {
+  bool isJobButtonEnabled(JobList jobList) {
     final now = DateTime.now();
 
     // Handle null job_date case
-    if (job.job_date == null) {
+    if (jobList.job!.jobDate == null) {
       return false; // Disable if no date is set
     }
 
     // Format dates for comparison (ignoring time)
     final currentDate = DateTime(now.year, now.month, now.day);
-    final jobDate = job.job_date!;
-    final jobStartDate = DateTime(jobDate.year, jobDate.month, jobDate.day);
+    final jobDate = jobList.job!.jobDate;
+    final jobStartDate = DateTime(jobDate!.year, jobDate.month, jobDate.day);
 
     // Debug log to see the dates being compared
     debugPrint("Current: ${DateFormat('yyyy-MM-dd').format(currentDate)}");
@@ -149,16 +149,16 @@ class JobsScreenController with ChangeNotifier {
     }
 
     // Enable if it's the job date and user is jobber
-    if (currentDate == jobStartDate && (job.isUserJobber ?? false)) {
+    if (currentDate == jobStartDate && (jobList.isUserJobber ?? false)) {
       return true;
     }
 
     // Existing logic for after job date
-    if (job.isUserJobber ?? false) {
-      return !(job.isCompleted ?? false); // Enable if job is not completed
+    if (jobList.isUserJobber ?? false) {
+      return !(jobList.isCompleted ?? false); // Enable if job is not completed
     } else {
-      return (job.isCompleted ?? false) &&
-          !(job.isPaid ?? false); // Enable if completed but unpaid
+      return (jobList.isCompleted ?? false) &&
+          !(jobList.isPaid ?? false); // Enable if completed but unpaid
     }
   }
 
