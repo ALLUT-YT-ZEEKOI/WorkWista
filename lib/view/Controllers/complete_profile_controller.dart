@@ -15,6 +15,7 @@ class CompleteProfileController with ChangeNotifier {
   Map<String, String?> fieldErrors = {
     "phone_number": null,
     "DOB": null,
+    "name": null,
   };
 
   void clearErrors() {
@@ -25,6 +26,8 @@ class CompleteProfileController with ChangeNotifier {
   Future<void> onUpdateProfile({
     required String phone_number,
     required String DOB,
+    required String name,
+    required String fcm_token,
     required BuildContext context,
   }) async {
     isLoading = true;
@@ -36,18 +39,21 @@ class CompleteProfileController with ChangeNotifier {
     String refreshToken = prefs.getString("refresh") ?? "";
 
     try {
-      var response = await _makeProfileUpdateRequest(accessToken, phone_number, DOB);
+      var response = await _makeProfileUpdateRequest(
+          accessToken, phone_number, DOB, name, fcm_token);
 
       if (response.statusCode == 401) {
         log("Access token expired, refreshing...");
         final newAccessToken = await _refreshToken(refreshToken);
         if (newAccessToken != null) {
-          response = await _makeProfileUpdateRequest(newAccessToken, phone_number, DOB);
+          response = await _makeProfileUpdateRequest(
+              newAccessToken, phone_number, DOB, name, fcm_token);
         }
       }
 
       if (response.statusCode == 200) {
-        UpdateProfileModel updateModel = updateProfileModelFromJson(response.body);
+        UpdateProfileModel updateModel =
+            updateProfileModelFromJson(response.body);
         log("Profile updated successfully");
 
         Navigator.pushReplacement(
@@ -81,7 +87,6 @@ class CompleteProfileController with ChangeNotifier {
             context: context,
             message: generalError.toString(),
             bgcolor: Colors.red);
-       
       }
     }
   }
@@ -90,13 +95,18 @@ class CompleteProfileController with ChangeNotifier {
     String token,
     String phone_number,
     String DOB,
-    
+    String name,
+    String fcm_token,
   ) async {
     final url = Uri.parse("https://workwista.com/complete/profile/");
     var request = http.MultipartRequest('POST', url);
+    log(name);
+    log(fcm_token.toString());
 
     request.fields['phone_number'] = phone_number;
     request.fields['DOB'] = DOB;
+    request.fields['name'] = name;
+    request.fields['fcm_token'] = fcm_token;
     request.headers['Authorization'] = 'Bearer $token';
 
     final streamedResponse = await request.send();
