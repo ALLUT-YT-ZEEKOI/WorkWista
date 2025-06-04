@@ -11,6 +11,7 @@ import 'package:workwista/view/Controllers/job_details_screen_controller.dart';
 import 'package:workwista/view/Controllers/jobs_screen_controller.dart';
 import 'package:workwista/view/Controllers/location_provider_controller.dart';
 import 'package:workwista/view/Controllers/login_screen_controller.dart';
+import 'package:workwista/view/Controllers/my_jobs_screen_controller.dart';
 import 'package:workwista/view/Controllers/profile_screen_controller.dart';
 import 'package:workwista/view/Controllers/register_screen_controller.dart';
 import 'package:workwista/view/loginScreens/splash_screen.dart';
@@ -101,7 +102,9 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(
           create: (context) => CompleteProfileController(),
         ),
-
+ChangeNotifierProvider(
+          create: (context) => MyJobsScreenController(),
+        ),
       ],
       child: ScreenUtilInit(
         designSize: Size(393, 852),

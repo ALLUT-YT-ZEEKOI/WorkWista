@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
-import 'package:intl/intl.dart';
 
 // Import your controllers and models
 import 'package:workwista/view/Controllers/jobs_screen_controller.dart';
+import 'package:workwista/view/Controllers/my_jobs_screen_controller.dart';
+import 'package:workwista/view/Model/my_jobs_posted_jobs_model.dart';
+import 'package:workwista/view/Model/my_jobs_rejected_jobs_model.dart';
 import 'package:workwista/view/Model/posted_jobs_model.dart';
 
 class MyJobsScreen extends StatefulWidget {
@@ -18,11 +20,12 @@ class _MyJobsScreenState extends State<MyJobsScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
   int _currentTabIndex = 0;
+
   final List<String> _tabs = [
-    'Pending',
-    'Rejected',
-    'Completed',
-    'Posted Jobs'
+    'Posted', // index 0
+    'Completed', // index 1
+    'Pending', // index 2
+    'Rejected' // index 3
   ];
 
   @override
@@ -36,6 +39,9 @@ class _MyJobsScreenState extends State<MyJobsScreen>
       final jobsController = context.read<JobsScreenController>();
       jobsController.getMyJobs();
       jobsController.getPostedJobs(); // Load posted jobs initially
+      final myjobsScreenController = context.read<MyJobsScreenController>();
+      myjobsScreenController.getMyJobsPostedJobs();
+      myjobsScreenController.getMyJobsRejectedJobs();
     });
   }
 
@@ -50,21 +56,22 @@ class _MyJobsScreenState extends State<MyJobsScreen>
 
   void _loadDataForCurrentTab() {
     final jobsController = context.read<JobsScreenController>();
-
+    final myjobsScreenController = context.read<MyJobsScreenController>();
     switch (_currentTabIndex) {
-      case 0: // Pending
-        jobsController.getMyJobs();
+      case 0: // Posted
+        myjobsScreenController.getMyJobsPostedJobs();
         break;
-      case 1: // Rejected
-        jobsController.getPostedJobs();
+      case 1: // Completed
+
         // Implement if needed
         break;
-      case 2: // Completed
-        jobsController.getPostedJobs();
+      case 2: // Pending
+
         // Implement if needed
         break;
-      case 3: // Posted Jobs
-        jobsController.getPostedJobs();
+      case 3: // Rejected
+        myjobsScreenController.getMyJobsRejectedJobs();
+
         break;
     }
   }
@@ -74,7 +81,7 @@ class _MyJobsScreenState extends State<MyJobsScreen>
     _tabController.dispose();
     super.dispose();
   }
-                 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -155,19 +162,13 @@ class _MyJobsScreenState extends State<MyJobsScreen>
             child: IndexedStack(
               index: _currentTabIndex,
               children: [
-                // Pending Tab
-                Consumer<JobsScreenController>(
-                  builder: (context, jobsController, child) {
-                    return _buildPendingTab(jobsController);
+                // Posted Tab
+                    Consumer<MyJobsScreenController>(
+                  builder: (context, MyJobsScreenController, child) {
+                    return _buildPostedJobsTab(MyJobsScreenController);
                   },
                 ),
-
-                // Rejected Tab
-                Consumer<JobsScreenController>(
-                  builder: (context, jobsController, child) {
-                    return _buildRejectedTab(jobsController);
-                  },
-                ),
+              
 
                 // Completed Tab
                 Consumer<JobsScreenController>(
@@ -176,12 +177,21 @@ class _MyJobsScreenState extends State<MyJobsScreen>
                   },
                 ),
 
-                // Posted Jobs Tab
+                // Pending Tab
                 Consumer<JobsScreenController>(
                   builder: (context, jobsController, child) {
-                    return _buildPostedJobsTab(jobsController);
+                    return _buildPendingTab(jobsController);
                   },
                 ),
+                
+
+                // Rejected Jobs Tab
+                Consumer<MyJobsScreenController>(
+                  builder: (context, MyJobsScreenController, child) {
+                    return _buildRejectedTab(MyJobsScreenController);
+                  },
+                ),
+              
               ],
             ),
           ),
@@ -220,26 +230,26 @@ class _MyJobsScreenState extends State<MyJobsScreen>
     );
   }
 
-  Widget _buildRejectedTab(JobsScreenController controller) {
+  Widget _buildRejectedTab(MyJobsScreenController controller) {
     if (controller.isloading) {
       return _buildLoadingWidget();
     }
 
-    if (controller.postedJobsList.isEmpty) {
+    if (controller.myJobsrejectedJobsList.isEmpty) {
       return _buildEmptyState(
         icon: Icons.work_outline,
-        title: 'No Posted Jobs',
-        subtitle: 'You haven\'t posted any jobs yet.',
+        title: 'No Rejected Jobs',
+        subtitle: 'No rejected jobs found.',
       );
     }
 
     return ListView.builder(
       padding: EdgeInsets.symmetric(horizontal: 10, vertical: 12),
-      itemCount: controller.postedJobsList.length,
+      itemCount: controller.myJobsrejectedJobsList.length,
       itemBuilder: (context, index) {
-        final postedJob = controller.postedJobsList[index];
-        return _buildJobCard(
-          postedJob: postedJob,
+        final MyJobsRejectedJobs = controller.myJobsrejectedJobsList[index];
+        return _buildMyJobsRejectedJobsCard(
+          MyJobsRejectedJob: MyJobsRejectedJobs,
           statusColor: Colors.green,
           // statusText: job.isPaid ?? false ? 'Paid' : 'Completed',
           onTap: () {
@@ -280,8 +290,8 @@ class _MyJobsScreenState extends State<MyJobsScreen>
     );
   }
 
-  Widget _buildPostedJobsTab(JobsScreenController controller) {
-    if (controller.postedJobsList.isEmpty) {
+  Widget _buildPostedJobsTab(MyJobsScreenController controller) {
+    if (controller.myJobspostedJobsList.isEmpty) {
       return _buildEmptyState(
         icon: Icons.work_outline,
         title: 'No Posted Jobs',
@@ -291,17 +301,812 @@ class _MyJobsScreenState extends State<MyJobsScreen>
 
     return ListView.builder(
       padding: EdgeInsets.symmetric(horizontal: 10, vertical: 12),
-      itemCount: controller.postedJobsList.length,
+      itemCount: controller.myJobspostedJobsList.length,
       itemBuilder: (context, index) {
-        final postedJob = controller.postedJobsList[index];
-        return _buildJobCard(
-          postedJob: postedJob,
+        final MyJobsPostedJob = controller.myJobspostedJobsList[index];
+        return _buildMyJobsPostedJobsCard(
+          MyJobsPostedJob: MyJobsPostedJob,
           statusColor: Colors.green,
           onTap: () {
             // Handle tap on posted job
           },
         );
       },
+    );
+  }
+
+  Widget _buildMyJobsRejectedJobsCard({
+    required MyJobsRejectedItem MyJobsRejectedJob,
+    required Color statusColor,
+    // required String statusText,
+    required VoidCallback onTap,
+  }) {
+    return Container(
+      height: 137.h,
+      width: 373.w,
+      margin: EdgeInsets.only(bottom: 10.h),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        border: Border.all(color: Color(0xffDAE1E7), width: 1.5.w),
+        borderRadius: BorderRadius.circular(15.w),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Align(
+            alignment: Alignment.topCenter,
+            child: Padding(
+              padding: EdgeInsets.only(
+                left: 4.w,
+                right: 4.w,
+                top: 5.h,
+              ),
+              child: Container(
+                width: 373.w,
+                height: 122.h,
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    color: Color(0xff2B6699),
+                    width: 1.w,
+                  ),
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(12.w),
+                ),
+                child: Column(
+                  children: [
+                    Padding(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 9.w, vertical: 11.h),
+                      child: Row(
+                        children: [
+                          CircleAvatar(
+                            radius: 24.w,
+                            foregroundImage: NetworkImage(
+                                'https://images.pexels.com/photos/614810/pexels-photo-614810.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2'),
+                            backgroundColor: Colors.red,
+                          ),
+                          SizedBox(width: 4.w),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Flexible(
+                                      child: Text(
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        MyJobsRejectedJob.jobTitle ??
+                                            "No title",
+                                        style: TextStyle(
+                                            fontSize: 18.sp,
+                                            fontWeight: FontWeight.w500),
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      width: 15.w,
+                                    ),
+                                    // RichText(
+                                    //   text: TextSpan(
+                                    //     children: [
+                                    //       TextSpan(
+                                    //         text: '₹',
+                                    //         style: TextStyle(
+                                    //           fontWeight: FontWeight.w500,
+                                    //           fontSize: 16.sp,
+                                    //           height: 1.0,
+                                    //           letterSpacing: 0.0,
+                                    //           color: Colors.black,
+                                    //         ),
+                                    //       ),
+                                    //       TextSpan(
+                                    //         text: MyJobsRejectedJob.salaryFrom != null
+                                    //             ? double.tryParse(MyJobsPostedJob
+                                    //                         .salaryFrom!)
+                                    //                     ?.toInt()
+                                    //                     .toString() ??
+                                    //                 "0"
+                                    //             : "Salary not specified",
+                                    //         style: TextStyle(
+                                    //           fontWeight: FontWeight.w500,
+                                    //           fontSize: 16.sp,
+                                    //           height: 1.0,
+                                    //           letterSpacing: 0.0,
+                                    //           color: Colors.black,
+                                    //         ),
+                                    //       ),
+                                    //       TextSpan(
+                                    //         text: ' - ',
+                                    //         style: TextStyle(
+                                    //           fontWeight: FontWeight.w500,
+                                    //           fontSize: 16.sp,
+                                    //           height: 1.0,
+                                    //           letterSpacing: 0.0,
+                                    //           color: Colors.black,
+                                    //         ),
+                                    //       ),
+                                    //       TextSpan(
+                                    //         text: MyJobsPostedJob.salaryTo != null
+                                    //             ? double.tryParse(MyJobsPostedJob
+                                    //                         .salaryTo!)
+                                    //                     ?.toInt()
+                                    //                     .toString() ??
+                                    //                 "0"
+                                    //             : "Salary not specified",
+                                    //         style: TextStyle(
+                                    //           fontWeight: FontWeight.w500,
+                                    //           fontSize: 16.sp,
+                                    //           height: 1.0,
+                                    //           letterSpacing: 0.0,
+                                    //           color: Colors.black,
+                                    //         ),
+                                    //       ),
+                                    //       TextSpan(
+                                    //         text: '/',
+                                    //         style: TextStyle(
+                                    //           fontWeight: FontWeight.w500,
+                                    //           fontSize: 16.sp,
+                                    //           height: 1.0,
+                                    //           letterSpacing: 0.0,
+                                    //           color: Colors.black,
+                                    //         ),
+                                    //       ),
+                                    //       TextSpan(
+                                    //         text: 'Day',
+                                    //         style: TextStyle(
+                                    //           fontWeight: FontWeight.w500,
+                                    //           fontSize: 16.sp,
+                                    //           height: 1.5,
+                                    //           letterSpacing: 0.0,
+                                    //           color: Colors.black,
+                                    //         ),
+                                    //       ),
+                                    //     ],
+                                    //   ),
+                                    // ),
+                                  ],
+                                ),
+                                SizedBox(height: 0.h),
+                                Row(
+                                  children: [
+                                    Text(
+                                      "Lulu Hyoermarket",
+                                      style: TextStyle(
+                                        fontSize: 12.sp,
+                                        fontWeight: FontWeight.w400,
+                                        color: Colors.black,
+                                      ),
+                                    ),
+                                    Spacer(),
+                                    Container(
+                                      height: 22.h,
+                                      width: 110.w,
+                                      decoration: BoxDecoration(
+                                        color: Color(0xffFFCED3),
+                                        borderRadius: BorderRadius.circular(7),
+                                      ),
+                                      child: Center(
+                                        child: Text(
+                                          "Only for 2 days",
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.w400,
+                                              color: Color(0xff8C1823),
+                                              fontSize: 12.sp),
+                                        ),
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ],
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                    Padding(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 13.w, vertical: 8.h),
+                      child: Container(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: Row(
+                                children: [
+                                  Container(
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: 5.w, vertical: 3.h),
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius:
+                                            BorderRadius.circular(9.w),
+                                        border: Border.all(
+                                            color: Color(0xffCED7DE)),
+                                      ),
+                                      child: Row(
+                                        children: [
+                                          // RichText(
+                                          //   text: TextSpan(
+                                          //     children: [
+                                          //       TextSpan(
+                                          //         text: '₹',
+                                          //         style: TextStyle(
+                                          //           fontWeight: FontWeight.w400,
+                                          //           fontSize: 12.sp,
+                                          //           height: 1.0,
+                                          //           letterSpacing: 0.0,
+                                          //           color: Colors.black,
+                                          //         ),
+                                          //       ),
+                                          //       TextSpan(
+                                          //         text: MyJobsPostedJob.salaryFrom !=
+                                          //                 null
+                                          //             ? double.tryParse(MyJobsPostedJob
+                                          //                         .salaryTo!)
+                                          //                     ?.toInt()
+                                          //                     .toString() ??
+                                          //                 "0"
+                                          //             : "Salary not specified",
+                                          //         style: TextStyle(
+                                          //           fontWeight: FontWeight.w400,
+                                          //           fontSize: 12.sp,
+                                          //           height: 1.0,
+                                          //           letterSpacing: 0.0,
+                                          //           color: Colors.black,
+                                          //         ),
+                                          //       ),
+                                          //       TextSpan(
+                                          //         text: ' - ',
+                                          //         style: TextStyle(
+                                          //           fontWeight: FontWeight.w400,
+                                          //           fontSize: 12.sp,
+                                          //           height: 1.0,
+                                          //           letterSpacing: 0.0,
+                                          //           color: Colors.black,
+                                          //         ),
+                                          //       ),
+                                          //       TextSpan(
+                                          //         text: MyJobsPostedJob.salaryTo !=
+                                          //                 null
+                                          //             ? double.tryParse(MyJobsPostedJob
+                                          //                         .salaryTo!)
+                                          //                     ?.toInt()
+                                          //                     .toString() ??
+                                          //                 "0"
+                                          //             : "Salary not specified",
+                                          //         style: TextStyle(
+                                          //           fontWeight: FontWeight.w400,
+                                          //           fontSize: 12.sp,
+                                          //           height: 1.0,
+                                          //           letterSpacing: 0.0,
+                                          //           color: Colors.black,
+                                          //         ),
+                                          //       ),
+                                          //       TextSpan(
+                                          //         text: ' Per ',
+                                          //         style: TextStyle(
+                                          //           fontWeight: FontWeight.w400,
+                                          //           fontSize: 12.sp,
+                                          //           height: 1.0,
+                                          //           letterSpacing: 0.0,
+                                          //           color: Colors.black,
+                                          //         ),
+                                          //       ),
+                                          //       TextSpan(
+                                          //         text: 'Day',
+                                          //         style: TextStyle(
+                                          //           fontWeight: FontWeight.w400,
+                                          //           fontSize: 12.sp,
+                                          //           height: 1.5,
+                                          //           letterSpacing: 0.0,
+                                          //           color: Colors.black,
+                                          //         ),
+                                          //       ),
+                                          //     ],
+                                          //   ),
+                                          // ),
+                                        ],
+                                      )),
+                                  Text(" • ",
+                                      style: TextStyle(
+                                          fontSize: 12.sp,
+                                          color: Color(0xff0A0A0B))),
+                                  Container(
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: 5.w, vertical: 3.h),
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(9.w),
+                                      border:
+                                          Border.all(color: Color(0xffCED7DE)),
+                                    ),
+                                    child: Row(
+                                      children: [
+                                        Icon(
+                                          Icons.access_time,
+                                          size: 16.w,
+                                          color: Color(0xff0A0A0B),
+                                        ),
+                                        SizedBox(width: 4.w),
+                                        Text(
+                                          "Full-Time",
+                                          style: TextStyle(
+                                              color: Color(0xff0A0A0B),
+                                              fontSize: 12.sp,
+                                              fontWeight: FontWeight.w400),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  Text(" • ",
+                                      style: TextStyle(
+                                          fontSize: 12.sp,
+                                          color: Color(0xff0A0A0B))),
+                                  Container(
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: 5.w, vertical: 3.h),
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(9.w),
+                                      border:
+                                          Border.all(color: Color(0xffCED7DE)),
+                                    ),
+                                    child: Row(
+                                      children: [
+                                        Icon(
+                                          Icons.location_on,
+                                          size: 16.w,
+                                          color: Color(0xff0A0A0B),
+                                        ),
+                                        SizedBox(width: 4.w),
+                                        Text(
+                                          "Onsite",
+                                          style: TextStyle(
+                                              color: Color(0xff0A0A0B),
+                                              fontSize: 12.sp,
+                                              fontWeight: FontWeight.w400),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: 5.w,
+                                  ),
+                                  Container(
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: 5.w, vertical: 3.h),
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(9.w),
+                                      border:
+                                          Border.all(color: Color(0xffCED7DE)),
+                                    ),
+                                    child: Text(
+                                      "+5",
+                                      style: TextStyle(
+                                          color: Color(0xff0A0A0B),
+                                          fontSize: 12.sp,
+                                          fontWeight: FontWeight.w400),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildMyJobsPostedJobsCard({
+    required MyJobsPostedItem MyJobsPostedJob,
+    required Color statusColor,
+    // required String statusText,
+    required VoidCallback onTap,
+  }) {
+    return Container(
+      height: 137.h,
+      width: 373.w,
+      margin: EdgeInsets.only(bottom: 10.h),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        border: Border.all(color: Color(0xffDAE1E7), width: 1.5.w),
+        borderRadius: BorderRadius.circular(15.w),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Align(
+            alignment: Alignment.topCenter,
+            child: Padding(
+              padding: EdgeInsets.only(
+                left: 4.w,
+                right: 4.w,
+                top: 5.h,
+              ),
+              child: Container(
+                width: 373.w,
+                height: 122.h,
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    color: Color(0xff2B6699),
+                    width: 1.w,
+                  ),
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(12.w),
+                ),
+                child: Column(
+                  children: [
+                    Padding(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 9.w, vertical: 11.h),
+                      child: Row(
+                        children: [
+                          CircleAvatar(
+                            radius: 24.w,
+                            foregroundImage: NetworkImage(
+                                'https://images.pexels.com/photos/614810/pexels-photo-614810.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2'),
+                            backgroundColor: Colors.red,
+                          ),
+                          SizedBox(width: 4.w),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Flexible(
+                                      child: Text(
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        MyJobsPostedJob.title ?? "No title",
+                                        style: TextStyle(
+                                            fontSize: 18.sp,
+                                            fontWeight: FontWeight.w500),
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      width: 15.w,
+                                    ),
+                                    RichText(
+                                      text: TextSpan(
+                                        children: [
+                                          TextSpan(
+                                            text: '₹',
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.w500,
+                                              fontSize: 16.sp,
+                                              height: 1.0,
+                                              letterSpacing: 0.0,
+                                              color: Colors.black,
+                                            ),
+                                          ),
+                                          TextSpan(
+                                            text: MyJobsPostedJob.salaryFrom !=
+                                                    null
+                                                ? double.tryParse(
+                                                            MyJobsPostedJob
+                                                                .salaryFrom!)
+                                                        ?.toInt()
+                                                        .toString() ??
+                                                    "0"
+                                                : "Salary not specified",
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.w500,
+                                              fontSize: 16.sp,
+                                              height: 1.0,
+                                              letterSpacing: 0.0,
+                                              color: Colors.black,
+                                            ),
+                                          ),
+                                          TextSpan(
+                                            text: ' - ',
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.w500,
+                                              fontSize: 16.sp,
+                                              height: 1.0,
+                                              letterSpacing: 0.0,
+                                              color: Colors.black,
+                                            ),
+                                          ),
+                                          TextSpan(
+                                            text:
+                                                MyJobsPostedJob.salaryTo != null
+                                                    ? double.tryParse(
+                                                                MyJobsPostedJob
+                                                                    .salaryTo!)
+                                                            ?.toInt()
+                                                            .toString() ??
+                                                        "0"
+                                                    : "Salary not specified",
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.w500,
+                                              fontSize: 16.sp,
+                                              height: 1.0,
+                                              letterSpacing: 0.0,
+                                              color: Colors.black,
+                                            ),
+                                          ),
+                                          TextSpan(
+                                            text: '/',
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.w500,
+                                              fontSize: 16.sp,
+                                              height: 1.0,
+                                              letterSpacing: 0.0,
+                                              color: Colors.black,
+                                            ),
+                                          ),
+                                          TextSpan(
+                                            text: 'Day',
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.w500,
+                                              fontSize: 16.sp,
+                                              height: 1.5,
+                                              letterSpacing: 0.0,
+                                              color: Colors.black,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(height: 0.h),
+                                Row(
+                                  children: [
+                                    Text(
+                                      "Lulu Hyoermarket",
+                                      style: TextStyle(
+                                        fontSize: 12.sp,
+                                        fontWeight: FontWeight.w400,
+                                        color: Colors.black,
+                                      ),
+                                    ),
+                                    Spacer(),
+                                    Container(
+                                      height: 22.h,
+                                      width: 110.w,
+                                      decoration: BoxDecoration(
+                                        color: Color(0xffFFCED3),
+                                        borderRadius: BorderRadius.circular(7),
+                                      ),
+                                      child: Center(
+                                        child: Text(
+                                          "Only for 2 days",
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.w400,
+                                              color: Color(0xff8C1823),
+                                              fontSize: 12.sp),
+                                        ),
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ],
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                    Padding(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 13.w, vertical: 8.h),
+                      child: Container(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: Row(
+                                children: [
+                                  Container(
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: 5.w, vertical: 3.h),
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius:
+                                            BorderRadius.circular(9.w),
+                                        border: Border.all(
+                                            color: Color(0xffCED7DE)),
+                                      ),
+                                      child: Row(
+                                        children: [
+                                          RichText(
+                                            text: TextSpan(
+                                              children: [
+                                                TextSpan(
+                                                  text: '₹',
+                                                  style: TextStyle(
+                                                    fontWeight: FontWeight.w400,
+                                                    fontSize: 12.sp,
+                                                    height: 1.0,
+                                                    letterSpacing: 0.0,
+                                                    color: Colors.black,
+                                                  ),
+                                                ),
+                                                TextSpan(
+                                                  text: MyJobsPostedJob
+                                                              .salaryFrom !=
+                                                          null
+                                                      ? double.tryParse(
+                                                                  MyJobsPostedJob
+                                                                      .salaryTo!)
+                                                              ?.toInt()
+                                                              .toString() ??
+                                                          "0"
+                                                      : "Salary not specified",
+                                                  style: TextStyle(
+                                                    fontWeight: FontWeight.w400,
+                                                    fontSize: 12.sp,
+                                                    height: 1.0,
+                                                    letterSpacing: 0.0,
+                                                    color: Colors.black,
+                                                  ),
+                                                ),
+                                                TextSpan(
+                                                  text: ' - ',
+                                                  style: TextStyle(
+                                                    fontWeight: FontWeight.w400,
+                                                    fontSize: 12.sp,
+                                                    height: 1.0,
+                                                    letterSpacing: 0.0,
+                                                    color: Colors.black,
+                                                  ),
+                                                ),
+                                                TextSpan(
+                                                  text: MyJobsPostedJob
+                                                              .salaryTo !=
+                                                          null
+                                                      ? double.tryParse(
+                                                                  MyJobsPostedJob
+                                                                      .salaryTo!)
+                                                              ?.toInt()
+                                                              .toString() ??
+                                                          "0"
+                                                      : "Salary not specified",
+                                                  style: TextStyle(
+                                                    fontWeight: FontWeight.w400,
+                                                    fontSize: 12.sp,
+                                                    height: 1.0,
+                                                    letterSpacing: 0.0,
+                                                    color: Colors.black,
+                                                  ),
+                                                ),
+                                                TextSpan(
+                                                  text: ' Per ',
+                                                  style: TextStyle(
+                                                    fontWeight: FontWeight.w400,
+                                                    fontSize: 12.sp,
+                                                    height: 1.0,
+                                                    letterSpacing: 0.0,
+                                                    color: Colors.black,
+                                                  ),
+                                                ),
+                                                TextSpan(
+                                                  text: 'Day',
+                                                  style: TextStyle(
+                                                    fontWeight: FontWeight.w400,
+                                                    fontSize: 12.sp,
+                                                    height: 1.5,
+                                                    letterSpacing: 0.0,
+                                                    color: Colors.black,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      )),
+                                  Text(" • ",
+                                      style: TextStyle(
+                                          fontSize: 12.sp,
+                                          color: Color(0xff0A0A0B))),
+                                  Container(
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: 5.w, vertical: 3.h),
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(9.w),
+                                      border:
+                                          Border.all(color: Color(0xffCED7DE)),
+                                    ),
+                                    child: Row(
+                                      children: [
+                                        Icon(
+                                          Icons.access_time,
+                                          size: 16.w,
+                                          color: Color(0xff0A0A0B),
+                                        ),
+                                        SizedBox(width: 4.w),
+                                        Text(
+                                          "Full-Time",
+                                          style: TextStyle(
+                                              color: Color(0xff0A0A0B),
+                                              fontSize: 12.sp,
+                                              fontWeight: FontWeight.w400),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  Text(" • ",
+                                      style: TextStyle(
+                                          fontSize: 12.sp,
+                                          color: Color(0xff0A0A0B))),
+                                  Container(
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: 5.w, vertical: 3.h),
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(9.w),
+                                      border:
+                                          Border.all(color: Color(0xffCED7DE)),
+                                    ),
+                                    child: Row(
+                                      children: [
+                                        Icon(
+                                          Icons.location_on,
+                                          size: 16.w,
+                                          color: Color(0xff0A0A0B),
+                                        ),
+                                        SizedBox(width: 4.w),
+                                        Text(
+                                          "Onsite",
+                                          style: TextStyle(
+                                              color: Color(0xff0A0A0B),
+                                              fontSize: 12.sp,
+                                              fontWeight: FontWeight.w400),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: 5.w,
+                                  ),
+                                  Container(
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: 5.w, vertical: 3.h),
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(9.w),
+                                      border:
+                                          Border.all(color: Color(0xffCED7DE)),
+                                    ),
+                                    child: Text(
+                                      "+5",
+                                      style: TextStyle(
+                                          color: Color(0xff0A0A0B),
+                                          fontSize: 12.sp,
+                                          fontWeight: FontWeight.w400),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
