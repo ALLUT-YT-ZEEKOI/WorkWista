@@ -242,6 +242,7 @@ class _JobRequestsScreenState extends State<JobRequestsScreen> {
                               final bool? confirm = await showDialog<bool>(
                                 context: context,
                                 builder: (ctx) => AlertDialog(
+                                  backgroundColor: Color(0xffffffff),
                                   shape: RoundedRectangleBorder(
                                       borderRadius:
                                           BorderRadius.circular(12.r)),
@@ -289,7 +290,7 @@ class _JobRequestsScreenState extends State<JobRequestsScreen> {
                                                 successMessage:
                                                     "Job closed Successfully",
                                               )),
-                                              (Route<dynamic> route) => false);
+                                      (Route<dynamic> route) => false);
                                 }
                               }
                             },
@@ -315,6 +316,7 @@ class _JobRequestsScreenState extends State<JobRequestsScreen> {
                               final bool? confirm = await showDialog<bool>(
                                 context: context,
                                 builder: (ctx) => AlertDialog(
+                                  backgroundColor: Color(0xffffffff),
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(12.r),
                                   ),
@@ -364,7 +366,8 @@ class _JobRequestsScreenState extends State<JobRequestsScreen> {
                                         builder: (_) => CustomBottomNavbar(
                                               successMessage:
                                                   "Job Deleted Successfully",
-                                            )),(Route<dynamic> route)=> false,
+                                            )),
+                                    (Route<dynamic> route) => false,
                                   );
                                 } else {
                                   ScaffoldMessenger.of(context).showSnackBar(

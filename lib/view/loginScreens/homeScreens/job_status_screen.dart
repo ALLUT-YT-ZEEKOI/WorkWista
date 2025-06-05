@@ -461,17 +461,7 @@ class _JobStatusScreenState extends State<JobStatusScreen> {
                             color: Colors.grey[600]),
                       ),
                       SizedBox(height: 4.h),
-                      Text(
-                        jobList.job!.jobDate != null
-                            ? DateFormat('yyyy-MM-dd')
-                                .format(jobList.job!.jobDate!)
-                            : "No date",
-                        style: TextStyle(
-                          fontSize: 10.sp,
-                          fontWeight: FontWeight.w300,
-                          color: Colors.grey[600],
-                        ),
-                      ),
+                     
                     ],
                   ),
                   Spacer(),
@@ -541,24 +531,8 @@ class _JobStatusScreenState extends State<JobStatusScreen> {
                     ),
                 ],
               ),
-              SizedBox(height: 14.h),
-              Container(
-                width: ResponsiveHelper.width(double.infinity, context),
-                height: 7.h,
-                decoration: BoxDecoration(
-                  color: Colors.blue[100],
-                  borderRadius: BorderRadius.circular(23.r),
-                ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(23.r),
-                  child: LinearProgressIndicator(
-                    value: jobList.isCompleted ?? false ? 1.0 : 0.3,
-                    backgroundColor: Colors.transparent,
-                    valueColor: AlwaysStoppedAnimation<Color>(
-                        ColorConstants.ProgressBarColor),
-                  ),
-                ),
-              ),
+             
+            
               SizedBox(height: 2.h),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,

@@ -93,8 +93,9 @@ class AddJobController with ChangeNotifier {
       notifyListeners();
       if (errorMessage != null && context.mounted) {
         AppUtils.showSnackbar(
-            context: context, message: errorMessage.toString(), bgcolor: Colors.red);
-     
+            context: context,
+            message: errorMessage.toString(),
+            bgcolor: Colors.red);
       }
     }
   }

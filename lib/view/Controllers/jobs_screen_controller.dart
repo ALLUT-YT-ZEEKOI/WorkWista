@@ -667,28 +667,55 @@ class JobsScreenController with ChangeNotifier {
     }
   }
 
-  Future<void> getJobs() async {
-    isloading = true;
-    notifyListeners();
+ Future<void> getJobs() async {
+  isloading = true;
+  errorMessage = null;
+  notifyListeners();
 
-    final url = Uri.parse("https://workwista.com/job/view/joblist/");
+  try {
+    final prefs = await SharedPreferences.getInstance();
+    String accessToken = prefs.getString("access") ?? "";
 
-    try {
-      final response = await http.get(url);
-      if (response.statusCode == 200) {
-        final AllJobModel jobModel = allJobModelFromJson(response.body);
-        jobsList = jobModel.data ?? []; // update jobsList to List<Datum>
-      } else {
-        _handleApiError(response.statusCode);
+    // First attempt with current access token
+    var response = await _makeJobsRequest(accessToken);
+
+    // If unauthorized (401), try refreshing token
+    if (response.statusCode == 401) {
+      log("Access token expired, attempting refresh...");
+      final refreshToken = prefs.getString("refresh") ?? "";
+
+      final newAccessToken = await _refreshToken(refreshToken);
+      if (newAccessToken != null) {
+        response = await _makeJobsRequest(newAccessToken);
       }
-    } catch (e) {
-      log("Error fetching jobs: $e");
-      jobsList = [];
-    } finally {
-      isloading = false;
-      notifyListeners();
     }
+
+    // Handle response
+    if (response.statusCode == 200) {
+      final AllJobModel jobModel = allJobModelFromJson(response.body);
+      jobsList = jobModel.data ?? [];
+      log("Successfully loaded all jobs");
+    } else {
+      errorMessage = "Failed to load jobs (${response.statusCode})";
+      _handleApiError(response.statusCode);
+    }
+  } catch (e) {
+    errorMessage = "Error fetching jobs: ${e.toString()}";
+    log(errorMessage!);
+    jobsList = [];
+  } finally {
+    isloading = false;
+    notifyListeners();
   }
+}
+
+Future<http.Response> _makeJobsRequest(String accessToken) async {
+  final url = Uri.parse("https://workwista.com/job/view/joblist/");
+  return await http.get(
+    url,
+    headers: {"Authorization": "Bearer $accessToken"},
+  );
+}
 
   void _handleApiError(int statusCode) {
     log("API Error: $statusCode");
