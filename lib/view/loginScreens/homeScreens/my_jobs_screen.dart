@@ -1713,7 +1713,7 @@ class _MyJobsScreenState extends State<MyJobsScreen>
                                 Row(
                                   children: [
                                     Text(
-                                      MyJobsPostedJob. ?? "",
+                                      MyJobsPostedJob.job_recruter ?? "",
                                       style: TextStyle(
                                         fontSize: 12.sp,
                                         fontWeight: FontWeight.w400,
@@ -1732,7 +1732,7 @@ class _MyJobsScreenState extends State<MyJobsScreen>
                                             fontSize: 12.sp,
                                             color: Color(0xffB6C3CD))),
                                     Text(
-                                      MyJobsPendingJob.job!.manualLocation ??
+                                      MyJobsPostedJob.manualLocation ??
                                           "",
                                       style: TextStyle(
                                         fontSize: 12.sp,
@@ -1790,7 +1790,7 @@ class _MyJobsScreenState extends State<MyJobsScreen>
                                                           null
                                                       ? double.tryParse(
                                                                   MyJobsPostedJob
-                                                                      .salaryTo!)
+                                                                      .salaryFrom!)
                                                               ?.toInt()
                                                               .toString() ??
                                                           "0"
@@ -1879,7 +1879,7 @@ class _MyJobsScreenState extends State<MyJobsScreen>
                                         ),
                                         SizedBox(width: 4.w),
                                         Text(
-                                          "Full-Time",
+                                          MyJobsPostedJob.jobType!.title ?? "",
                                           style: TextStyle(
                                               color: Color(0xff0A0A0B),
                                               fontSize: 12.sp,

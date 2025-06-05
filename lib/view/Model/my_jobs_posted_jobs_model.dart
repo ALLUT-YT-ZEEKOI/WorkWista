@@ -19,16 +19,20 @@ class MyJobsPostedJobsModel {
     this.data,
   });
 
-  factory MyJobsPostedJobsModel.fromJson(Map<String, dynamic> json) => MyJobsPostedJobsModel(
+  factory MyJobsPostedJobsModel.fromJson(Map<String, dynamic> json) =>
+      MyJobsPostedJobsModel(
         status: json["status"],
         data: json["data"] == null
             ? []
-            : List<MyJobsPostedItem>.from(json["data"].map((x) => MyJobsPostedItem.fromJson(x))),
+            : List<MyJobsPostedItem>.from(
+                json["data"].map((x) => MyJobsPostedItem.fromJson(x))),
       );
 
   Map<String, dynamic> toJson() => {
         "status": status,
-        "data": data == null ? [] : List<dynamic>.from(data!.map((x) => x.toJson())),
+        "data": data == null
+            ? []
+            : List<dynamic>.from(data!.map((x) => x.toJson())),
       };
 }
 
@@ -42,6 +46,7 @@ class MyJobsPostedItem {
   DateTime? jobCreated;
   JobType? jobType;
   String? manualLocation;
+  String? job_recruter;
 
   MyJobsPostedItem({
     this.id,
@@ -53,9 +58,11 @@ class MyJobsPostedItem {
     this.jobCreated,
     this.jobType,
     this.manualLocation,
+    this.job_recruter,
   });
 
-  factory MyJobsPostedItem.fromJson(Map<String, dynamic> json) => MyJobsPostedItem(
+  factory MyJobsPostedItem.fromJson(Map<String, dynamic> json) =>
+      MyJobsPostedItem(
         id: json["id"],
         title: json["title"],
         jobCategory: json["job_category"] == null
@@ -72,6 +79,7 @@ class MyJobsPostedItem {
             ? null
             : JobType.fromJson(json["job_type"]),
         manualLocation: json["manual_location"],
+        job_recruter:json["job_recruter"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -84,6 +92,7 @@ class MyJobsPostedItem {
         "job_created": jobCreated?.toIso8601String(),
         "job_type": jobType?.toJson(),
         "manual_location": manualLocation,
+        "job_recruter":job_recruter,
       };
 }
 
