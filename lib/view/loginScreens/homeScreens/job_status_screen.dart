@@ -27,37 +27,6 @@ class _JobStatusScreenState extends State<JobStatusScreen> {
   int _currentPage = 0;
   final DateTime currentdate = DateTime.now();
   DateTime JobDate = DateTime(2025, 05, 29);
-  void _showNoRequestsDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15),
-          ),
-          title: Row(
-            children: [
-              Icon(Icons.info_outline, color: Colors.blue),
-              SizedBox(width: 10.w),
-              Text("No Requests Yet"),
-            ],
-          ),
-          content: Text(
-            "This job hasn't received any applications yet. Check back later!",
-            style: TextStyle(fontSize: 16.sp),
-          ),
-          actions: [
-            TextButton(
-              child: Text("OK", style: TextStyle(color: Colors.blue)),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
 
   @override
   void initState() {
@@ -249,28 +218,24 @@ class _JobStatusScreenState extends State<JobStatusScreen> {
                             final postedJob = controller.postedJobsList[index];
                             return InkWell(
                               onTap: () {
-                                if ((postedJob.requestsCount ?? 0) > 0) {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => JobRequestsScreen(
-                                        salary_from: postedJob.salary_from ??
-                                            "not found",
-                                        salary_to:
-                                            postedJob.salary_to ?? "not founf",
-                                        jobdate: postedJob.jobDate,
-                                        jobTitle:
-                                            postedJob.title ?? "not found",
-                                        reqCount: postedJob.requestsCount,
-                                        jobId: postedJob.id!,
-                                      ),
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => JobRequestsScreen(
+                                      salary_from:
+                                          postedJob.salary_from ?? "not found",
+                                      salary_to:
+                                          postedJob.salary_to ?? "not founf",
+                                      jobdate: postedJob.jobDate,
+                                      jobTitle: postedJob.title ?? "not found",
+                                      reqCount: postedJob.requestsCount,
+                                      jobId: postedJob.id!,
+                                      is_closed_job: postedJob.is_closed_job,
                                     ),
-                                  ).then((_) {
-                                    controller.getPostedJobs();
-                                  });
-                                } else {
-                                  _showNoRequestsDialog(context);
-                                }
+                                  ),
+                                ).then((_) {
+                                  controller.getPostedJobs();
+                                });
                               },
                               child: _buildPostedJobsCard(postedJob),
                             );
@@ -726,7 +691,7 @@ class _JobStatusScreenState extends State<JobStatusScreen> {
         final postedJob = controller.postedJobsList[index]; // Correct data
         return InkWell(
           onTap: () {
-            if ((postedJob.requestsCount ?? 0) > 0) {
+           
               Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -737,14 +702,13 @@ class _JobStatusScreenState extends State<JobStatusScreen> {
                     jobdate: postedJob.jobDate,
                     reqCount: postedJob.requestsCount,
                     jobId: postedJob.id!,
+                    is_closed_job: postedJob.is_closed_job,
                   ),
                 ),
               ).then((_) {
                 controller.getPostedJobs();
               });
-            } else {
-              _showNoRequestsDialog(context);
-            }
+         
           },
           child: _buildPostedJobsCard(postedJob),
         );

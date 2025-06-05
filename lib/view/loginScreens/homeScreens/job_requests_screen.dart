@@ -17,6 +17,7 @@ class JobRequestsScreen extends StatefulWidget {
   final String salary_from;
   final String salary_to;
   final DateTime? jobdate;
+  final bool? is_closed_job;
   const JobRequestsScreen(
       {super.key,
       required this.reqCount,
@@ -24,7 +25,8 @@ class JobRequestsScreen extends StatefulWidget {
       required this.salary_to,
       required this.jobdate,
       required this.jobTitle,
-      required this.jobId});
+      required this.jobId,
+      required this.is_closed_job});
 
   @override
   State<JobRequestsScreen> createState() => _JobRequestsScreenState();
@@ -225,35 +227,173 @@ class _JobRequestsScreenState extends State<JobRequestsScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Container(
-                            height: 40,
-                            width: 149,
-                            decoration: BoxDecoration(
-                                color: Color(0xffDAEAFF),
-                                borderRadius: BorderRadius.circular(12.r)),
-                            child: Center(
-                              child: Text(
-                                "Close Job",
-                                style: TextStyle(
-                                    fontSize: 14.sp,
-                                    fontWeight: FontWeight.w700,
-                                    color: Color(0xff1E83FF)),
+                          InkWell(
+                            onTap: () async {
+                              if (widget.is_closed_job == true) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text('Job is already closed.'),
+                                    backgroundColor: Colors.red,
+                                  ),
+                                );
+                                return;
+                              }
+
+                              final bool? confirm = await showDialog<bool>(
+                                context: context,
+                                builder: (ctx) => AlertDialog(
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius:
+                                          BorderRadius.circular(12.r)),
+                                  title: Text("Close job?"),
+                                  content: Text(
+                                    'This will permanently close the job. '
+                                    'Are you sure you want to continue?',
+                                  ),
+                                  actionsPadding: EdgeInsets.symmetric(
+                                      horizontal: 16.w, vertical: 8.h),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () =>
+                                          Navigator.pop(ctx, false), //cancel
+
+                                      child: Text("Cancel"),
+                                    ),
+                                    ElevatedButton(
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: Color(0xffE4626F),
+                                        ),
+                                        onPressed: () =>
+                                            Navigator.pop(ctx, true), //confirm
+
+                                        child: Text(
+                                          "Close",
+                                          style: TextStyle(color: Colors.white),
+                                        ))
+                                  ],
+                                ),
+                              );
+                              if (confirm == true) {
+                                final controller =
+                                    Provider.of<JobsScreenController>(context,
+                                        listen: false);
+
+                                final success =
+                                    await controller.closeJob(widget.jobId);
+
+                                if (success) {
+                                  Navigator.pushAndRemoveUntil(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (_) => CustomBottomNavbar(
+                                                successMessage:
+                                                    "Job closed Successfully",
+                                              )),
+                                              (Route<dynamic> route) => false);
+                                }
+                              }
+                            },
+                            child: Container(
+                              height: 40,
+                              width: 149,
+                              decoration: BoxDecoration(
+                                  color: Color(0xffDAEAFF),
+                                  borderRadius: BorderRadius.circular(12.r)),
+                              child: Center(
+                                child: Text(
+                                  "Close Job",
+                                  style: TextStyle(
+                                      fontSize: 14.sp,
+                                      fontWeight: FontWeight.w700,
+                                      color: Color(0xff1E83FF)),
+                                ),
                               ),
                             ),
                           ),
-                          Container(
-                            height: 40,
-                            width: 149,
-                            decoration: BoxDecoration(
-                                color: Color(0xffE4626F),
-                                borderRadius: BorderRadius.circular(12.r)),
-                            child: Center(
-                              child: Text(
-                                "Close Job",
-                                style: TextStyle(
+                          InkWell(
+                            onTap: () async {
+                              final bool? confirm = await showDialog<bool>(
+                                context: context,
+                                builder: (ctx) => AlertDialog(
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12.r),
+                                  ),
+                                  title: const Text('Delete job?'),
+                                  content: const Text(
+                                    'This will permanently remove the job. '
+                                    'Are you sure you want to continue?',
+                                  ),
+                                  actionsPadding: const EdgeInsets.symmetric(
+                                      horizontal: 16, vertical: 8),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () =>
+                                          Navigator.pop(ctx, false), // cancel
+                                      child: const Text('Cancel'),
+                                    ),
+                                    ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor:
+                                            const Color(0xffE4626F),
+                                      ),
+                                      onPressed: () =>
+                                          Navigator.pop(ctx, true), // confirm
+                                      child: const Text(
+                                        'Delete',
+                                        style: TextStyle(color: Colors.white),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              );
+
+                              if (confirm == true) {
+                                final controller =
+                                    Provider.of<JobsScreenController>(
+                                  context,
+                                  listen: false,
+                                );
+
+                                final success =
+                                    await controller.deleteJob(widget.jobId);
+
+                                if (success) {
+                                  Navigator.pushAndRemoveUntil(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (_) => CustomBottomNavbar(
+                                              successMessage:
+                                                  "Job Deleted Successfully",
+                                            )),(Route<dynamic> route)=> false,
+                                  );
+                                } else {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text(
+                                        'Job cannot be deleted. Close it first if it is ongoing.',
+                                      ),
+                                      backgroundColor: Colors.red,
+                                    ),
+                                  );
+                                }
+                              }
+                            },
+                            child: Container(
+                              height: 40,
+                              width: 149,
+                              decoration: BoxDecoration(
+                                color: const Color(0xffE4626F),
+                                borderRadius: BorderRadius.circular(12.r),
+                              ),
+                              child: Center(
+                                child: Text(
+                                  'Delete Job',
+                                  style: TextStyle(
                                     fontSize: 14.sp,
                                     fontWeight: FontWeight.w700,
-                                    color: Color(0xffFFFFFF)),
+                                    color: const Color(0xffFFFFFF),
+                                  ),
+                                ),
                               ),
                             ),
                           )

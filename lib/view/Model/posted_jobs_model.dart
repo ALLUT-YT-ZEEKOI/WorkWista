@@ -46,6 +46,7 @@ class PostedItem {
   DateTime? jobDate;
   DateTime? jobCreated;
   String? jobType;
+  bool? is_closed_job;
 
   PostedItem({
     this.id,
@@ -57,6 +58,7 @@ class PostedItem {
     this.jobDate,
     this.jobCreated,
     this.jobType,
+    this.is_closed_job,
   });
 
   factory PostedItem.fromJson(Map<String, dynamic> json) => PostedItem(
@@ -72,6 +74,7 @@ class PostedItem {
             ? null
             : DateTime.parse(json["job_created"]),
         jobType: json["job_type"],
+        is_closed_job: json["is_closed_job"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -85,5 +88,6 @@ class PostedItem {
             "${jobDate!.year.toString().padLeft(4, '0')}-${jobDate!.month.toString().padLeft(2, '0')}-${jobDate!.day.toString().padLeft(2, '0')}",
         "job_created": jobCreated?.toIso8601String(),
         "job_type": jobType,
+        "is_closed_job":"is_closed_job"
       };
 }

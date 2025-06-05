@@ -246,6 +246,96 @@ class JobsScreenController with ChangeNotifier {
     notifyListeners();
   }
 
+  Future<bool> closeJob(String jobId) async {
+    isloading = true;
+
+    notifyListeners();
+
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      String accessToken = prefs.getString("access") ?? "";
+      final url = Uri.parse('https://workwista.com/job/close-job/$jobId/');
+
+      Map<String, String> headers = {
+        "Authorization": "Bearer $accessToken",
+        "Content-Type": "application/json",
+      };
+      var response = await http.post(url, headers: headers);
+
+      if (response.statusCode == 401) {
+        final refreshToken = prefs.getString("refresh") ?? "";
+        final newAccessToken = await _refreshToken(refreshToken);
+        if (newAccessToken != null) {
+          headers["Authorization"] = "Bearer $newAccessToken";
+          response = await http.post(url, headers: headers);
+        }
+      }
+      if (response.statusCode == 200) {
+        log("Job closed successfully");
+        return true;
+      } else {
+        errorMessage = "Failed to close the job ${response.statusCode}";
+        log(response.statusCode.toString());
+        _handleApiError(response.statusCode);
+        return false;
+      }
+    } catch (e) {
+      errorMessage = "Error on job closing : ${e.toString()}";
+      log(errorMessage!);
+      log(e.toString());
+      return false;
+    } finally {
+      isloading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<bool> deleteJob(String jobId) async {
+    isloading = true;
+    notifyListeners();
+
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      String accessToken = prefs.getString("access") ?? "";
+      final url = Uri.parse('https://workwista.com/job/delete/$jobId/');
+
+      Map<String, String> headers = {
+        "Authorization": "Bearer $accessToken",
+        "Content-Type": "application/json",
+      };
+
+      var response = await http.post(url, headers: headers);
+
+      if (response.statusCode == 401) {
+        final refreshToken = prefs.getString("refresh") ?? "";
+        final newAccessToken = await _refreshToken(refreshToken);
+        if (newAccessToken != null) {
+          headers["Authorization"] = "Bearer $newAccessToken";
+          response = await http.post(url, headers: headers);
+        }
+      }
+      if (response.statusCode == 403) {
+        log("This job is ongoing and cannot be deleted. Please close it instead.");
+        return false;
+      }
+      if (response.statusCode == 200) {
+        log("Job deleted successfully");
+        return true;
+      } else {
+        errorMessage = "Failed to delete the job ${response.statusCode}";
+        _handleApiError(response.statusCode);
+        return false;
+      }
+    } catch (e) {
+      errorMessage = "Error on job deletion : ${e.toString()}";
+      log(errorMessage!);
+      return false;
+    } finally {
+      isloading = false;
+      notifyListeners();
+    }
+  }
+
   Future<void> respondToRequest(String requestId, String action) async {
     isloading = true;
     notifyListeners();
@@ -446,7 +536,7 @@ class JobsScreenController with ChangeNotifier {
     final url =
         Uri.parse("https://workwista.com/job/view/joblist/?title=$query");
 
-    try {
+    try {   
       final response = await http.get(url);
       if (response.statusCode == 200) {
         final AllJobModel jobModel = allJobModelFromJson(response.body);
