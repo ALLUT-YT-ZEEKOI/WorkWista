@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 import 'package:workwista/view/Controllers/login_screen_controller.dart';
 import 'package:workwista/view/Controllers/register_screen_controller.dart';
 import 'package:workwista/view/loginScreens/forgot_password_screen.dart';
-
 import 'package:workwista/view/loginScreens/signup_screen.dart';
 
 class SignInScreen extends StatefulWidget {
@@ -18,6 +17,7 @@ class _SignInScreenState extends State<SignInScreen> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  
   @override
   void dispose() {
     emailController.dispose();
@@ -31,7 +31,6 @@ class _SignInScreenState extends State<SignInScreen> {
     final controller = Provider.of<LoginScreenController>(context);
     return Scaffold(
       resizeToAvoidBottomInset: true,
-   
       body: SafeArea(
         child: SingleChildScrollView(
           scrollDirection: Axis.vertical,
@@ -132,76 +131,76 @@ class _SignInScreenState extends State<SignInScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       _buildTextField(
-                    controller: emailController,
-                    label: 'Phone Number/Email',
-                    fieldKey: 'email',
-                    loginController: controller,
-                    keyboardType: TextInputType.emailAddress,
-                    textInputAction: TextInputAction.next,
-                  ),
-                  SizedBox(height: 20.h),
-                  _buildTextField(
-                    controller: passController,
-                    label: 'Password',
-                    fieldKey: 'password',
-                    loginController: controller,
-                    obscureText: true,
-                    textInputAction: TextInputAction.done,
-                  ),
-                  SizedBox(height: 5.h),
-                  GestureDetector(
-                    onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const Forgotpassword(),
-              ),
-            );
-                    },
-                    child: Text(
-            'Forgot Password?',
-            style: TextStyle(
-              fontSize: 14.sp,
-              fontWeight: FontWeight.w400,
-              color: Colors.black,
-            ),
-                    ),
-                  ),
+                        controller: emailController,
+                        label: 'Phone Number/Email',
+                        fieldKey: 'email',
+                        loginController: controller,
+                        keyboardType: TextInputType.emailAddress,
+                        textInputAction: TextInputAction.next,
+                      ),
+                      SizedBox(height: 20.h),
+                      _buildTextField(
+                        controller: passController,
+                        label: 'Password',
+                        fieldKey: 'password',
+                        loginController: controller,
+                        obscureText: true,
+                        textInputAction: TextInputAction.done,
+                      ),
+                      SizedBox(height: 5.h),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const Forgotpassword(),
+                            ),
+                          );
+                        },
+                        child: Text(
+                          'Forgot Password?',
+                          style: TextStyle(
+                            fontSize: 14.sp,
+                            fontWeight: FontWeight.w400,
+                            color: Colors.black,
+                          ),
+                        ),
+                      ),
                     ],
                   ),
                 ),
-            // Display general error if exists
-            if (controller.generalError != null)
-              Padding(
-                padding: EdgeInsets.symmetric(vertical: 10.h),
-                child: Container(
-                  width: double.infinity,
-                  padding: EdgeInsets.all(12.w),
-                  decoration: BoxDecoration(
-                    // ignore: deprecated_member_use
-                    color: Colors.red.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(8.w),
-                    // ignore: deprecated_member_use
-                    border: Border.all(color: Colors.red.withOpacity(0.3)),
-                  ),
-                  child: Text(
-                    controller.generalError!,
-                    style: TextStyle(
-            color: Colors.red,
-            fontSize: 14.sp,
-            fontWeight: FontWeight.w500,
+                
+                // Display general error if exists - IMPROVED IMPLEMENTATION
+                if (controller.generalError != null)
+                  Padding(
+                    padding: EdgeInsets.only(top: 20.h, bottom: 10.h),
+                    child: Container(
+                      width: double.infinity,
+                      padding: EdgeInsets.all(12.w),
+                      decoration: BoxDecoration(
+                        color: Colors.red.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(8.w),
+                        border: Border.all(color: Colors.red.withOpacity(0.3)),
+                      ),
+                      child: Text(
+                        controller.generalError!,
+                        style: TextStyle(
+                          color: Colors.red,
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.w500,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
                     ),
-                    textAlign: TextAlign.center,
                   ),
-                ),
-              ),
-                SizedBox(height: 40.h),
+                
+                SizedBox(height: 20.h),
             
                 // Sign up text
                 GestureDetector(
                   onTap: () {
-                  context.read<LoginScreenController>().clearErrors(); // Add this line
-                context.read<RegisterScreenController>().clearErrors();
+                    context.read<LoginScreenController>().clearErrors();
+                    context.read<RegisterScreenController>().clearErrors();
                     Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -245,8 +244,7 @@ class _SignInScreenState extends State<SignInScreen> {
                           shadowColor: Colors.transparent,
                         ),
                         onPressed: () async {
-                                bool formvalid = _formKey.currentState!.validate();
-
+                          bool formvalid = _formKey.currentState!.validate();
 
                           if (formvalid) {
                             await context.read<LoginScreenController>().onLogin(
@@ -254,14 +252,7 @@ class _SignInScreenState extends State<SignInScreen> {
                                   password: passController.text,
                                   context: context,
                                 );
-                          } 
-                          // else {
-                          //   ScaffoldMessenger.of(context).showSnackBar(
-                          //     const SnackBar(
-                          //         content:
-                          //             Text("Please enter email and password")),
-                          //   );
-                          // }
+                          }
                         },
                         child: Ink(
                           decoration: BoxDecoration(
@@ -298,86 +289,85 @@ class _SignInScreenState extends State<SignInScreen> {
   }
 
   Widget _buildTextField({
-  required TextEditingController controller,
-  required String label,
-  required String fieldKey,
-  required LoginScreenController loginController,
-  bool obscureText = false,
-  TextInputType keyboardType = TextInputType.text,
-  TextInputAction textInputAction = TextInputAction.next,
-}) {
-  return Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      Text(
-        label,
-        style: TextStyle(
-          fontSize: 14.sp,
-          fontWeight: FontWeight.w500,
+    required TextEditingController controller,
+    required String label,
+    required String fieldKey,
+    required LoginScreenController loginController,
+    bool obscureText = false,
+    TextInputType keyboardType = TextInputType.text,
+    TextInputAction textInputAction = TextInputAction.next,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: TextStyle(
+            fontSize: 14.sp,
+            fontWeight: FontWeight.w500,
+          ),
         ),
-      ),
-      SizedBox(height: 5.h),
-      SizedBox(
-        height: 50.h,
-        child: TextField(
-          controller: controller,
-          obscureText: obscureText,
-          keyboardType: keyboardType,
-          textInputAction: textInputAction,
-          decoration: InputDecoration(
-            // Disable default error text to prevent height change
-            errorStyle: TextStyle(height: 0, fontSize: 0),
-            filled: true,
-            fillColor: Colors.white,
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(33.w),
-              borderSide: BorderSide(
-                color: loginController.fieldErrors[fieldKey] != null 
-                    ? Colors.red 
-                    : Color(0xFFBDBDBD),
-                width: loginController.fieldErrors[fieldKey] != null ? 2.w : 1.w,
+        SizedBox(height: 5.h),
+        SizedBox(
+          height: 50.h,
+          child: TextField(
+            controller: controller,
+            obscureText: obscureText,
+            keyboardType: keyboardType,
+            textInputAction: textInputAction,
+            decoration: InputDecoration(
+              // Disable default error text to prevent height change
+              errorStyle: TextStyle(height: 0, fontSize: 0),
+              filled: true,
+              fillColor: Colors.white,
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(33.w),
+                borderSide: BorderSide(
+                  color: loginController.fieldErrors[fieldKey] != null 
+                      ? Colors.red 
+                      : Color(0xFFBDBDBD),
+                  width: loginController.fieldErrors[fieldKey] != null ? 2.w : 1.w,
+                ),
               ),
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(33.w),
-              borderSide: BorderSide(
-                color: loginController.fieldErrors[fieldKey] != null 
-                    ? Colors.red 
-                    : Color(0xFFBDBDBD),
-                width: loginController.fieldErrors[fieldKey] != null ? 2.w : 1.w,
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(33.w),
+                borderSide: BorderSide(
+                  color: loginController.fieldErrors[fieldKey] != null 
+                      ? Colors.red 
+                      : Color(0xFFBDBDBD),
+                  width: loginController.fieldErrors[fieldKey] != null ? 2.w : 1.w,
+                ),
               ),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(33.w),
-              borderSide: BorderSide(
-                color: loginController.fieldErrors[fieldKey] != null 
-                    ? Colors.red 
-                    : Color(0xFF757575),
-                width: 1.5.w,
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(33.w),
+                borderSide: BorderSide(
+                  color: loginController.fieldErrors[fieldKey] != null 
+                      ? Colors.red 
+                      : Color(0xFF757575),
+                  width: 1.5.w,
+                ),
               ),
-            ),
-            errorBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(33.w),
-              borderSide: BorderSide(color: Colors.red, width: 2.w),
-            ),
-            focusedErrorBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(33.w),
-              borderSide: BorderSide(color: Colors.red, width: 2.w),
+              errorBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(33.w),
+                borderSide: BorderSide(color: Colors.red, width: 2.w),
+              ),
+              focusedErrorBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(33.w),
+                borderSide: BorderSide(color: Colors.red, width: 2.w),
+              ),
             ),
           ),
         ),
-      ),
-      // Show error text below the field
-      if (loginController.fieldErrors[fieldKey] != null)
-        Padding(
-          padding: EdgeInsets.only(top: 4.h, left: 12.w),
-          child: Text(
-            loginController.fieldErrors[fieldKey]!,
-            style: TextStyle(color: Colors.red, fontSize: 12.sp),
+        // Show error text below the field
+        if (loginController.fieldErrors[fieldKey] != null)
+          Padding(
+            padding: EdgeInsets.only(top: 4.h, left: 12.w),
+            child: Text(
+              loginController.fieldErrors[fieldKey]!,
+              style: TextStyle(color: Colors.red, fontSize: 12.sp),
+            ),
           ),
-        ),
-    ],
-  );
-}
-
+      ],
+    );
+  }
 }

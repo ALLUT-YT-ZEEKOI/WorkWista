@@ -157,7 +157,8 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
                 ),
                 _textFields(context, double.infinity,
                     "Enter your date of birth", _dobController,
-                    ontap: () => _selectDate(context)),
+                    ontap: () => _selectDate(context),
+                    keyboardType: TextInputType.numberWithOptions()),
                 if (controller.fieldErrors["DOB"] != null)
                   Padding(
                     padding: EdgeInsets.only(top: 4.h, left: 12.w),
@@ -183,7 +184,7 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
                             .onUpdateProfile(
                                 name: _nameController.text,
                                 fcm_token: token ?? "empty",
-                                phone_number: _phoneNoController.text,
+                                phone_number: "+91${_phoneNoController.text}",
                                 DOB: _dobController.text,
                                 context: context);
                       }
@@ -201,18 +202,16 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
     );
   }
 
-  SizedBox _textFields(
-    BuildContext context,
-    double width,
-    String hint,
-    TextEditingController controller, {
-    VoidCallback? ontap,
-    String? Function(String?)? validator,
-  }) {
+  SizedBox _textFields(BuildContext context, double width, String hint,
+      TextEditingController controller,
+      {VoidCallback? ontap,
+      String? Function(String?)? validator,
+      TextInputType? keyboardType}) {
     return SizedBox(
       width: width.w,
       height: 50.h,
       child: TextFormField(
+        keyboardType: keyboardType,
         validator: validator,
         controller: controller,
         decoration: InputDecoration(

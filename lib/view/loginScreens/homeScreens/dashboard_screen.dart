@@ -123,6 +123,21 @@ class _DashboardState extends State<Dashboard>
                               ),
                               Row(
                                 children: [
+                                  IconButton(
+                                      onPressed: () async {
+                                        final jobsController = context
+                                            .read<JobsScreenController>();
+                                        setState(() {
+                                          jobsController.isloading = true;
+                                        });
+                                        await jobsController.getCategories();
+                                        await jobsController.getJobs();
+                                        setState(() {}); // Trigger UI rebuild
+                                      },
+                                      icon: Icon(
+                                        Icons.refresh,
+                                        size: 25.w,
+                                      )),
                                   Image(
                                     image: AssetImage('assets/bell.png'),
                                     width: 21.w,

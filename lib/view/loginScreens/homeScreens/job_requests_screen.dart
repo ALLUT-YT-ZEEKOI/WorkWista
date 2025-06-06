@@ -230,10 +230,22 @@ class _JobRequestsScreenState extends State<JobRequestsScreen> {
                           InkWell(
                             onTap: () async {
                               if (widget.is_closed_job == true) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text('Job is already closed.'),
-                                    backgroundColor: Colors.red,
+                                await showDialog(
+                                  context: context,
+                                  builder: (ctx) => AlertDialog(
+                                    backgroundColor: const Color(0xffffffff),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(12.r),
+                                    ),
+                                    title: const Text("Alert"),
+                                    content:
+                                        const Text("Job is already closed."),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () => Navigator.pop(ctx),
+                                        child: const Text("OK"),
+                                      ),
+                                    ],
                                   ),
                                 );
                                 return;
@@ -302,7 +314,9 @@ class _JobRequestsScreenState extends State<JobRequestsScreen> {
                                   borderRadius: BorderRadius.circular(12.r)),
                               child: Center(
                                 child: Text(
-                                  "Close Job",
+                                  widget.is_closed_job == true
+                                      ? "Closed"
+                                      : "Close job ",
                                   style: TextStyle(
                                       fontSize: 14.sp,
                                       fontWeight: FontWeight.w700,
@@ -370,12 +384,23 @@ class _JobRequestsScreenState extends State<JobRequestsScreen> {
                                     (Route<dynamic> route) => false,
                                   );
                                 } else {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                      content: Text(
-                                        'Job cannot be deleted. Close it first if it is ongoing.',
+                                  await showDialog(
+                                    context: context,
+                                    builder: (ctx) => AlertDialog(
+                                      backgroundColor: Color(0xffffffff),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(12.r),
                                       ),
-                                      backgroundColor: Colors.red,
+                                      title: Text("Warning"),
+                                      content: Text(
+                                          "Job cannot be deleted. Close it first if it is ongoing."),
+                                      actions: [
+                                        TextButton(
+                                          onPressed: () => Navigator.pop(ctx),
+                                          child: Text("OK"),
+                                        ),
+                                      ],
                                     ),
                                   );
                                 }

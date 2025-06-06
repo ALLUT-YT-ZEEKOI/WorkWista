@@ -77,7 +77,7 @@ class AddJobController with ChangeNotifier {
             bgcolor: Colors.lightGreen);
         Navigator.pushAndRemoveUntil(
           context,
-          MaterialPageRoute(builder: (context) => CustomBottomNavbar()),
+          MaterialPageRoute(builder: (context) => CustomBottomNavbar(initialIndex: 1,)),
           (Route<dynamic> route) => false, // Remove all previous routes
         );
         log(addJobModel.message.toString());

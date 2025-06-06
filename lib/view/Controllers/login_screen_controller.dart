@@ -24,6 +24,7 @@ class LoginScreenController with ChangeNotifier {
   void clearErrors() {
     fieldErrors.updateAll((key, value) => null);
     generalError = null;
+    notifyListeners();
   }
 
   final GoogleSignIn _googleSignIn = GoogleSignIn(
@@ -34,26 +35,29 @@ class LoginScreenController with ChangeNotifier {
 
   Future<void> handleGoogleSignIn({required BuildContext context}) async {
     isloadingG = true;
+    clearErrors();
     notifyListeners();
 
     try {
       // First, sign out to clear any cached authentication
       await _googleSignIn.signOut();
-      
+
       // Then initiate a fresh sign-in which will show account picker
       final GoogleSignInAccount? account = await _googleSignIn.signIn();
-      
+
       if (account == null) {
         // User cancelled the sign-in
         log('User cancelled Google Sign-In');
         return;
       }
-      
+
       final GoogleSignInAuthentication? auth = await account.authentication;
       final String? idToken = auth?.idToken;
 
       if (idToken == null) {
         log('Failed to get ID Token');
+        generalError = "Failed to authenticate with Google";
+        notifyListeners();
         return;
       }
 
@@ -62,9 +66,9 @@ class LoginScreenController with ChangeNotifier {
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({'idToken': idToken}),
       );
-      
+
       log("ID Token: ${idToken.toString()}");
-      
+
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         final accessToken = data['access_token'];
@@ -76,7 +80,7 @@ class LoginScreenController with ChangeNotifier {
         await prefs.setString("access", accessToken);
         await prefs.setString("refresh", refreshToken);
         await prefs.setString("profile_data", jsonEncode(user));
-        
+
         // Log saved tokens
         log("✅ Saved Access Token: ${prefs.getString('access')}");
         log("✅ Saved Refresh Token: ${prefs.getString('refresh')}");
@@ -107,20 +111,12 @@ class LoginScreenController with ChangeNotifier {
         }
       } else {
         final errorData = jsonDecode(response.body);
-        log(errorData['error'] ?? 'server error');
-        AppUtils.showSnackbar(
-          context: context,
-          message: errorData['error'] ?? 'Server error occurred',
-          bgcolor: Colors.red
-        );
+        generalError = errorData['error'] ?? 'Server error occurred';
+        log(generalError!);
       }
     } catch (e) {
       log('Sign in error: $e');
-      AppUtils.showSnackbar(
-        context: context,
-        message: 'Sign in failed: ${e.toString()}',
-        bgcolor: Colors.red
-      );
+      generalError = 'Sign in failed: ${e.toString()}';
     } finally {
       isloadingG = false;
       notifyListeners();
@@ -168,38 +164,51 @@ class LoginScreenController with ChangeNotifier {
           return true;
         } else {
           generalError = "Invalid token received";
-          AppUtils.showSnackbar(
-            context: context,
-            message: "Invalid token received",
-            bgcolor: Colors.red);
         }
       } else if (response.statusCode == 400) {
         // Handle field-specific errors
         final decoded = json.decode(response.body);
+
+        // Check if it's a field-specific error structure
+        bool hasFieldErrors = false;
         decoded.forEach((key, value) {
           if (fieldErrors.containsKey(key)) {
-            fieldErrors[key] = (value as List).join(', ');
-          } else {
-            generalError = (value as List).join(', ');
+            fieldErrors[key] =
+                (value is List) ? value.join(', ') : value.toString();
+            hasFieldErrors = true;
           }
         });
+
+        // If no field-specific errors, treat as general error
+        if (!hasFieldErrors) {
+          if (decoded.containsKey('detail')) {
+            generalError = decoded['detail'];
+          } else if (decoded.containsKey('error')) {
+            generalError = decoded['error'];
+          } else {
+            // If it's a list of errors, join them
+            String errorMessage = '';
+            decoded.forEach((key, value) {
+              if (value is List) {
+                errorMessage += value.join(', ') + ' ';
+              } else {
+                errorMessage += value.toString() + ' ';
+              }
+            });
+            generalError = errorMessage.trim();
+          }
+        }
+      } else if (response.statusCode == 401) {
+        generalError = "Invalid email or password";
       } else {
-        generalError = "Login failed: ${response.statusCode}";
-        AppUtils.showSnackbar(
-            context: context,
-            message: "Login failed: ${response.statusCode}",
-            bgcolor: Colors.red);
-        log(response.body.toString());
+        generalError = "Login failed. Please try again.";
+        log("Login failed with status ${response.statusCode}: ${response.body}");
       }
 
       return false;
     } catch (e) {
-      generalError = "Connection error: ${e.toString()}";
-      AppUtils.showSnackbar(
-          context: context,
-          message: "Connection error: ${e.toString()}",
-          bgcolor: Colors.red);
-      log(e.toString());
+      generalError = "Connection error. Please check your internet connection.";
+      log("Login error: ${e.toString()}");
       return false;
     } finally {
       isloading = false;

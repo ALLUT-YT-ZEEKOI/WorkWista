@@ -6,11 +6,12 @@ import 'package:workwista/view/loginScreens/homeScreens/categories_screen.dart';
 import 'package:workwista/view/loginScreens/homeScreens/dashboard_screen.dart';
 import 'package:workwista/view/loginScreens/homeScreens/job_status_screen.dart';
 import 'package:workwista/view/loginScreens/homeScreens/my_jobs_screen.dart';
-import 'package:workwista/view/loginScreens/homeScreens/profile_screen.dart';
+
 
 class CustomBottomNavbar extends StatefulWidget {
   final String? successMessage;
-  const CustomBottomNavbar({this.successMessage, super.key});
+   final int initialIndex;
+  const CustomBottomNavbar({this.successMessage, this.initialIndex = 0,super.key});
 
   @override
   State<CustomBottomNavbar> createState() => _CustomBottomNavbarState();
@@ -20,6 +21,7 @@ class _CustomBottomNavbarState extends State<CustomBottomNavbar> {
   @override
   void initState() {
     super.initState();
+     _currentIndex = widget.initialIndex;
     if (widget.successMessage != null) {
       // Show SnackBar after widget builds
       WidgetsBinding.instance.addPostFrameCallback((_) {

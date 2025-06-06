@@ -28,6 +28,11 @@ class EnterJobDetailsScreen extends StatefulWidget {
 }
 
 class _EnterJobDetailsScreenState extends State<EnterJobDetailsScreen> {
+  DateTime currentDate = DateTime.now();
+  late List<int> days;
+  late List<int> months;
+  late List<int> years;
+
   bool _dateError = false;
   void _showLocationSearchDialog() {
     showDialog(
@@ -52,15 +57,63 @@ class _EnterJobDetailsScreenState extends State<EnterJobDetailsScreen> {
   int? selectedMonth;
   int? selectedYear;
 
-  final List<int> days = List.generate(31, (index) => index + 1);
-  final List<int> months = List.generate(12, (index) => index + 1);
-  final List<int> years = List.generate(11, (index) => 2025 + index);
+  void _initializeDateLists() {
+    currentDate = DateTime.now();
+
+    // Generate years from current year to next 10 years
+    years = List.generate(11, (index) => currentDate.year + index);
+
+    // Initialize months and days based on current date
+    _updateMonthsAndDays();
+  }
+
+  void _updateMonthsAndDays() {
+    if (selectedYear == null) {
+      // If no year selected, show all months
+      months = List.generate(12, (index) => index + 1);
+      days = List.generate(31, (index) => index + 1);
+      return;
+    }
+
+    if (selectedYear == currentDate.year) {
+      // If current year is selected, show months from current month onwards
+      months = List.generate(
+          12 - currentDate.month + 1, (index) => currentDate.month + index);
+    } else {
+      // If future year is selected, show all months
+      months = List.generate(12, (index) => index + 1);
+    }
+
+    _updateDaysForSelectedMonth();
+  }
+
+  void _updateDaysForSelectedMonth() {
+    if (selectedYear == null || selectedMonth == null) {
+      days = List.generate(31, (index) => index + 1);
+      return;
+    }
+
+    // Get the number of days in the selected month
+    int daysInMonth = DateTime(selectedYear!, selectedMonth! + 1, 0).day;
+
+    if (selectedYear == currentDate.year &&
+        selectedMonth == currentDate.month) {
+      // If current year and month, show days from today onwards
+      int startDay = currentDate.day;
+      days = List.generate(
+          daysInMonth - startDay + 1, (index) => startDay + index);
+    } else {
+      // If future month/year, show all days in that month
+      days = List.generate(daysInMonth, (index) => index + 1);
+    }
+  }
 
   Widget _dateDropdown({
     required String hint,
     required int? value,
     required List<int> items,
     required void Function(int?) onChanged,
+    required String type, // Add this parameter to identify dropdown type
   }) {
     return DropdownButtonFormField2<int>(
       value: value,
@@ -68,13 +121,30 @@ class _EnterJobDetailsScreenState extends State<EnterJobDetailsScreen> {
         return DropdownMenuItem<int>(
           value: item,
           child: Text(
-            item.toString().padLeft(2, '0'),
+            type == 'month'
+                ? _getMonthName(item)
+                : item.toString().padLeft(2, '0'),
             style: TextStyle(fontSize: 14.sp),
           ),
         );
       }).toList(),
       onChanged: (newValue) {
         onChanged(newValue);
+
+        // Handle cascading updates
+        if (type == 'year') {
+          setState(() {
+            selectedMonth = null; // Reset month when year changes
+            selectedDay = null; // Reset day when year changes
+            _updateMonthsAndDays();
+          });
+        } else if (type == 'month') {
+          setState(() {
+            selectedDay = null; // Reset day when month changes
+            _updateDaysForSelectedMonth();
+          });
+        }
+
         // Clear date error when user selects a value
         if (_dateError) {
           setState(() {
@@ -116,16 +186,17 @@ class _EnterJobDetailsScreenState extends State<EnterJobDetailsScreen> {
       ),
       buttonStyleData: ButtonStyleData(
         height: 50.h,
-        padding: EdgeInsets.only(left: 12.w, right: 8.w),
+        width: double.infinity, // Make button fill available space
+        padding: EdgeInsets.symmetric(horizontal: 12.w),
       ),
       dropdownStyleData: DropdownStyleData(
         maxHeight: 200.h,
-        width: 112.w,
+        width: null, // Let it auto-size based on container
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(12.r),
         ),
-        offset: const Offset(1, -6),
+        offset: const Offset(0, -4),
       ),
       iconStyleData: IconStyleData(
         icon: Icon(
@@ -142,6 +213,24 @@ class _EnterJobDetailsScreenState extends State<EnterJobDetailsScreen> {
         ),
       ),
     );
+  }
+
+  String _getMonthName(int month) {
+    const months = [
+      'January',
+      'February',
+      'March',
+      'April',
+      'May',
+      'June',
+      'July',
+      'August',
+      'September',
+      'October',
+      'November',
+      'December'
+    ];
+    return months[month - 1];
   }
 
   void logDate() {
@@ -254,7 +343,7 @@ class _EnterJobDetailsScreenState extends State<EnterJobDetailsScreen> {
   final TextEditingController _descriptionController = TextEditingController();
 
   final TextEditingController _key_responsibilities = TextEditingController();
-
+  final TextEditingController _FixedSalaryController = TextEditingController();
   final TextEditingController _salaryFromController = TextEditingController();
   final TextEditingController _salaryToController = TextEditingController();
   late TextEditingController _locationController = TextEditingController();
@@ -268,7 +357,7 @@ class _EnterJobDetailsScreenState extends State<EnterJobDetailsScreen> {
   @override
   void initState() {
     super.initState();
-
+    _initializeDateLists();
     WidgetsBinding.instance.addPostFrameCallback((timestamp) async {
       await context.read<JobsScreenController>().getJobTypes();
     });
@@ -483,7 +572,22 @@ class _EnterJobDetailsScreenState extends State<EnterJobDetailsScreen> {
                         value == null || value.isEmpty ? 'Required' : null,
                   ),
                   SizedBox(height: 18.h),
-
+                  Text(
+                    "Fixed Salary",
+                    style:
+                        TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w700),
+                  ),
+                  SizedBox(
+                    height: 5.h,
+                  ),
+                  _textFields(
+                    context,
+                    double.infinity,
+                    "fixed salary",
+                    50,
+                    _FixedSalaryController,
+                  ),
+                  SizedBox(height: 18.h),
                   Row(children: [
                     Expanded(
                       child: Column(
@@ -698,29 +802,35 @@ class _EnterJobDetailsScreenState extends State<EnterJobDetailsScreen> {
         Row(
           children: [
             Expanded(
+              flex: 2,
               child: _dateDropdown(
-                hint: 'Day',
-                value: selectedDay,
-                items: days,
-                onChanged: (value) => setState(() => selectedDay = value),
+                hint: 'Year',
+                value: selectedYear,
+                items: years,
+                type: 'year',
+                onChanged: (value) => setState(() => selectedYear = value),
               ),
             ),
             SizedBox(width: 10.w),
             Expanded(
+              flex: 3,
               child: _dateDropdown(
                 hint: 'Month',
                 value: selectedMonth,
                 items: months,
+                type: 'month',
                 onChanged: (value) => setState(() => selectedMonth = value),
               ),
             ),
             SizedBox(width: 10.w),
             Expanded(
+              flex: 2,
               child: _dateDropdown(
-                hint: 'Year',
-                value: selectedYear,
-                items: years,
-                onChanged: (value) => setState(() => selectedYear = value),
+                hint: 'Day',
+                value: selectedDay,
+                items: days,
+                type: 'day',
+                onChanged: (value) => setState(() => selectedDay = value),
               ),
             ),
           ],

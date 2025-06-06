@@ -480,12 +480,14 @@ class _JobDetailsScreenState extends State<JobDetailsScreen> {
                 height: 16.h,
               ),
               GradientButton(
-                onPressed: () async {
-                  await context.read<ApplyJobController>().onApplyJob(
-                        context: context,
-                        Jobid: job.id ?? "id not found",
-                      );
-                },
+                onPressed: job.is_requested == true
+                    ? null
+                    : () async {
+                        await context.read<ApplyJobController>().onApplyJob(
+                              context: context,
+                              Jobid: job.id ?? "id not found",
+                            );
+                      },
                 name: ButtonName,
                 width: 373.w,
                 height: 44.h,

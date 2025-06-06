@@ -147,7 +147,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             width: 23.w,
                           ),
                           Text(
-                            "+91 ${profile?.phoneNumber ?? ""}",
+                            "${profile?.phoneNumber ?? ""}",
                             style: TextStyle(
                                 color: ColorConstants.descText,
                                 fontWeight: FontWeight.w400,

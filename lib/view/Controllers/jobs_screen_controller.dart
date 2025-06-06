@@ -553,6 +553,42 @@ class JobsScreenController with ChangeNotifier {
     }
   }
 
+
+
+Future<void> searchJobsByLocation(String location) async {
+  isloading = true;
+  notifyListeners();
+
+  final url = Uri.parse("https://workwista.com/job/view/joblist/?manual_location=$location");
+
+  try {   
+    final response = await http.get(url);
+    if (response.statusCode == 200) {
+      final AllJobModel jobModel = allJobModelFromJson(response.body);
+      SjobsList = jobModel.data ?? [];
+      log("Successfully loaded jobs for location: $location");
+    } else {
+      _handleApiError(response.statusCode);
+    }
+  } catch (e) {
+    log("Error searching jobs by location: $e");
+    SjobsList = [];
+  } finally {
+    isloading = false;
+    notifyListeners();
+  }
+}
+
+// Clear search results
+void clearSearchResults() {
+  SjobsList = [];
+  notifyListeners();
+}
+
+
+
+
+
 // Search job function for categorie  search
   Future<void> searchCategories(String query) async {
     isloading = true;
