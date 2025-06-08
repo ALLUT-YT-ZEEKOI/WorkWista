@@ -2,8 +2,10 @@ import 'dart:developer';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
+import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:provider/provider.dart';
 import 'package:workwista/Utils/color_constants.dart';
 import 'package:workwista/view/Controllers/complete_profile_controller.dart';
@@ -20,7 +22,10 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
   TextEditingController _nameController = TextEditingController();
   TextEditingController _phoneNoController = TextEditingController();
   TextEditingController _dobController = TextEditingController();
-
+  final dateMask = MaskTextInputFormatter(
+    mask: '####-##-##',
+    filter: {"#": RegExp(r'[0-9]')},
+  );
   Future<void> _selectDate(BuildContext context) async {
     DateTime today = DateTime.now();
     DateTime latestAllowed =
@@ -158,7 +163,8 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
                 _textFields(context, double.infinity,
                     "Enter your date of birth", _dobController,
                     ontap: () => _selectDate(context),
-                    keyboardType: TextInputType.numberWithOptions()),
+                    keyboardType: TextInputType.number,
+                    inputFormatter: [dateMask]),
                 if (controller.fieldErrors["DOB"] != null)
                   Padding(
                     padding: EdgeInsets.only(top: 4.h, left: 12.w),
@@ -206,11 +212,13 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
       TextEditingController controller,
       {VoidCallback? ontap,
       String? Function(String?)? validator,
-      TextInputType? keyboardType}) {
+      TextInputType? keyboardType,
+      List<TextInputFormatter>? inputFormatter}) {
     return SizedBox(
       width: width.w,
       height: 50.h,
       child: TextFormField(
+        inputFormatters: inputFormatter,
         keyboardType: keyboardType,
         validator: validator,
         controller: controller,

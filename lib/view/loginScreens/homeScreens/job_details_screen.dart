@@ -21,6 +21,24 @@ class JobDetailsScreen extends StatefulWidget {
 }
 
 class _JobDetailsScreenState extends State<JobDetailsScreen> {
+  String _formatDate(String dateString) {
+    try {
+      // First try parsing the date string directly (if it's already in yyyy-mm-dd format)
+      if (dateString.length == 10 &&
+          dateString[4] == '-' &&
+          dateString[7] == '-') {
+        return dateString;
+      }
+
+      // If not, try parsing it as a DateTime
+      final date = DateTime.parse(dateString);
+      return "${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}";
+    } catch (e) {
+      // If parsing fails, return the original string or a default value
+      return dateString.isNotEmpty ? dateString : "Date not specified";
+    }
+  }
+
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback(
@@ -266,7 +284,13 @@ class _JobDetailsScreenState extends State<JobDetailsScreen> {
                     fontSize: 16.sp,
                     fontWeight: FontWeight.w500),
               ),
-              Text(job!.jobDate.toString()),
+              Text(
+                _formatDate(job!.jobDate.toString()), // Use the formatted date
+                style: TextStyle(
+                  fontSize: 16.sp,
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
               SizedBox(
                 height: 16.h,
               ),

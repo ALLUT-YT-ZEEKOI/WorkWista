@@ -458,6 +458,12 @@
       "languageVersion": "3.1"
     },
     {
+      "name": "mask_text_input_formatter",
+      "rootUri": "file:///C:/Users/Hamad/AppData/Local/Pub/Cache/hosted/pub.dev/mask_text_input_formatter-2.9.0",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
       "name": "matcher",
       "rootUri": "file:///C:/Users/Hamad/AppData/Local/Pub/Cache/hosted/pub.dev/matcher-0.12.17",
       "packageUri": "lib/",
@@ -776,7 +782,7 @@
       "languageVersion": "3.4"
     }
   ],
-  "generated": "2025-06-05T12:02:23.151049Z",
+  "generated": "2025-06-08T16:56:39.976165Z",
   "generator": "pub",
   "generatorVersion": "3.7.2",
   "flutterRoot": "file:///D:/flutter",

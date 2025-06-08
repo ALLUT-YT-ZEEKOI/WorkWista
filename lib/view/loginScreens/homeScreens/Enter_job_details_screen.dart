@@ -60,8 +60,9 @@ class _EnterJobDetailsScreenState extends State<EnterJobDetailsScreen> {
   void _initializeDateLists() {
     currentDate = DateTime.now();
 
-    // Generate years from current year to next 10 years
-    years = List.generate(11, (index) => currentDate.year + index);
+    // Always use current year
+    selectedYear = currentDate.year;
+    years = [currentDate.year]; // Just in case it's used elsewhere
 
     // Initialize months and days based on current date
     _updateMonthsAndDays();
@@ -803,12 +804,24 @@ class _EnterJobDetailsScreenState extends State<EnterJobDetailsScreen> {
           children: [
             Expanded(
               flex: 2,
-              child: _dateDropdown(
-                hint: 'Year',
-                value: selectedYear,
-                items: years,
-                type: 'year',
-                onChanged: (value) => setState(() => selectedYear = value),
+              child: Container(
+                height: 50.h,
+                padding: EdgeInsets.symmetric(horizontal: 12.w),
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    color: ColorConstants.containerBorder,
+                    width: 1.w,
+                  ),
+                  borderRadius: BorderRadius.circular(12.r),
+                ),
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  selectedYear.toString(),
+                  style: TextStyle(
+                    fontSize: 14.sp,
+                    color: Colors.black,
+                  ),
+                ),
               ),
             ),
             SizedBox(width: 10.w),

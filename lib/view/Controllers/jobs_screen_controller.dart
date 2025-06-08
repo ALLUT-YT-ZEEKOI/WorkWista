@@ -119,11 +119,11 @@ class JobsScreenController with ChangeNotifier {
     if (jobList.isUserJobber ?? false) {
       return (jobList.isCompleted ?? false)
           ? (jobList.isPaid ?? false ? "Paid" : "Waiting for Payment")
-          : "Finish (${DateFormat('yyyy-MM-dd').format(jobStartDate)})";
+          : "Finish";
     } else {
       return (jobList.isCompleted ?? false)
           ? (jobList.isPaid ?? false ? "Paid" : "Pay")
-          : "Waiting for completion (${DateFormat('yyyy-MM-dd').format(jobStartDate)})";
+          : "Waiting for completion";
     }
   }
 
@@ -583,61 +583,60 @@ class JobsScreenController with ChangeNotifier {
     );
   }
 
-
-
-
- Future<void> searchJobsByLocation(String location) async {
-  isloading = true;
-  errorMessage = null;
-  notifyListeners();
-
-  try {
-    final prefs = await SharedPreferences.getInstance();
-    String accessToken = prefs.getString("access") ?? "";
-
-    // First attempt with current access token
-    var response = await _makeSearchJobsByLocationRequest(location, accessToken);
-
-    // If unauthorized (401), try refreshing token
-    if (response.statusCode == 401) {
-      log("Access token expired, attempting refresh...");
-      final refreshToken = prefs.getString("refresh") ?? "";
-
-      final newAccessToken = await _refreshToken(refreshToken);
-      if (newAccessToken != null) {
-        response = await _makeSearchJobsByLocationRequest(location, newAccessToken);
-      }
-    }
-
-    // Process final response
-    if (response.statusCode == 200) {
-      final AllJobModel jobModel = allJobModelFromJson(response.body);
-      SjobsList = jobModel.data ?? [];
-      log("Successfully loaded jobs for location: $location");
-    } else {
-      errorMessage = "Failed to load location jobs (${response.statusCode})";
-      _handleApiError(response.statusCode);
-      SjobsList = [];
-    }
-  } catch (e) {
-    log("Error searching jobs by location: $e");
-    errorMessage = "Error: ${e.toString()}";
-    SjobsList = [];
-  } finally {
-    isloading = false;
+  Future<void> searchJobsByLocation(String location) async {
+    isloading = true;
+    errorMessage = null;
     notifyListeners();
+
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      String accessToken = prefs.getString("access") ?? "";
+
+      // First attempt with current access token
+      var response =
+          await _makeSearchJobsByLocationRequest(location, accessToken);
+
+      // If unauthorized (401), try refreshing token
+      if (response.statusCode == 401) {
+        log("Access token expired, attempting refresh...");
+        final refreshToken = prefs.getString("refresh") ?? "";
+
+        final newAccessToken = await _refreshToken(refreshToken);
+        if (newAccessToken != null) {
+          response =
+              await _makeSearchJobsByLocationRequest(location, newAccessToken);
+        }
+      }
+
+      // Process final response
+      if (response.statusCode == 200) {
+        final AllJobModel jobModel = allJobModelFromJson(response.body);
+        SjobsList = jobModel.data ?? [];
+        log("Successfully loaded jobs for location: $location");
+      } else {
+        errorMessage = "Failed to load location jobs (${response.statusCode})";
+        _handleApiError(response.statusCode);
+        SjobsList = [];
+      }
+    } catch (e) {
+      log("Error searching jobs by location: $e");
+      errorMessage = "Error: ${e.toString()}";
+      SjobsList = [];
+    } finally {
+      isloading = false;
+      notifyListeners();
+    }
   }
-}
 
-
-Future<http.Response> _makeSearchJobsByLocationRequest(String location, String accessToken) async {
-  final url = Uri.parse("https://workwista.com/job/view/joblist/?manual_location=$location");
-  return await http.get(
-    url,
-    headers: {"Authorization": "Bearer $accessToken"},
-  );
-}
-
+  Future<http.Response> _makeSearchJobsByLocationRequest(
+      String location, String accessToken) async {
+    final url = Uri.parse(
+        "https://workwista.com/job/view/joblist/?manual_location=$location");
+    return await http.get(
+      url,
+      headers: {"Authorization": "Bearer $accessToken"},
+    );
+  }
 
 // Clear search results
   void clearSearchResults() {

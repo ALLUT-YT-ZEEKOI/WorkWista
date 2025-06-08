@@ -90,183 +90,283 @@ class _DashboardState extends State<Dashboard>
         builder: (context, jobsScreenControllerObj, child) {
           return Container(
             color: Colors.white,
-            child: SingleChildScrollView(
-              controller: _scrollController,
-              child: Column(
-                children: [
-                  // App bar content (unchanged)
-                  Container(
-                    decoration: const BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment(0.50, -0.00),
-                        end: Alignment(0.50, 1.89),
-                        colors: [Color(0xFFDAE6FC), Colors.white],
+            child: RefreshIndicator(
+              onRefresh: () async {
+                final jobsController = context.read<JobsScreenController>();
+                setState(() {
+                  // jobsController.isloading = true;
+                });
+                await jobsController.getCategories();
+                await jobsController.getJobs();
+                setState(() {}); // Trigger UI rebuild
+              },
+              color: Colors.blue, // Customize the refresh indicator color
+              backgroundColor: Colors.white,
+              child: SingleChildScrollView(
+                physics: AlwaysScrollableScrollPhysics(),
+                controller: _scrollController,
+                child: Column(
+                  children: [
+                    // App bar content (unchanged)
+                    Container(
+                      decoration: const BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment(0.50, -0.00),
+                          end: Alignment(0.50, 1.89),
+                          colors: [Color(0xFFDAE6FC), Colors.white],
+                        ),
                       ),
-                    ),
-                    child: Column(
-                      children: [
-                        // Header with logo and notifications
-                        Padding(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 10.w,
-                            vertical: 7.h,
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              CircleAvatar(
-                                radius: 22.w,
-                                child: Image(
-                                  image:
-                                      AssetImage('assets/Frame 26080486.png'),
+                      child: Column(
+                        children: [
+                          // Header with logo and notifications
+                          Padding(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 10.w,
+                              vertical: 7.h,
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                CircleAvatar(
+                                  radius: 22.w,
+                                  child: Image(
+                                    image:
+                                        AssetImage('assets/Frame 26080486.png'),
+                                  ),
                                 ),
-                              ),
-                              Row(
-                                children: [
-                                  IconButton(
-                                      onPressed: () async {
-                                        final jobsController = context
-                                            .read<JobsScreenController>();
-                                        setState(() {
-                                          jobsController.isloading = true;
-                                        });
-                                        await jobsController.getCategories();
-                                        await jobsController.getJobs();
-                                        setState(() {}); // Trigger UI rebuild
+                                Row(
+                                  children: [
+                                    // IconButton(
+                                    //     onPressed: () async {
+                                    //       final jobsController = context
+                                    //           .read<JobsScreenController>();
+                                    //       setState(() {
+                                    //         jobsController.isloading = true;
+                                    //       });
+                                    //       await jobsController.getCategories();
+                                    //       await jobsController.getJobs();
+                                    //       setState(() {}); // Trigger UI rebuild
+                                    //     },
+                                    //     icon: Icon(
+                                    //       Icons.refresh,
+                                    //       size: 25.w,
+                                    //     )),
+                                    Image(
+                                      image: AssetImage('assets/bell.png'),
+                                      width: 21.w,
+                                    ),
+                                    SizedBox(
+                                      width: 12.w,
+                                    ),
+                                    InkWell(
+                                      onTap: () {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  ProfileScreen(),
+                                            ));
                                       },
-                                      icon: Icon(
-                                        Icons.refresh,
-                                        size: 25.w,
-                                      )),
-                                  Image(
-                                    image: AssetImage('assets/bell.png'),
-                                    width: 21.w,
-                                  ),
-                                  SizedBox(
-                                    width: 12.w,
-                                  ),
-                                  InkWell(
+                                      child: Icon(
+                                        Icons.person_outline,
+                                        size: 24.w,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+
+                          // Search and location
+                          Padding(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 10.w,
+                              vertical: 18.h,
+                            ),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: InkWell(
                                     onTap: () {
                                       Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
+                                        context,
+                                        MaterialPageRoute(
                                             builder: (context) =>
-                                                ProfileScreen(),
-                                          ));
+                                                SearchScreen()),
+                                      );
                                     },
-                                    child: Icon(
-                                      Icons.person_outline,
-                                      size: 24.w,
+                                    child: IgnorePointer(
+                                      child: SearchField(height: 50.h),
                                     ),
                                   ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-
-                        // Search and location
-                        Padding(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 10.w,
-                            vertical: 18.h,
-                          ),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: InkWell(
-                                  onTap: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => SearchScreen()),
-                                    );
-                                  },
-                                  child: IgnorePointer(
-                                    child: SearchField(height: 50.h),
-                                  ),
                                 ),
+                                SizedBox(width: 5.w),
+                                InkWell(
+                                  onTap: () {
+                                    // Retry location when tapped
+                                    // Optionally allow manual refresh
+                                    locationProvider
+                                        .getCurrentLocationAndCity();
+                                  },
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      border: Border.all(
+                                        color: ColorConstants.containerBorder
+                                            // ignore: deprecated_member_use
+                                            .withOpacity(0.9),
+                                        width: 2.w,
+                                      ),
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(12.w),
+                                    ),
+                                    height: 47.5.h,
+                                    width: 125.w,
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceEvenly,
+                                      children: [
+                                        locationProvider.isLoadingLocation
+                                            ? SizedBox(
+                                                width: 16.w,
+                                                height: 16.h,
+                                                child:
+                                                    CircularProgressIndicator(
+                                                  strokeWidth: 2,
+                                                  color: Colors.grey[600],
+                                                ),
+                                              )
+                                            : Icon(Icons.my_location,
+                                                color: Colors.blue),
+                                        Flexible(
+                                          child: Text(
+                                            overflow: TextOverflow.ellipsis,
+                                            locationProvider.cityName,
+                                            style: TextStyle(
+                                              fontSize: 12.sp,
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                )
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 10.w,
+                        vertical: 18.h,
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "Discover Jobs",
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.w700,
+                              fontSize: 18.sp,
+                            ),
+                          ),
+                          InkWell(
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => CategoriesScreen(),
+                                  ));
+                            },
+                            child: Text(
+                              "View More",
+                              style: TextStyle(
+                                color: ColorConstants.viewMoreText,
+                                fontWeight: FontWeight.w400,
+                                fontSize: 12.sp,
                               ),
-                              SizedBox(width: 5.w),
-                              InkWell(
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    // Categories horizontal scroll (unchanged)
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        children: List.generate(
+                          jobsScreenControllerObj.categoriesList.length + 1,
+                          (index) {
+                            final isAll = index == 0;
+                            final isSelected =
+                                jobsScreenControllerObj.selectedCategoryIndex ==
+                                    index;
+                            final categoryTitle = isAll
+                                ? "All"
+                                : jobsScreenControllerObj
+                                        .categoriesList[index - 1].title ??
+                                    "Unnamed";
+                            return Padding(
+                              padding: EdgeInsets.only(
+                                  left: 8.w, right: 8.w, top: 8.h, bottom: 8.h),
+                              child: InkWell(
                                 onTap: () {
-                                  // Retry location when tapped
-                                  // Optionally allow manual refresh
-                                  locationProvider.getCurrentLocationAndCity();
+                                  jobsScreenControllerObj
+                                      .onCategorySelected(index);
                                 },
                                 child: Container(
+                                  constraints: BoxConstraints(
+                                      minWidth: 70.w, minHeight: 32.h),
+                                  padding:
+                                      EdgeInsets.symmetric(horizontal: 16.w),
                                   decoration: BoxDecoration(
                                     border: Border.all(
-                                      color: ColorConstants.containerBorder
-                                          // ignore: deprecated_member_use
-                                          .withOpacity(0.9),
-                                      width: 2.w,
+                                      width: 1.w,
+                                      color: isSelected
+                                          ? Color(0xff06407E)
+                                          : Color(0xffE2E8F0),
                                     ),
                                     color: Colors.white,
-                                    borderRadius: BorderRadius.circular(12.w),
+                                    borderRadius: BorderRadius.circular(24.w),
                                   ),
-                                  height: 47.5.h,
-                                  width: 125.w,
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceEvenly,
-                                    children: [
-                                      locationProvider.isLoadingLocation
-                                          ? SizedBox(
-                                              width: 16.w,
-                                              height: 16.h,
-                                              child: CircularProgressIndicator(
-                                                strokeWidth: 2,
-                                                color: Colors.grey[600],
-                                              ),
-                                            )
-                                          : Icon(Icons.my_location,
-                                              color: Colors.blue),
-                                      Flexible(
-                                        child: Text(
-                                          overflow: TextOverflow.ellipsis,
-                                          locationProvider.cityName,
-                                          style: TextStyle(
-                                            fontSize: 12.sp,
-                                            fontWeight: FontWeight.w500,
-                                          ),
-                                        ),
-                                      )
-                                    ],
+                                  alignment: Alignment.center,
+                                  child: Text(
+                                    categoryTitle,
+                                    style: TextStyle(
+                                      fontSize: 12.sp,
+                                      fontWeight: FontWeight.w500,
+                                      color: isSelected
+                                          ? Color(0xff002D64)
+                                          : Color(0xff92A5B5),
+                                    ),
                                   ),
                                 ),
-                              )
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 10.w,
-                      vertical: 18.h,
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "Discover Jobs",
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.w700,
-                            fontSize: 18.sp,
-                          ),
-                        ),
-                        InkWell(
-                          onTap: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => CategoriesScreen(),
-                                ));
+                              ),
+                            );
                           },
-                          child: Text(
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 28.h),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 10.w),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "Near Jobs",
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.w700,
+                              fontSize: 18.sp,
+                            ),
+                          ),
+                          Text(
                             "View More",
                             style: TextStyle(
                               color: ColorConstants.viewMoreText,
@@ -274,229 +374,147 @@ class _DashboardState extends State<Dashboard>
                               fontSize: 12.sp,
                             ),
                           ),
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  // Categories horizontal scroll (unchanged)
-                  SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
-                      children: List.generate(
-                        jobsScreenControllerObj.categoriesList.length + 1,
-                        (index) {
-                          final isAll = index == 0;
-                          final isSelected =
-                              jobsScreenControllerObj.selectedCategoryIndex ==
-                                  index;
-                          final categoryTitle = isAll
-                              ? "All"
-                              : jobsScreenControllerObj
-                                      .categoriesList[index - 1].title ??
-                                  "Unnamed";
-                          return Padding(
-                            padding: EdgeInsets.only(
-                                left: 8.w, right: 8.w, top: 8.h, bottom: 8.h),
-                            child: InkWell(
-                              onTap: () {
-                                jobsScreenControllerObj
-                                    .onCategorySelected(index);
-                              },
-                              child: Container(
-                                constraints: BoxConstraints(
-                                    minWidth: 70.w, minHeight: 32.h),
-                                padding: EdgeInsets.symmetric(horizontal: 16.w),
-                                decoration: BoxDecoration(
-                                  border: Border.all(
-                                    width: 1.w,
-                                    color: isSelected
-                                        ? Color(0xff06407E)
-                                        : Color(0xffE2E8F0),
-                                  ),
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(24.w),
-                                ),
-                                alignment: Alignment.center,
-                                child: Text(
-                                  categoryTitle,
-                                  style: TextStyle(
-                                    fontSize: 12.sp,
-                                    fontWeight: FontWeight.w500,
-                                    color: isSelected
-                                        ? Color(0xff002D64)
-                                        : Color(0xff92A5B5),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          );
-                        },
+                        ],
                       ),
                     ),
-                  ),
-                  SizedBox(height: 28.h),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 10.w),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "Near Jobs",
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.w700,
-                            fontSize: 18.sp,
-                          ),
-                        ),
-                        Text(
-                          "View More",
-                          style: TextStyle(
-                            color: ColorConstants.viewMoreText,
-                            fontWeight: FontWeight.w400,
-                            fontSize: 12.sp,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  SizedBox(height: 12.h),
+                    SizedBox(height: 12.h),
 
-                  // Job List
-                  jobsScreenControllerObj.isloading
-                      ? const Center(child: CircularProgressIndicator())
-                      : jobsScreenControllerObj.jobsList.isEmpty
-                          ? Center(
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(
-                                    Icons.work_outline,
-                                    size: 64.w,
-                                    color: Colors.grey[400],
-                                  ),
-                                  SizedBox(height: 16.h),
-                                  Text(
-                                    "No jobs available",
-                                    style: TextStyle(
-                                      fontSize: 18.sp,
-                                      color: Colors.grey[600],
+                    // Job List
+                    jobsScreenControllerObj.isloading
+                        ? const Center(child: CircularProgressIndicator())
+                        : jobsScreenControllerObj.jobsList.isEmpty
+                            ? Center(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(
+                                      Icons.work_outline,
+                                      size: 64.w,
+                                      color: Colors.grey[400],
                                     ),
-                                  ),
-                                  if (jobsScreenControllerObj
-                                          .selectedCategoryIndex !=
-                                      0)
+                                    SizedBox(height: 16.h),
                                     Text(
-                                      "for this category",
+                                      "No jobs available",
                                       style: TextStyle(
-                                        fontSize: 14.sp,
-                                        color: Colors.grey[500],
+                                        fontSize: 18.sp,
+                                        color: Colors.grey[600],
                                       ),
                                     ),
-                                ],
+                                    if (jobsScreenControllerObj
+                                            .selectedCategoryIndex !=
+                                        0)
+                                      Text(
+                                        "for this category",
+                                        style: TextStyle(
+                                          fontSize: 14.sp,
+                                          color: Colors.grey[500],
+                                        ),
+                                      ),
+                                  ],
+                                ),
+                              )
+                            : Column(
+                                children: List.generate(
+                                  jobsScreenControllerObj.jobsList.length,
+                                  (index) {
+                                    final jobItem =
+                                        jobsScreenControllerObj.jobsList[index];
+                                    return InkWell(
+                                      onTap: () {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  JobDetailsScreen(
+                                                      jobId: jobItem.id),
+                                            ));
+                                      },
+                                      child: JobOffersCard(jobItem: jobItem),
+                                    );
+                                  },
+                                ),
                               ),
-                            )
-                          : Column(
-                              children: List.generate(
-                                jobsScreenControllerObj.jobsList.length,
-                                (index) {
-                                  final jobItem =
-                                      jobsScreenControllerObj.jobsList[index];
-                                  return InkWell(
-                                    onTap: () {
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) =>
-                                                JobDetailsScreen(
-                                                    jobId: jobItem.id),
-                                          ));
-                                    },
-                                    child: JobOffersCard(jobItem: jobItem),
-                                  );
-                                },
-                              ),
-                            ),
-                  // Padding(
-                  //   padding: EdgeInsets.symmetric(
-                  //     horizontal: 10.w,
-                  //   ),
-                  //   child: Column(
-                  //     children: [
-                  //       Row(
-                  //         children: [
-                  //           Text(
-                  //             "Companies nearby",
-                  //             style: TextStyle(
-                  //               color: Colors.black,
-                  //               fontSize: 18.sp,
-                  //               fontWeight: FontWeight.w700,
-                  //             ),
-                  //           ),
-                  //           Spacer(),
-                  //           Text(
-                  //             "View More",
-                  //             style: TextStyle(
-                  //               color: ColorConstants.viewMoreText,
-                  //               fontSize: 12.sp,
-                  //               fontWeight: FontWeight.w400,
-                  //             ),
-                  //           ),
-                  //         ],
-                  //       ),
-                  //       SizedBox(height: 18.h),
-                  //       SizedBox(
-                  //         height: 150.h,
-                  //         child: ListView.separated(
-                  //           scrollDirection: Axis.horizontal,
-                  //           itemCount: 5,
-                  //           padding: EdgeInsets.symmetric(
-                  //             horizontal: 10.w,
-                  //           ),
-                  //           separatorBuilder: (context, index) => SizedBox(
-                  //             width: 10.w,
-                  //           ),
-                  //           itemBuilder: (context, index) {
-                  //             return Material(
-                  //               child: CompaniesCard(),
-                  //             );
-                  //           },
-                  //         ),
-                  //       ),
-                  //       SizedBox(height: 22.h),
-                  //       SizedBox(
-                  //         height: 200.h,
-                  //         child: PageView(
-                  //           controller: _controller,
-                  //           children: [
-                  //             GreenCard(),
-                  //             GreenCard(),
-                  //             GreenCard(),
-                  //           ],
-                  //         ),
-                  //       ),
-                  //       SizedBox(
-                  //         height: 10.h,
-                  //       ),
-                  //       Center(
-                  //         child: SmoothPageIndicator(
-                  //           controller: _controller,
-                  //           count: _numPages,
-                  //           effect: WormEffect(
-                  //             dotHeight: screenHight * 0.020.h,
-                  //             dotWidth: screenWidth * 0.016.w,
-                  //             activeDotColor: Colors.black,
-                  //             dotColor: Colors.black,
-                  //           ),
-                  //         ),
-                  //       ),
-                  //       SizedBox(
-                  //         height: 50.h,
-                  //       )
-                  //     ],
-                  //   ),
-                  // )
-                ],
+                    // Padding(
+                    //   padding: EdgeInsets.symmetric(
+                    //     horizontal: 10.w,
+                    //   ),
+                    //   child: Column(
+                    //     children: [
+                    //       Row(
+                    //         children: [
+                    //           Text(
+                    //             "Companies nearby",
+                    //             style: TextStyle(
+                    //               color: Colors.black,
+                    //               fontSize: 18.sp,
+                    //               fontWeight: FontWeight.w700,
+                    //             ),
+                    //           ),
+                    //           Spacer(),
+                    //           Text(
+                    //             "View More",
+                    //             style: TextStyle(
+                    //               color: ColorConstants.viewMoreText,
+                    //               fontSize: 12.sp,
+                    //               fontWeight: FontWeight.w400,
+                    //             ),
+                    //           ),
+                    //         ],
+                    //       ),
+                    //       SizedBox(height: 18.h),
+                    //       SizedBox(
+                    //         height: 150.h,
+                    //         child: ListView.separated(
+                    //           scrollDirection: Axis.horizontal,
+                    //           itemCount: 5,
+                    //           padding: EdgeInsets.symmetric(
+                    //             horizontal: 10.w,
+                    //           ),
+                    //           separatorBuilder: (context, index) => SizedBox(
+                    //             width: 10.w,
+                    //           ),
+                    //           itemBuilder: (context, index) {
+                    //             return Material(
+                    //               child: CompaniesCard(),
+                    //             );
+                    //           },
+                    //         ),
+                    //       ),
+                    //       SizedBox(height: 22.h),
+                    //       SizedBox(
+                    //         height: 200.h,
+                    //         child: PageView(
+                    //           controller: _controller,
+                    //           children: [
+                    //             GreenCard(),
+                    //             GreenCard(),
+                    //             GreenCard(),
+                    //           ],
+                    //         ),
+                    //       ),
+                    //       SizedBox(
+                    //         height: 10.h,
+                    //       ),
+                    //       Center(
+                    //         child: SmoothPageIndicator(
+                    //           controller: _controller,
+                    //           count: _numPages,
+                    //           effect: WormEffect(
+                    //             dotHeight: screenHight * 0.020.h,
+                    //             dotWidth: screenWidth * 0.016.w,
+                    //             activeDotColor: Colors.black,
+                    //             dotColor: Colors.black,
+                    //           ),
+                    //         ),
+                    //       ),
+                    //       SizedBox(
+                    //         height: 50.h,
+                    //       )
+                    //     ],
+                    //   ),
+                    // )
+                  ],
+                ),
               ),
             ),
           );

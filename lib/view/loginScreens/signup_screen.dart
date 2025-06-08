@@ -2,8 +2,10 @@ import 'dart:developer';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
+import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:provider/provider.dart';
 import 'package:workwista/AppTextStyle/app_text_style.dart';
 import 'package:workwista/Utils/color_constants.dart';
@@ -24,6 +26,11 @@ class _SignupscreenState extends State<Signupscreen> {
   TextEditingController _phoneNumberController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
   TextEditingController _CPasswordController = TextEditingController();
+
+  final dateMask = MaskTextInputFormatter(
+    mask: '####-##-##',
+    filter: {"#": RegExp(r'[0-9]')},
+  );
 
   Future<void> _selectDate(BuildContext context) async {
     DateTime today = DateTime.now();
@@ -152,6 +159,8 @@ class _SignupscreenState extends State<Signupscreen> {
                       '',
                       _dateController,
                       ontap: () => _selectDate(context),
+                      KeyBoardType: TextInputType.number,
+                      inputFormatter: [dateMask],
                     ),
 
                     // Show error text below the field
@@ -268,7 +277,7 @@ class _SignupscreenState extends State<Signupscreen> {
                       String? token = await _firebaseMessaging.getToken();
                       log("FCM token passed : $token");
                       await context.read<RegisterScreenController>().onRegister(
-                        fcm_token: token,
+                          fcm_token: token,
                           name: _nameController.text,
                           context: context,
                           email: _emailController.text,
@@ -346,18 +355,18 @@ class _SignupscreenState extends State<Signupscreen> {
     );
   }
 
-  SizedBox _textFields(
-    BuildContext context,
-    double width,
-    String hint,
-    TextEditingController controller, {
-    VoidCallback? ontap,
-    String? Function(String?)? validator,
-  }) {
+  SizedBox _textFields(BuildContext context, double width, String hint,
+      TextEditingController controller,
+      {VoidCallback? ontap,
+      String? Function(String?)? validator,
+      TextInputType? KeyBoardType,
+      List<TextInputFormatter>? inputFormatter}) {
     return SizedBox(
       width: width.w,
       height: 50.h,
       child: TextFormField(
+        inputFormatters: inputFormatter,
+        keyboardType: KeyBoardType,
         validator: validator,
         controller: controller,
         decoration: InputDecoration(

@@ -77,7 +77,10 @@ class AddJobController with ChangeNotifier {
             bgcolor: Colors.lightGreen);
         Navigator.pushAndRemoveUntil(
           context,
-          MaterialPageRoute(builder: (context) => CustomBottomNavbar(initialIndex: 1,)),
+          MaterialPageRoute(
+              builder: (context) => CustomBottomNavbar(
+                    initialIndex: 1,
+                  )),
           (Route<dynamic> route) => false, // Remove all previous routes
         );
         log(addJobModel.message.toString());
@@ -125,6 +128,7 @@ class AddJobController with ChangeNotifier {
     request.fields['key_responsibility'] = key_responsibility;
     request.fields['job_category'] = job_category ?? '';
     request.fields['job_type'] = job_type;
+    request.fields['fixed_salary'] = "100";
 
     if (job_image != null) {
       request.files.add(await http.MultipartFile.fromPath(
