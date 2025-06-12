@@ -28,11 +28,17 @@ class EnterJobDetailsScreen extends StatefulWidget {
 }
 
 class _EnterJobDetailsScreenState extends State<EnterJobDetailsScreen> {
+String formatCoordinateToString(double? coordinate) {
+  if (coordinate == null) return '0.000000';
+  return coordinate.toStringAsFixed(6);
+}
+
   DateTime currentDate = DateTime.now();
   late List<int> days;
   late List<int> months;
   late List<int> years;
-
+  double? _selectedLatitude;
+  double? _selectedLongitude;
   bool _dateError = false;
   void _showLocationSearchDialog() {
     showDialog(
@@ -40,11 +46,17 @@ class _EnterJobDetailsScreenState extends State<EnterJobDetailsScreen> {
       builder: (BuildContext dialogContext) {
         return LocationSearchDialog(
           onLocationSelected: (Map<String, dynamic> location) {
+            log('Selected Location Coordinates:');
+            log('Latitude: ${location['lat']}');
+            log('Longitude: ${location['lon']}');
             setState(() {
               _locationController.text = location['display_name'];
               // You can also store lat/lon if needed
               // _latitudeController.text = location['lat'];
               // _longitudeController.text = location['lon'];
+
+              _selectedLatitude = location['lat'] as double; // Cast to double
+              _selectedLongitude = location['lon'] as double; // Cast to double
             });
             Navigator.of(dialogContext).pop();
           },
@@ -344,7 +356,7 @@ class _EnterJobDetailsScreenState extends State<EnterJobDetailsScreen> {
   final TextEditingController _descriptionController = TextEditingController();
 
   final TextEditingController _key_responsibilities = TextEditingController();
-  final TextEditingController _FixedSalaryController = TextEditingController();
+
   final TextEditingController _salaryFromController = TextEditingController();
   final TextEditingController _salaryToController = TextEditingController();
   late TextEditingController _locationController = TextEditingController();
@@ -389,10 +401,7 @@ class _EnterJobDetailsScreenState extends State<EnterJobDetailsScreen> {
       appBar: AppBar(
         centerTitle: true,
         title: InkWell(
-          onTap: () {
-            log("Selected Job Type ID: $_selectedJobTypeId");
-            log("Selected Work Mode: $_selectedWorkMode");
-          },
+          onTap: () {},
           child: Text(
             "Enter some details",
             style: TextStyle(fontSize: 20.sp, fontWeight: FontWeight.w600),
@@ -573,22 +582,7 @@ class _EnterJobDetailsScreenState extends State<EnterJobDetailsScreen> {
                         value == null || value.isEmpty ? 'Required' : null,
                   ),
                   SizedBox(height: 18.h),
-                  Text(
-                    "Fixed Salary",
-                    style:
-                        TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w700),
-                  ),
-                  SizedBox(
-                    height: 5.h,
-                  ),
-                  _textFields(
-                    context,
-                    double.infinity,
-                    "fixed salary",
-                    50,
-                    _FixedSalaryController,
-                  ),
-                  SizedBox(height: 18.h),
+
                   Row(children: [
                     Expanded(
                       child: Column(
@@ -676,6 +670,9 @@ class _EnterJobDetailsScreenState extends State<EnterJobDetailsScreen> {
                             setState(() {
                               _locationController.text =
                                   locationProvider.cityName;
+                              log('Current Location Coordinates:');
+                              log('Latitude: ${locationProvider.latitude}');
+                              log('Longitude: ${locationProvider.longitude}');
                             });
                           }
                         },
@@ -757,6 +754,8 @@ class _EnterJobDetailsScreenState extends State<EnterJobDetailsScreen> {
                               String formatted =
                                   '${selectedYear!}-${selectedMonth!.toString().padLeft(2, '0')}-${selectedDay!.toString().padLeft(2, '0')}';
                               await context.read<AddJobController>().onAddJob(
+                                 latitude: formatCoordinateToString(_selectedLatitude),
+  longitude: formatCoordinateToString(_selectedLongitude),
                                     title: _jobTitleController.text,
                                     description: _descriptionController.text,
                                     job_date: formatted,
@@ -1133,8 +1132,8 @@ class _LocationSearchDialogState extends State<LocationSearchDialog> {
             final locationData = {
               'display_name': formattedAddress,
               'description': description,
-              'lat': location['lat'].toString(),
-              'lon': location['lng'].toString(),
+              'lat': location['lat'],
+              'lon': location['lng'],
               'place_id': placeId,
             };
 
@@ -1142,6 +1141,9 @@ class _LocationSearchDialogState extends State<LocationSearchDialog> {
               _isLoading = false;
             });
 
+            log('Selected Location Coordinates:');
+            log('Latitude: ${location['lat']}');
+            log('Longitude: ${location['lng']}');
             widget.onLocationSelected(locationData);
           } else {
             throw Exception('Invalid location data received');

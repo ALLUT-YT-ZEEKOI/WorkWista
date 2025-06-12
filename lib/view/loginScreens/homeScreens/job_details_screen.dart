@@ -278,7 +278,7 @@ class _JobDetailsScreenState extends State<JobDetailsScreen> {
                 ],
               ),
               Text(
-                "1 vacancy for Sales Staff",
+                job?.title ?? "",
                 style: TextStyle(
                     color: Colors.black,
                     fontSize: 16.sp,

@@ -42,17 +42,17 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions web = FirebaseOptions(
     apiKey: 'AIzaSyAE-rhSbDBSJ04AufKlvSKa7ctdC1rNIdI',
-    appId: '1:193049406964:web:3e5db236de13504e1e5da1',
+    appId: '1:193049406964:web:c00c600edad22e141e5da1',
     messagingSenderId: '193049406964',
     projectId: 'push-notification-de9fc',
     authDomain: 'push-notification-de9fc.firebaseapp.com',
     storageBucket: 'push-notification-de9fc.firebasestorage.app',
-    measurementId: 'G-Q7HRP2T4Q0',
+    measurementId: 'G-7JMJF4BQJW',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyAKdsPVBqUlxbB7jbjIm8Vhx3l1DNdkBkM',
-    appId: '1:193049406964:android:e1e641432397bc2c1e5da1',
+    appId: '1:193049406964:android:921d774f1c9ffa5d1e5da1',
     messagingSenderId: '193049406964',
     projectId: 'push-notification-de9fc',
     storageBucket: 'push-notification-de9fc.firebasestorage.app',
@@ -60,7 +60,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyBzCc9P0qY9GF-jbCufB2Q4QCwdibP4pkc',
-    appId: '1:193049406964:ios:530a35d426966cfd1e5da1',
+    appId: '1:193049406964:ios:8bcccf8414748d6f1e5da1',
     messagingSenderId: '193049406964',
     projectId: 'push-notification-de9fc',
     storageBucket: 'push-notification-de9fc.firebasestorage.app',
@@ -69,7 +69,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions macos = FirebaseOptions(
     apiKey: 'AIzaSyBzCc9P0qY9GF-jbCufB2Q4QCwdibP4pkc',
-    appId: '1:193049406964:ios:530a35d426966cfd1e5da1',
+    appId: '1:193049406964:ios:8bcccf8414748d6f1e5da1',
     messagingSenderId: '193049406964',
     projectId: 'push-notification-de9fc',
     storageBucket: 'push-notification-de9fc.firebasestorage.app',
@@ -78,11 +78,12 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions windows = FirebaseOptions(
     apiKey: 'AIzaSyAE-rhSbDBSJ04AufKlvSKa7ctdC1rNIdI',
-    appId: '1:193049406964:web:1801842e082e5d881e5da1',
+    appId: '1:193049406964:web:4c5bad50ad5678761e5da1',
     messagingSenderId: '193049406964',
     projectId: 'push-notification-de9fc',
     authDomain: 'push-notification-de9fc.firebaseapp.com',
     storageBucket: 'push-notification-de9fc.firebasestorage.app',
-    measurementId: 'G-CZE2DEMW4G',
+    measurementId: 'G-7M5WMYXNZE',
   );
+
 }

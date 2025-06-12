@@ -14,6 +14,8 @@ class AddJobController with ChangeNotifier {
   String? errorMessage;
 
   Future onAddJob({
+    required String latitude,
+    required String longitude,
     required String title,
     required String description,
     required String manual_location,
@@ -36,6 +38,8 @@ class AddJobController with ChangeNotifier {
 
     try {
       var response = await _makeJobPostRequest(
+        latitude,
+        longitude,
         accessToken,
         title,
         description,
@@ -54,6 +58,8 @@ class AddJobController with ChangeNotifier {
         final newAccessToken = await _refreshToken(refreshToken);
         if (newAccessToken != null) {
           response = await _makeJobPostRequest(
+              latitude,
+              longitude,
               newAccessToken,
               title,
               description,
@@ -104,6 +110,8 @@ class AddJobController with ChangeNotifier {
   }
 
   Future<http.Response> _makeJobPostRequest(
+    String latitude,
+    String longitude,
     String token,
     String title,
     String description,
@@ -118,7 +126,8 @@ class AddJobController with ChangeNotifier {
   ) async {
     final url = Uri.parse("https://workwista.com/job/create/");
     var request = http.MultipartRequest('POST', url);
-
+    request.fields['latitude'] = latitude;
+    request.fields['longitude'] = longitude;
     request.fields['title'] = title;
     request.fields['description'] = description;
     request.fields['job_date'] = job_date;

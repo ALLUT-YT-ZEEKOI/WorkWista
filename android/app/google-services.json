@@ -7,9 +7,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:193049406964:android:e1e641432397bc2c1e5da1",
+        "mobilesdk_app_id": "1:193049406964:android:921d774f1c9ffa5d1e5da1",
         "android_client_info": {
-          "package_name": "com.example.workwista"
+          "package_name": "com.app.workwista"
         }
       },
       "oauth_client": [],

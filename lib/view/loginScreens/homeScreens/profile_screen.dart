@@ -37,7 +37,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
     //show error if no data
     if (controller.ProfileDetails == null) {
       return Center(
-        child: Text("Failed to load profile details"),
+        child: Container(
+          width: double.infinity.w,
+          height: double.infinity.h,
+          color: Colors.white,
+          child: Center(
+            child: Text(
+              "Unable to load server, please try again later",
+              style: TextStyle(fontSize: 12, color: Colors.black),
+            ),
+          ),
+        ),
       );
     }
 

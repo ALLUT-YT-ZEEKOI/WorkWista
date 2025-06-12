@@ -9,11 +9,15 @@ class LocationProvider with ChangeNotifier {
   String _errorMessage = '';
   final loc.Location _location = loc.Location();
   bool _permissionRequested = false;
+  double? _latitude; // Add this
+  double? _longitude; // Add this
 
   bool get isLoadingLocation => _isLoadingLocation;
   String get cityName => _cityName;
   String get coordinates => _coordinates;
   String get errorMessage => _errorMessage;
+    double? get latitude => _latitude; // Add this getter
+  double? get longitude => _longitude; // Add this getter
 
   Future<void> getCurrentLocationAndCity() async {
     if (!_isLoadingLocation && _cityName != 'not found') return;
@@ -78,6 +82,9 @@ class LocationProvider with ChangeNotifier {
         throw Exception('Invalid location data received');
       }
 
+        // Store latitude and longitude
+      _latitude = locationData.latitude;
+      _longitude = locationData.longitude;
       // Get city name from coordinates
       await _getCityFromCoordinates(
         locationData.latitude!,
