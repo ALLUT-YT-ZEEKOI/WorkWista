@@ -95,9 +95,8 @@ class _JobStatusScreenState extends State<JobStatusScreen> {
               padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 27.h),
               child: RefreshIndicator(
                 onRefresh: () async {
-                  final controller = Provider.of<JobsScreenController>(
-                      context,
-                      listen: false);
+                  final controller =
+                      Provider.of<JobsScreenController>(context, listen: false);
                   // STEP 1: Call both APIs to get all data
                   await controller.getMyJobs();
                   await controller.getPostedJobs(); // This was missing!
@@ -164,7 +163,7 @@ class _JobStatusScreenState extends State<JobStatusScreen> {
                         _buildCompletedJobCard(context, completedJobData),
                         SizedBox(height: 35.h),
                       ],
-            
+
                       // RECRUITER JOBS PAGEVIEW
                       if (recruiterJobs.isNotEmpty) ...[
                         Text("Jobs you posted",
@@ -197,7 +196,7 @@ class _JobStatusScreenState extends State<JobStatusScreen> {
                         ),
                         SizedBox(height: 35.h),
                       ],
-            
+
                       // POSTED JOBS LIST
                       Text(
                         "Posted Jobs",
@@ -207,19 +206,19 @@ class _JobStatusScreenState extends State<JobStatusScreen> {
                             fontWeight: FontWeight.w500),
                       ),
                       SizedBox(height: 15.h),
-            
+
                       // Convert the list into a scroll-friendly structure
                       Consumer<JobsScreenController>(
                         builder: (context, controller, _) {
                           final postedJobsListWidget =
                               _buildPostedJobsList(controller);
-            
+
                           // If it's already a scrollable ListView, extract the children instead
                           if (controller.postedJobsList.isEmpty ||
                               controller.isloading) {
                             return postedJobsListWidget;
                           }
-            
+
                           return ListView.separated(
                             shrinkWrap: true,
                             physics: NeverScrollableScrollPhysics(),
@@ -238,15 +237,14 @@ class _JobStatusScreenState extends State<JobStatusScreen> {
                                       builder: (context) => JobRequestsScreen(
                                         salary_from: postedJob.salary_from ??
                                             "not found",
-                                        salary_to: postedJob.salary_to ??
-                                            "not founf",
+                                        salary_to:
+                                            postedJob.salary_to ?? "not founf",
                                         jobdate: postedJob.jobDate,
                                         jobTitle:
                                             postedJob.title ?? "not found",
                                         reqCount: postedJob.requestsCount,
                                         jobId: postedJob.id!,
-                                        is_closed_job:
-                                            postedJob.is_closed_job,
+                                        is_closed_job: postedJob.is_closed_job,
                                       ),
                                     ),
                                   ).then((_) {
@@ -625,7 +623,9 @@ class _JobStatusScreenState extends State<JobStatusScreen> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => PaymentScreen(),
+            builder: (context) => PaymentScreen(
+              id: jobList.id ?? "",
+            ),
           ),
         );
       }

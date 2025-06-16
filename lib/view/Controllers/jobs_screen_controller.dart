@@ -673,36 +673,62 @@ class JobsScreenController with ChangeNotifier {
     }
   }
 
-  Future<void> getJobsByCategory(String categoryId) async {
-    isloading = true;
-    notifyListeners();
+Future<void> getJobsByCategory(String categoryId) async {
+  isloading = true;
+  errorMessage = null;
+  notifyListeners();
 
-    final url =
-        Uri.parse("https://workwista.com/job/category/job/$categoryId/");
+  try {
+    final prefs = await SharedPreferences.getInstance();
+    String accessToken = prefs.getString("access") ?? "";
 
-    try {
-      final response = await http.get(url);
-      if (response.statusCode == 200) {
-        final jsonData = json.decode(response.body);
-        final List<JobItem> fetchedJobs = (jsonData['data'] as List)
-            .map((item) => JobItem.fromJson(item))
-            .toList();
+    // First request
+    var response = await _makeGetJobsByCategoryRequest(categoryId, accessToken);
 
-        log("response : ${response.body}");
+    // If unauthorized (401), try refreshing the token
+    if (response.statusCode == 401) {
+      log("Access token expired, attempting refresh...");
+      final refreshToken = prefs.getString("refresh") ?? "";
 
-        jobsList = fetchedJobs;
-        log(jobsList.toString());
-      } else {
-        _handleApiError(response.statusCode);
+      // Attempt token refresh
+      final newAccessToken = await _refreshToken(refreshToken);
+      if (newAccessToken != null) {
+        response = await _makeGetJobsByCategoryRequest(categoryId, newAccessToken);
       }
-    } catch (e) {
-      log("Error fetching jobs by category: $e");
-      jobsList = [];
-    } finally {
-      isloading = false;
-      notifyListeners();
     }
+
+    if (response.statusCode == 200) {
+      final jsonData = json.decode(response.body);
+      final List<JobItem> fetchedJobs = (jsonData['data'] as List)
+          .map((item) => JobItem.fromJson(item))
+          .toList();
+
+      log("response: ${response.body}");
+      jobsList = fetchedJobs;
+    } else {
+      _handleApiError(response.statusCode);
+      jobsList = [];
+    }
+  } catch (e) {
+    log("Error fetching jobs by category: $e");
+    errorMessage = "Error: ${e.toString()}";
+    jobsList = [];
+  } finally {
+    isloading = false;
+    notifyListeners();
   }
+}
+Future<http.Response> _makeGetJobsByCategoryRequest(String categoryId, String accessToken) async {
+  final url = Uri.parse("https://workwista.com/job/category/job/$categoryId/");
+  return await http.get(
+    url,
+    headers: {
+      "Authorization": "Bearer $accessToken",
+      "Content-Type": "application/json",
+    },
+  );
+}
+
 
   void onCategorySelected(int index) {
     selectedCategoryIndex = index;

@@ -12,12 +12,13 @@ import 'package:workwista/view/Controllers/jobs_screen_controller.dart';
 import 'package:workwista/view/Controllers/location_provider_controller.dart';
 import 'package:workwista/view/Controllers/login_screen_controller.dart';
 import 'package:workwista/view/Controllers/my_jobs_screen_controller.dart';
+import 'package:workwista/view/Controllers/payment_controller.dart';
 import 'package:workwista/view/Controllers/profile_screen_controller.dart';
 import 'package:workwista/view/Controllers/register_screen_controller.dart';
 import 'package:workwista/view/loginScreens/splash_screen.dart';
 
-void main()async {
-    WidgetsFlutterBinding.ensureInitialized();
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
 
   await FirebaseMessaging.instance.requestPermission(
@@ -25,11 +26,9 @@ void main()async {
     badge: true,
     sound: true,
   );
-   setupFirebaseNotifications();
+  setupFirebaseNotifications();
   runApp(const MyApp());
 }
-
-
 
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
     FlutterLocalNotificationsPlugin();
@@ -65,9 +64,6 @@ void setupFirebaseNotifications() {
   });
 }
 
-
-
-
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -102,8 +98,11 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(
           create: (context) => CompleteProfileController(),
         ),
-ChangeNotifierProvider(
+        ChangeNotifierProvider(
           create: (context) => MyJobsScreenController(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => PaymentController(),
         ),
       ],
       child: ScreenUtilInit(

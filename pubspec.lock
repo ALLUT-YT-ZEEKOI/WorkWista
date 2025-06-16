@@ -230,6 +230,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_cashfree_pg_sdk:
+    dependency: "direct main"
+    description:
+      name: flutter_cashfree_pg_sdk
+      sha256: "4e44cec051a2ce8689af85889a251b7f5794ee204d23b5c4f63af777d0e1c8b1"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.2.8+46"
   flutter_lints:
     dependency: "direct dev"
     description:
