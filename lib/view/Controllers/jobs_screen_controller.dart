@@ -12,11 +12,14 @@ import 'package:workwista/view/Model/job_item_model.dart';
 import 'package:workwista/view/Model/job_requests_model.dart';
 import 'package:workwista/view/Model/job_types_model.dart';
 import 'package:workwista/view/Model/jobs_by_category_model.dart';
+import 'package:workwista/view/Model/job_item_model.dart';
 import 'package:workwista/view/Model/my_jobs_model.dart';
 import 'package:workwista/view/Model/posted_jobs_model.dart';
 
+
 class JobsScreenController with ChangeNotifier {
   List<JobItem> jobsList = [];
+   List<JobItem> categoryJobsList = [];
   List<JobItem> SjobsList = [];
   List<AllCategories> SCategoryList = [];
   List<AllCategories> categoriesList = [];
@@ -680,9 +683,15 @@ class JobsScreenController with ChangeNotifier {
     try {
       final response = await http.get(url);
       if (response.statusCode == 200) {
-        final JobsByCategoryModel jobsByCategoryModel =
-            jobsByCategoryModelFromJson(response.body);
-        jobsList = jobsByCategoryModel.data ?? [];
+        final jsonData = json.decode(response.body);
+        final List<JobItem> fetchedJobs = (jsonData['data'] as List)
+            .map((item) => JobItem.fromJson(item))
+            .toList();
+
+        log("response : ${response.body}");
+
+        jobsList = fetchedJobs;
+        log(jobsList.toString());
       } else {
         _handleApiError(response.statusCode);
       }

@@ -91,159 +91,176 @@ class _JobStatusScreenState extends State<JobStatusScreen> {
           ),
           body: Padding(
             padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 0.h),
-            child: SingleChildScrollView(
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 27.h),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // JOBBER JOBS PAGEVIEW
-                    if (jobberJobs.isNotEmpty) ...[
-                      Text("Jobs you are working on",
-                          style: TextStyle(
-                              fontSize: 18.sp,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.black)),
-                      SizedBox(height: 10.h),
-                      SizedBox(
-                        height: 230,
-                        child: PageView(
-                          controller: _pageController,
-                          onPageChanged: (index) {
-                            setState(() {
-                              _currentPage = index;
-                            });
-                          },
-                          children: jobberJobs
-                              .map((job) => _buildJobCard(context, job))
-                              .toList(),
-                        ),
-                      ),
-                      SizedBox(height: 8.h),
-                      Center(
-                        child: SmoothPageIndicator(
-                          controller: _pageController,
-                          count: jobberJobs.length,
-                          effect: WormEffect(
-                            dotHeight: 3.h,
-                            dotWidth: 19.w,
-                            activeDotColor: ColorConstants.indicatorBlue,
-                            dotColor: Color(0xffD9D9D9),
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 35.h),
-                    ],
-                    // COMPLETED JOB SECTION
-                    if (completedJobData != null &&
-                        completedJobData.isUserJobber == true) ...[
-                      InkWell(
-                        onTap: () {
-                          log(completedJobData.isUserJobber.toString());
-                        },
-                        child: Text("Completed Jobs",
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 27.h),
+              child: RefreshIndicator(
+                onRefresh: () async {
+                  final controller = Provider.of<JobsScreenController>(
+                      context,
+                      listen: false);
+                  // STEP 1: Call both APIs to get all data
+                  await controller.getMyJobs();
+                  await controller.getPostedJobs(); // This was missing!
+                  setState(() {});
+                },
+                color: Colors.blue, // Customize the refresh indicator color
+                backgroundColor: Colors.white,
+                child: SingleChildScrollView(
+                  physics: AlwaysScrollableScrollPhysics(),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // JOBBER JOBS PAGEVIEW
+                      if (jobberJobs.isNotEmpty) ...[
+                        Text("Jobs you are working on",
                             style: TextStyle(
                                 fontSize: 18.sp,
                                 fontWeight: FontWeight.w600,
                                 color: Colors.black)),
-                      ),
-                      SizedBox(height: 10.h),
-                      _buildCompletedJobCard(context, completedJobData),
-                      SizedBox(height: 35.h),
-                    ],
-
-                    // RECRUITER JOBS PAGEVIEW
-                    if (recruiterJobs.isNotEmpty) ...[
-                      Text("Jobs you posted",
-                          style: TextStyle(
-                              fontSize: 18.sp,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.black)),
-                      SizedBox(height: 10.h),
-                      SizedBox(
-                        height: 230,
-                        child: PageView.builder(
-                          controller: _pageController2,
-                          itemCount: recruiterJobs.length,
-                          itemBuilder: (context, index) =>
-                              _buildJobCard(context, recruiterJobs[index]),
-                        ),
-                      ),
-                      SizedBox(height: 8.h),
-                      Center(
-                        child: SmoothPageIndicator(
-                          controller: _pageController2,
-                          count: recruiterJobs.length,
-                          effect: WormEffect(
-                            dotHeight: 3.h,
-                            dotWidth: 19.w,
-                            activeDotColor: ColorConstants.indicatorBlue,
-                            dotColor: Color(0xffD9D9D9),
+                        SizedBox(height: 10.h),
+                        SizedBox(
+                          height: 230,
+                          child: PageView(
+                            controller: _pageController,
+                            onPageChanged: (index) {
+                              setState(() {
+                                _currentPage = index;
+                              });
+                            },
+                            children: jobberJobs
+                                .map((job) => _buildJobCard(context, job))
+                                .toList(),
                           ),
                         ),
-                      ),
-                      SizedBox(height: 35.h),
-                    ],
-
-                    // POSTED JOBS LIST
-                    Text(
-                      "Posted Jobs",
-                      style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 20,
-                          fontWeight: FontWeight.w500),
-                    ),
-                    SizedBox(height: 15.h),
-
-                    // Convert the list into a scroll-friendly structure
-                    Consumer<JobsScreenController>(
-                      builder: (context, controller, _) {
-                        final postedJobsListWidget =
-                            _buildPostedJobsList(controller);
-
-                        // If it's already a scrollable ListView, extract the children instead
-                        if (controller.postedJobsList.isEmpty ||
-                            controller.isloading) {
-                          return postedJobsListWidget;
-                        }
-
-                        return ListView.separated(
-                          shrinkWrap: true,
-                          physics: NeverScrollableScrollPhysics(),
-                          itemCount: controller.postedJobsList.length,
-                          separatorBuilder: (context, index) => Column(
-                            children: [Divider(), SizedBox(height: 10.h)],
+                        SizedBox(height: 8.h),
+                        Center(
+                          child: SmoothPageIndicator(
+                            controller: _pageController,
+                            count: jobberJobs.length,
+                            effect: WormEffect(
+                              dotHeight: 3.h,
+                              dotWidth: 19.w,
+                              activeDotColor: ColorConstants.indicatorBlue,
+                              dotColor: Color(0xffD9D9D9),
+                            ),
                           ),
-                          itemBuilder: (context, index) {
-                            final postedJob = controller.postedJobsList[index];
-                            return InkWell(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => JobRequestsScreen(
-                                      salary_from:
-                                          postedJob.salary_from ?? "not found",
-                                      salary_to:
-                                          postedJob.salary_to ?? "not founf",
-                                      jobdate: postedJob.jobDate,
-                                      jobTitle: postedJob.title ?? "not found",
-                                      reqCount: postedJob.requestsCount,
-                                      jobId: postedJob.id!,
-                                      is_closed_job: postedJob.is_closed_job,
-                                    ),
-                                  ),
-                                ).then((_) {
-                                  controller.getPostedJobs();
-                                });
-                              },
-                              child: _buildPostedJobsCard(postedJob),
-                            );
+                        ),
+                        SizedBox(height: 35.h),
+                      ],
+                      // COMPLETED JOB SECTION
+                      if (completedJobData != null &&
+                          completedJobData.isUserJobber == true) ...[
+                        InkWell(
+                          onTap: () {
+                            log(completedJobData.isUserJobber.toString());
                           },
-                        );
-                      },
-                    ),
-                  ],
+                          child: Text("Completed Jobs",
+                              style: TextStyle(
+                                  fontSize: 18.sp,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.black)),
+                        ),
+                        SizedBox(height: 10.h),
+                        _buildCompletedJobCard(context, completedJobData),
+                        SizedBox(height: 35.h),
+                      ],
+            
+                      // RECRUITER JOBS PAGEVIEW
+                      if (recruiterJobs.isNotEmpty) ...[
+                        Text("Jobs you posted",
+                            style: TextStyle(
+                                fontSize: 18.sp,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.black)),
+                        SizedBox(height: 10.h),
+                        SizedBox(
+                          height: 230,
+                          child: PageView.builder(
+                            controller: _pageController2,
+                            itemCount: recruiterJobs.length,
+                            itemBuilder: (context, index) =>
+                                _buildJobCard(context, recruiterJobs[index]),
+                          ),
+                        ),
+                        SizedBox(height: 8.h),
+                        Center(
+                          child: SmoothPageIndicator(
+                            controller: _pageController2,
+                            count: recruiterJobs.length,
+                            effect: WormEffect(
+                              dotHeight: 3.h,
+                              dotWidth: 19.w,
+                              activeDotColor: ColorConstants.indicatorBlue,
+                              dotColor: Color(0xffD9D9D9),
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 35.h),
+                      ],
+            
+                      // POSTED JOBS LIST
+                      Text(
+                        "Posted Jobs",
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 20,
+                            fontWeight: FontWeight.w500),
+                      ),
+                      SizedBox(height: 15.h),
+            
+                      // Convert the list into a scroll-friendly structure
+                      Consumer<JobsScreenController>(
+                        builder: (context, controller, _) {
+                          final postedJobsListWidget =
+                              _buildPostedJobsList(controller);
+            
+                          // If it's already a scrollable ListView, extract the children instead
+                          if (controller.postedJobsList.isEmpty ||
+                              controller.isloading) {
+                            return postedJobsListWidget;
+                          }
+            
+                          return ListView.separated(
+                            shrinkWrap: true,
+                            physics: NeverScrollableScrollPhysics(),
+                            itemCount: controller.postedJobsList.length,
+                            separatorBuilder: (context, index) => Column(
+                              children: [Divider(), SizedBox(height: 10.h)],
+                            ),
+                            itemBuilder: (context, index) {
+                              final postedJob =
+                                  controller.postedJobsList[index];
+                              return InkWell(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => JobRequestsScreen(
+                                        salary_from: postedJob.salary_from ??
+                                            "not found",
+                                        salary_to: postedJob.salary_to ??
+                                            "not founf",
+                                        jobdate: postedJob.jobDate,
+                                        jobTitle:
+                                            postedJob.title ?? "not found",
+                                        reqCount: postedJob.requestsCount,
+                                        jobId: postedJob.id!,
+                                        is_closed_job:
+                                            postedJob.is_closed_job,
+                                      ),
+                                    ),
+                                  ).then((_) {
+                                    controller.getPostedJobs();
+                                  });
+                                },
+                                child: _buildPostedJobsCard(postedJob),
+                              );
+                            },
+                          );
+                        },
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -461,7 +478,6 @@ class _JobStatusScreenState extends State<JobStatusScreen> {
                             color: Colors.grey[600]),
                       ),
                       SizedBox(height: 4.h),
-                     
                     ],
                   ),
                   Spacer(),
@@ -531,8 +547,6 @@ class _JobStatusScreenState extends State<JobStatusScreen> {
                     ),
                 ],
               ),
-             
-            
               SizedBox(height: 2.h),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -665,24 +679,22 @@ class _JobStatusScreenState extends State<JobStatusScreen> {
         final postedJob = controller.postedJobsList[index]; // Correct data
         return InkWell(
           onTap: () {
-           
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => JobRequestsScreen(
-                    salary_from: postedJob.salary_from ?? "not found",
-                    salary_to: postedJob.salary_to ?? "not found",
-                    jobTitle: postedJob.title ?? "not found",
-                    jobdate: postedJob.jobDate,
-                    reqCount: postedJob.requestsCount,
-                    jobId: postedJob.id!,
-                    is_closed_job: postedJob.is_closed_job,
-                  ),
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => JobRequestsScreen(
+                  salary_from: postedJob.salary_from ?? "not found",
+                  salary_to: postedJob.salary_to ?? "not found",
+                  jobTitle: postedJob.title ?? "not found",
+                  jobdate: postedJob.jobDate,
+                  reqCount: postedJob.requestsCount,
+                  jobId: postedJob.id!,
+                  is_closed_job: postedJob.is_closed_job,
                 ),
-              ).then((_) {
-                controller.getPostedJobs();
-              });
-         
+              ),
+            ).then((_) {
+              controller.getPostedJobs();
+            });
           },
           child: _buildPostedJobsCard(postedJob),
         );

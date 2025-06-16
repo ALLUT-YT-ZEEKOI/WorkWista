@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:provider/provider.dart';
 import 'package:workwista/view/Controllers/jobs_screen_controller.dart';
+import 'package:workwista/view/Model/job_item_model.dart';
 import 'package:workwista/view/Wdigets/jobofferscard.dart';
 import 'package:workwista/view/loginScreens/homeScreens/job_details_screen.dart';
 
@@ -58,7 +59,7 @@ class SelectedCategoryJobsScreen extends StatelessWidget {
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) =>
-                                        JobDetailsScreen(jobId: jobItem.id),
+                                        JobDetailsScreen(jobId:  jobItem.id ),
                                   ));
                             },
                             child: JobOffersCard(
