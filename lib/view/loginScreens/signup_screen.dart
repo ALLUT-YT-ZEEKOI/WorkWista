@@ -177,8 +177,61 @@ class _SignupscreenState extends State<Signupscreen> {
                     // Phone Number Field
                     Text('Phone Number', style: AppTextStyle.labeltext),
                     SizedBox(height: 5.h),
-                    _textFields(
-                        context, double.infinity, '', _phoneNumberController),
+                    Row(
+                      children: [
+                        // Country code container
+                        Container(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 12.w, vertical: 15.h),
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                                color: ColorConstants.containerBorder),
+                            borderRadius: BorderRadius.circular(53.r),
+                            color: Colors.white,
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Container(
+                                width: 20.w,
+                                height: 14.h,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(2),
+                                  gradient: LinearGradient(
+                                    begin: Alignment.topCenter,
+                                    end: Alignment.bottomCenter,
+                                    colors: [
+                                      Color(0xFFFF9933),
+                                      Color(0xFFFF9933),
+                                      Colors.white,
+                                      Colors.white,
+                                      Color(0xFF138808),
+                                      Color(0xFF138808),
+                                    ],
+                                    stops: [0, 0.33, 0.33, 0.66, 0.66, 1],
+                                  ),
+                                ),
+                              ),
+                              SizedBox(width: 8.w),
+                              Text('+91',
+                                  style:
+                                      TextStyle(fontWeight: FontWeight.w500)),
+                            ],
+                          ),
+                        ),
+                        SizedBox(width: 8.w),
+                        // Phone number input field
+                        Expanded(
+                          child: _textFields(
+                            context,
+                            double.infinity,
+                            'Enter phone number',
+                            _phoneNumberController,
+                            KeyBoardType: TextInputType.phone,
+                          ),
+                        ),
+                      ],
+                    ),
                     // Show error text below the field
                     if (controller.fieldErrors["phone_number"] != null)
                       Padding(

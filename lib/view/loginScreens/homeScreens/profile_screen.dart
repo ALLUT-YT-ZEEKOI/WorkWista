@@ -4,6 +4,8 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:workwista/Utils/color_constants.dart';
 import 'package:workwista/view/Controllers/profile_screen_controller.dart';
+import 'package:workwista/view/loginScreens/homeScreens/contact_us_screen.dart';
+import 'package:workwista/view/loginScreens/show_web_page.dart';
 import 'package:workwista/view/loginScreens/sign_in_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -61,8 +63,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ),
       ),
       body: SingleChildScrollView(
+        physics: AlwaysScrollableScrollPhysics(),
         child: Padding(
-          padding: EdgeInsets.symmetric(vertical: 0),
+          padding: EdgeInsets.symmetric(vertical: 10),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -185,7 +188,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     padding:
                         EdgeInsets.symmetric(vertical: 16.h, horizontal: 12.w),
                     width: 374.w,
-                    height: 415.h,
                     decoration: BoxDecoration(
                         border: Border.all(
                             width: 1.w, color: ColorConstants.descText),
@@ -364,44 +366,188 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         Divider(
                           thickness: 2.h,
                         ),
-                        Row(
-                          children: [
-                            Container(
-                              width: 36.w,
-                              height: 36.h,
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(33.r),
-                                  color: Color(0xffDAE1E7)),
-                              child: Icon(
-                                Icons.business_center_outlined,
-                                size: 22,
-                                color: Color(0xff92A5B5),
+                        InkWell(
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => ShowWebPage(
+                                    url: "https://workwista.com/privacy/",
+                                  ),
+                                ));
+                          },
+                          child: Row(
+                            children: [
+                              Container(
+                                width: 36.w,
+                                height: 36.h,
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(33.r),
+                                    color: Color(0xffDAE1E7)),
+                                child: Icon(
+                                  Icons.business_center_outlined,
+                                  size: 22,
+                                  color: Color(0xff92A5B5),
+                                ),
                               ),
-                            ),
-                            SizedBox(
-                              width: 10.w,
-                            ),
-                            Text(
-                              "Profession",
-                              style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 16.sp,
-                                  fontWeight: FontWeight.w500),
-                            ),
-                            Spacer(),
-                            Text(
-                              "Software developer",
-                              style: TextStyle(
-                                fontSize: 13.sp,
-                                fontWeight: FontWeight.w400,
-                                fontStyle: FontStyle.italic,
+                              SizedBox(
+                                width: 10.w,
                               ),
-                            ),
-                            Icon(
-                              Icons.arrow_forward_ios,
-                              size: 20.w,
-                            )
-                          ],
+                              Text(
+                                "Privacy & Policy",
+                                style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 16.sp,
+                                    fontWeight: FontWeight.w500),
+                              ),
+                              Spacer(),
+                              Icon(
+                                Icons.arrow_forward_ios,
+                                size: 20.w,
+                              )
+                            ],
+                          ),
+                        ),
+                        SizedBox(
+                          height: 15.h,
+                        ),
+                        Divider(
+                          thickness: 2.h,
+                        ),
+                        InkWell(
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => ShowWebPage(
+                                    url: "https://workwista.com/terms/",
+                                  ),
+                                ));
+                          },
+                          child: Row(
+                            children: [
+                              Container(
+                                width: 36.w,
+                                height: 36.h,
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(33.r),
+                                    color: Color(0xffDAE1E7)),
+                                child: Icon(
+                                  Icons.business_center_outlined,
+                                  size: 22,
+                                  color: Color(0xff92A5B5),
+                                ),
+                              ),
+                              SizedBox(
+                                width: 10.w,
+                              ),
+                              Text(
+                                "Terms & Conditions",
+                                style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 16.sp,
+                                    fontWeight: FontWeight.w500),
+                              ),
+                              Spacer(),
+                              Icon(
+                                Icons.arrow_forward_ios,
+                                size: 20.w,
+                              )
+                            ],
+                          ),
+                        ),
+                        SizedBox(
+                          height: 15.h,
+                        ),
+                        Divider(
+                          thickness: 2.h,
+                        ),
+                        InkWell(
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => ShowWebPage(
+                                    url: "https://workwista.com/refund/",
+                                  ),
+                                ));
+                          },
+                          child: Row(
+                            children: [
+                              Container(
+                                width: 36.w,
+                                height: 36.h,
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(33.r),
+                                    color: Color(0xffDAE1E7)),
+                                child: Icon(
+                                  Icons.business_center_outlined,
+                                  size: 22,
+                                  color: Color(0xff92A5B5),
+                                ),
+                              ),
+                              SizedBox(
+                                width: 10.w,
+                              ),
+                              Text(
+                                "Refund Policy",
+                                style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 16.sp,
+                                    fontWeight: FontWeight.w500),
+                              ),
+                              Spacer(),
+                              Icon(
+                                Icons.arrow_forward_ios,
+                                size: 20.w,
+                              )
+                            ],
+                          ),
+                        ),
+                        SizedBox(
+                          height: 15.h,
+                        ),
+                        Divider(
+                          thickness: 2.h,
+                        ),
+                        InkWell(
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => ContactUsScreen()));
+                          },
+                          child: Row(
+                            children: [
+                              Container(
+                                width: 36.w,
+                                height: 36.h,
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(33.r),
+                                    color: Color(0xffDAE1E7)),
+                                child: Icon(
+                                  Icons.business_center_outlined,
+                                  size: 22,
+                                  color: Color(0xff92A5B5),
+                                ),
+                              ),
+                              SizedBox(
+                                width: 10.w,
+                              ),
+                              Text(
+                                "Contact us",
+                                style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 16.sp,
+                                    fontWeight: FontWeight.w500),
+                              ),
+                              Spacer(),
+                              Icon(
+                                Icons.arrow_forward_ios,
+                                size: 20.w,
+                              )
+                            ],
+                          ),
                         ),
                         SizedBox(
                           height: 15.h,

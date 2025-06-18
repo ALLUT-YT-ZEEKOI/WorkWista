@@ -741,13 +741,13 @@
     },
     {
       "name": "webview_flutter",
-      "rootUri": "file:///C:/Users/Hamad/AppData/Local/Pub/Cache/hosted/pub.dev/webview_flutter-4.12.0",
+      "rootUri": "file:///C:/Users/Hamad/AppData/Local/Pub/Cache/hosted/pub.dev/webview_flutter-4.13.0",
       "packageUri": "lib/",
       "languageVersion": "3.6"
     },
     {
       "name": "webview_flutter_android",
-      "rootUri": "file:///C:/Users/Hamad/AppData/Local/Pub/Cache/hosted/pub.dev/webview_flutter_android-4.6.0",
+      "rootUri": "file:///C:/Users/Hamad/AppData/Local/Pub/Cache/hosted/pub.dev/webview_flutter_android-4.7.0",
       "packageUri": "lib/",
       "languageVersion": "3.6"
     },
@@ -759,7 +759,7 @@
     },
     {
       "name": "webview_flutter_wkwebview",
-      "rootUri": "file:///C:/Users/Hamad/AppData/Local/Pub/Cache/hosted/pub.dev/webview_flutter_wkwebview-3.21.0",
+      "rootUri": "file:///C:/Users/Hamad/AppData/Local/Pub/Cache/hosted/pub.dev/webview_flutter_wkwebview-3.22.0",
       "packageUri": "lib/",
       "languageVersion": "3.5"
     },
@@ -788,7 +788,7 @@
       "languageVersion": "3.4"
     }
   ],
-  "generated": "2025-06-16T17:23:10.307185Z",
+  "generated": "2025-06-18T13:22:56.853264Z",
   "generator": "pub",
   "generatorVersion": "3.7.2",
   "flutterRoot": "file:///D:/flutter",

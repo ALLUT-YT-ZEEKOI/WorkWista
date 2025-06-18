@@ -11,8 +11,6 @@ import 'package:workwista/view/Model/job_completion_model.dart';
 import 'package:workwista/view/Model/job_item_model.dart';
 import 'package:workwista/view/Model/job_requests_model.dart';
 import 'package:workwista/view/Model/job_types_model.dart';
-import 'package:workwista/view/Model/jobs_by_category_model.dart';
-import 'package:workwista/view/Model/job_item_model.dart';
 import 'package:workwista/view/Model/my_jobs_model.dart';
 import 'package:workwista/view/Model/posted_jobs_model.dart';
 
