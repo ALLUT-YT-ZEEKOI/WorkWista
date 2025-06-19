@@ -12,10 +12,9 @@ class JobOffersCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final imageUrl = (jobItem.job_image!.isNotEmpty)
-        ? jobItem.job_image!
-            .replaceFirst("http://localhost", "https://workwista.com")
-        : 'https://i.ibb.co/G3fLN9bk/no-image.png';
+    final imageUrl = (jobItem.job_image?.isNotEmpty ?? false)
+    ? jobItem.job_image!.replaceFirst("http://localhost", "https://workwista.com")
+    : 'https://i.ibb.co/G3fLN9bk/no-image.png';
 
     return Container(
       height: 173.h,

@@ -128,12 +128,9 @@ class _DashboardState extends State<Dashboard>
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                CircleAvatar(
-                                  radius: 18.w,
-                                  child: Image(
-                                    image:
-                                        AssetImage('assets/workwista png.png'),
-                                  ),
+                                Image(
+                                  width: 25,
+                                  image: AssetImage('assets/workwista png.png'),
                                 ),
                                 Row(
                                   children: [

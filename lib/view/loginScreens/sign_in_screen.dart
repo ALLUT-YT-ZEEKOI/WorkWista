@@ -44,8 +44,8 @@ class _SignInScreenState extends State<SignInScreen> {
                 SizedBox(height: 22.h),
                 Center(
                   child: Image.asset(
-                    'assets/workwista_text.png',
-                    width: screenWidth * 0.4.w,
+                    'assets/workwista png.png',
+                    width: screenWidth * 0.2.w,
                     fit: BoxFit.cover,
                   ),
                 ),

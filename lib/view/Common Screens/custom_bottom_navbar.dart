@@ -7,11 +7,11 @@ import 'package:workwista/view/loginScreens/homeScreens/dashboard_screen.dart';
 import 'package:workwista/view/loginScreens/homeScreens/job_status_screen.dart';
 import 'package:workwista/view/loginScreens/homeScreens/my_jobs_screen.dart';
 
-
 class CustomBottomNavbar extends StatefulWidget {
   final String? successMessage;
-   final int initialIndex;
-  const CustomBottomNavbar({this.successMessage, this.initialIndex = 0,super.key});
+  final int initialIndex;
+  const CustomBottomNavbar(
+      {this.successMessage, this.initialIndex = 0, super.key});
 
   @override
   State<CustomBottomNavbar> createState() => _CustomBottomNavbarState();
@@ -21,7 +21,7 @@ class _CustomBottomNavbarState extends State<CustomBottomNavbar> {
   @override
   void initState() {
     super.initState();
-     _currentIndex = widget.initialIndex;
+    _currentIndex = widget.initialIndex;
     if (widget.successMessage != null) {
       // Show SnackBar after widget builds
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -73,9 +73,7 @@ class _CustomBottomNavbarState extends State<CustomBottomNavbar> {
               label: 'Home',
             ),
             BottomNavigationBarItem(
-              icon: Image.asset(
-                'assets/job_status.png',
-              ),
+              icon: Icon(Icons.filter_tilt_shift),
               activeIcon: ShaderMask(
                   shaderCallback: (Rect bounds) {
                     return LinearGradient(
@@ -108,9 +106,7 @@ class _CustomBottomNavbarState extends State<CustomBottomNavbar> {
                 ),
                 label: ''),
             BottomNavigationBarItem(
-              icon: Image.asset(
-                'assets/categories_nofill.png',
-              ),
+              icon: Icon(Icons.category_outlined),
               activeIcon: ShaderMask(
                   shaderCallback: (Rect bounds) {
                     return LinearGradient(
@@ -128,25 +124,12 @@ class _CustomBottomNavbarState extends State<CustomBottomNavbar> {
             ),
             BottomNavigationBarItem(
               icon: Image.asset(
-                'assets/briefcase.png',
+                'assets/my_jobs_nofill.png',
               ),
-              activeIcon: ShaderMask(
-                  shaderCallback: (Rect bounds) {
-                    return LinearGradient(
-                      colors: [
-                        Color(0xFF48AAFF), // #48AAFF
-                        Color(0xFF2B6699), // #2B6699
-                      ],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ).createShader(bounds);
-                  },
-                  blendMode: BlendMode.srcIn,
-                  child: Image.asset(
-                    'assets/briefcase_fill.png',
-                    color: Colors
-                        .white, // Important: Set to white for gradient to show
-                  )),
+              activeIcon: Image.asset(
+                'assets/my_jobs_filled.png',
+                // Important: Set to white for gradient to show
+              ),
               label: 'My Jobs',
             ),
           ],

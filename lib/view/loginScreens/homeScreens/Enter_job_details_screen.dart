@@ -28,10 +28,10 @@ class EnterJobDetailsScreen extends StatefulWidget {
 }
 
 class _EnterJobDetailsScreenState extends State<EnterJobDetailsScreen> {
-String formatCoordinateToString(double? coordinate) {
-  if (coordinate == null) return '0.000000';
-  return coordinate.toStringAsFixed(6);
-}
+  String formatCoordinateToString(double? coordinate) {
+    if (coordinate == null) return '0.000000';
+    return coordinate.toStringAsFixed(6);
+  }
 
   DateTime currentDate = DateTime.now();
   late List<int> days;
@@ -359,6 +359,7 @@ String formatCoordinateToString(double? coordinate) {
 
   final TextEditingController _salaryFromController = TextEditingController();
   final TextEditingController _salaryToController = TextEditingController();
+  final TextEditingController _addressController = TextEditingController();
   late TextEditingController _locationController = TextEditingController();
 
   // Updated work modes to use String values
@@ -583,56 +584,25 @@ String formatCoordinateToString(double? coordinate) {
                   ),
                   SizedBox(height: 18.h),
 
-                  Row(children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "Salary from*",
-                            style: TextStyle(
-                                fontSize: 14.sp, fontWeight: FontWeight.w700),
-                          ),
-                          SizedBox(
-                            height: 5.h,
-                          ),
-                          _textFields(context, double.infinity, "salary from",
-                              50, _salaryFromController,
-                              validator: (value) =>
-                                  value == null || value.isEmpty
-                                      ? 'Required'
-                                      : null,
-                              inputType: TextInputType.numberWithOptions()),
-                        ],
-                      ),
-                    ),
-                    SizedBox(
-                      width: 5.w,
-                    ),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "Salary to*",
-                            style: TextStyle(
-                                fontSize: 14.sp, fontWeight: FontWeight.w700),
-                          ),
-                          SizedBox(
-                            height: 5.h,
-                          ),
-                          _textFields(context, double.infinity, "salary to", 50,
-                              _salaryToController,
-                              validator: (value) =>
-                                  value == null || value.isEmpty
-                                      ? 'Required'
-                                      : null,
-                              inputType: TextInputType.numberWithOptions()),
-                        ],
-                      ),
-                    ),
-                  ]),
+                  Text(
+                    "Enter Address*",
+                    style:
+                        TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w700),
+                  ),
+                  SizedBox(
+                    height: 5.h,
+                  ),
+                  _textFields(
+                    context,
+                    double.infinity,
+                    "address*",
+                    50,
+                    _addressController,
+                    validator: (value) =>
+                        value == null || value.isEmpty ? 'Required' : null,
+                  ),
                   SizedBox(height: 18.h),
+
                   Text(
                     "Enter your location*",
                     style:
@@ -703,6 +673,56 @@ String formatCoordinateToString(double? coordinate) {
                     )
                   ]),
                   SizedBox(height: 18.h),
+                  Row(children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Salary from*",
+                            style: TextStyle(
+                                fontSize: 14.sp, fontWeight: FontWeight.w700),
+                          ),
+                          SizedBox(
+                            height: 5.h,
+                          ),
+                          _textFields(context, double.infinity, "salary from",
+                              50, _salaryFromController,
+                              validator: (value) =>
+                                  value == null || value.isEmpty
+                                      ? 'Required'
+                                      : null,
+                              inputType: TextInputType.numberWithOptions()),
+                        ],
+                      ),
+                    ),
+                    SizedBox(
+                      width: 5.w,
+                    ),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Salary to*",
+                            style: TextStyle(
+                                fontSize: 14.sp, fontWeight: FontWeight.w700),
+                          ),
+                          SizedBox(
+                            height: 5.h,
+                          ),
+                          _textFields(context, double.infinity, "salary to", 50,
+                              _salaryToController,
+                              validator: (value) =>
+                                  value == null || value.isEmpty
+                                      ? 'Required'
+                                      : null,
+                              inputType: TextInputType.numberWithOptions()),
+                        ],
+                      ),
+                    ),
+                  ]),
+                  SizedBox(height: 18.h),
                   //here
                   _buildDateSection(),
                   SizedBox(height: 18.h),
@@ -754,8 +774,10 @@ String formatCoordinateToString(double? coordinate) {
                               String formatted =
                                   '${selectedYear!}-${selectedMonth!.toString().padLeft(2, '0')}-${selectedDay!.toString().padLeft(2, '0')}';
                               await context.read<AddJobController>().onAddJob(
-                                 latitude: formatCoordinateToString(_selectedLatitude),
-  longitude: formatCoordinateToString(_selectedLongitude),
+                                    latitude: formatCoordinateToString(
+                                        _selectedLatitude),
+                                    longitude: formatCoordinateToString(
+                                        _selectedLongitude),
                                     title: _jobTitleController.text,
                                     description: _descriptionController.text,
                                     job_date: formatted,

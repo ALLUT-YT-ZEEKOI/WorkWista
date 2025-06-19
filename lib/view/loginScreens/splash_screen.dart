@@ -48,19 +48,40 @@ class _SplashScreenState extends State<SplashScreen> {
           children: [
             Image(
               image: AssetImage('assets/workwista png.png'),
-              width: 100.w,
+              width: 150.w,
             ),
             SizedBox(height: 20.h), // Adds spacing
-            Image.asset(
-              'assets/workwista_text.png',
-              width: screenWidth * 0.4.w,
-              fit: BoxFit.cover,
+            //  Image.asset(
+            //     'assets/workwista_text.png',
+            //     width: screenWidth * 0.4.w,
+            //     fit: BoxFit.cover,
+            //   ),
+            Text(
+              'WORKWISTA',
+              style: TextStyle(
+                color: Color(0xff0A436A),
+                fontFamily: 'Clinton',
+                fontSize: 16.sp,
+              ),
             ),
-            SizedBox(height: 20.h), // Adds spacing
+            SizedBox(height: 15.h), // Adds spacing
             SizedBox(
               width: 300.w,
               child: Text(
-                'Find your next gig close by and connect with cool talent online!',
+                'Find your next gig close by and',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 16.sp,
+                  fontFamily: 'Mona Sans',
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
+            ),
+            SizedBox(
+              width: 300.w,
+              child: Text(
+                'connect with cool talent online!',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   color: Colors.black,

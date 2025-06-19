@@ -130,35 +130,40 @@ class _JobRequestsScreenState extends State<JobRequestsScreen> {
                           SizedBox(
                             width: 9.w,
                           ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                widget.jobTitle,
-                                style: TextStyle(
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  widget.jobTitle,
+                                  style: TextStyle(
                                     fontSize: 18.sp,
-                                    fontWeight: FontWeight.w500),
-                              ),
-                              Row(
-                                children: [
-                                  Image.asset(
-                                    color: Color(0xff92A5B5),
-                                    "assets/location2.png",
-                                    scale: 1.2,
+                                    fontWeight: FontWeight.w500,
                                   ),
-                                  SizedBox(
-                                    width: 2.w,
-                                  ),
-                                  Text(
-                                    "location",
-                                    style: TextStyle(
-                                        color: Color(0xff92A5B5),
-                                        fontSize: 14.sp,
-                                        fontWeight: FontWeight.w400),
-                                  )
-                                ],
-                              )
-                            ],
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 1,
+                                ),
+                                Row(
+                                  children: [
+                                    Image.asset(
+                                      color: Color(0xff92A5B5),
+                                      "assets/location2.png",
+                                      scale: 1.2,
+                                    ),
+                                    SizedBox(
+                                      width: 2.w,
+                                    ),
+                                    Text(
+                                      "location",
+                                      style: TextStyle(
+                                          color: Color(0xff92A5B5),
+                                          fontSize: 14.sp,
+                                          fontWeight: FontWeight.w400),
+                                    )
+                                  ],
+                                )
+                              ],
+                            ),
                           ),
                           Spacer(),
                           Column(
