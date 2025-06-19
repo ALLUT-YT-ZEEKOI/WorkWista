@@ -17,7 +17,7 @@ class _SignInScreenState extends State<SignInScreen> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
-  
+
   @override
   void dispose() {
     emailController.dispose();
@@ -44,7 +44,7 @@ class _SignInScreenState extends State<SignInScreen> {
                 SizedBox(height: 22.h),
                 Center(
                   child: Image.asset(
-                    'assets/Workwista (1).png',
+                    'assets/workwista_text.png',
                     width: screenWidth * 0.4.w,
                     fit: BoxFit.cover,
                   ),
@@ -70,7 +70,7 @@ class _SignInScreenState extends State<SignInScreen> {
                   ),
                 ),
                 SizedBox(height: 72.h),
-            
+
                 // Google sign-in button
                 InkWell(
                   onTap: () {
@@ -84,8 +84,8 @@ class _SignInScreenState extends State<SignInScreen> {
                           decoration: BoxDecoration(
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(35.w),
-                            border:
-                                Border.all(color: Color(0xFFBDBDBD), width: 1.w),
+                            border: Border.all(
+                                color: Color(0xFFBDBDBD), width: 1.w),
                           ),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -103,13 +103,14 @@ class _SignInScreenState extends State<SignInScreen> {
                         ),
                 ),
                 SizedBox(height: 20.h),
-            
+
                 // OR Divider
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Expanded(
-                        child: Divider(color: Color(0xFFCED7DE), thickness: 1.h)),
+                        child:
+                            Divider(color: Color(0xFFCED7DE), thickness: 1.h)),
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: 8.w),
                       child: Text('or',
@@ -119,11 +120,12 @@ class _SignInScreenState extends State<SignInScreen> {
                           )),
                     ),
                     Expanded(
-                        child: Divider(color: Color(0xFFCED7DE), thickness: 1.h)),
+                        child:
+                            Divider(color: Color(0xFFCED7DE), thickness: 1.h)),
                   ],
                 ),
                 SizedBox(height: 20.h),
-            
+
                 // Login Fields
                 Align(
                   alignment: Alignment.centerLeft,
@@ -169,7 +171,7 @@ class _SignInScreenState extends State<SignInScreen> {
                     ],
                   ),
                 ),
-                
+
                 // Display general error if exists - IMPROVED IMPLEMENTATION
                 if (controller.generalError != null)
                   Padding(
@@ -193,9 +195,9 @@ class _SignInScreenState extends State<SignInScreen> {
                       ),
                     ),
                   ),
-                
+
                 SizedBox(height: 20.h),
-            
+
                 // Sign up text
                 GestureDetector(
                   onTap: () {
@@ -230,7 +232,7 @@ class _SignInScreenState extends State<SignInScreen> {
                   ),
                 ),
                 SizedBox(height: 20.h),
-            
+
                 // Login button
                 controller.isloading
                     ? CircularProgressIndicator()
@@ -323,26 +325,28 @@ class _SignInScreenState extends State<SignInScreen> {
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(33.w),
                 borderSide: BorderSide(
-                  color: loginController.fieldErrors[fieldKey] != null 
-                      ? Colors.red 
+                  color: loginController.fieldErrors[fieldKey] != null
+                      ? Colors.red
                       : Color(0xFFBDBDBD),
-                  width: loginController.fieldErrors[fieldKey] != null ? 2.w : 1.w,
+                  width:
+                      loginController.fieldErrors[fieldKey] != null ? 2.w : 1.w,
                 ),
               ),
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(33.w),
                 borderSide: BorderSide(
-                  color: loginController.fieldErrors[fieldKey] != null 
-                      ? Colors.red 
+                  color: loginController.fieldErrors[fieldKey] != null
+                      ? Colors.red
                       : Color(0xFFBDBDBD),
-                  width: loginController.fieldErrors[fieldKey] != null ? 2.w : 1.w,
+                  width:
+                      loginController.fieldErrors[fieldKey] != null ? 2.w : 1.w,
                 ),
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(33.w),
                 borderSide: BorderSide(
-                  color: loginController.fieldErrors[fieldKey] != null 
-                      ? Colors.red 
+                  color: loginController.fieldErrors[fieldKey] != null
+                      ? Colors.red
                       : Color(0xFF757575),
                   width: 1.5.w,
                 ),

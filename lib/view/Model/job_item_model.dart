@@ -1,7 +1,7 @@
-
 class JobItem {
   String? id;
   String? title;
+  String? job_image;
   JobCategory? jobCategory;
   String? salary_from;
   String? salary_to;
@@ -15,6 +15,7 @@ class JobItem {
   JobItem({
     this.id,
     this.title,
+    this.job_image,
     this.jobCategory,
     this.salary_from,
     this.salary_to,
@@ -29,24 +30,33 @@ class JobItem {
   factory JobItem.fromJson(Map<String, dynamic> json) => JobItem(
         id: json["id"],
         title: json["title"],
-        jobCategory: json["job_category"] == null ? null : JobCategory.fromJson(json["job_category"]),
+        job_image: json["job_image"],
+        jobCategory: json["job_category"] == null
+            ? null
+            : JobCategory.fromJson(json["job_category"]),
         salary_from: json["salary_from"],
         salary_to: json["salary_to"],
-        manual_location:json["manual_location"],
+        manual_location: json["manual_location"],
         key_responsibility: json["key_responsibility"],
-        jobDate: json["job_date"] == null ? null : DateTime.parse(json["job_date"]),
-        jobCreated: json["job_created"] == null ? null : DateTime.parse(json["job_created"]),
-        jobType: json["job_type"] == null ? null : JobCategory.fromJson(json["job_type"]),
+        jobDate:
+            json["job_date"] == null ? null : DateTime.parse(json["job_date"]),
+        jobCreated: json["job_created"] == null
+            ? null
+            : DateTime.parse(json["job_created"]),
+        jobType: json["job_type"] == null
+            ? null
+            : JobCategory.fromJson(json["job_type"]),
         jobRecruter: json["job_recruter"],
       );
 
   Map<String, dynamic> toJson() => {
         "id": id,
         "title": title,
+        "job_image": job_image,
         "job_category": jobCategory?.toJson(),
         "salary_from": salary_from,
         "salary_to": salary_to,
-        "manual_location":manual_location,
+        "manual_location": manual_location,
         "key_responsibility": key_responsibility,
         "job_date": jobDate?.toIso8601String(),
         "job_created": jobCreated?.toIso8601String(),

@@ -41,19 +41,18 @@ class _SplashScreenState extends State<SplashScreen> {
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
-    
       body: Center(
         child: Column(
           mainAxisSize:
               MainAxisSize.min, // Keeps content centered in the middle
           children: [
             Image(
-              image: AssetImage('assets/Frame 26080486.png'),
+              image: AssetImage('assets/workwista png.png'),
               width: 100.w,
             ),
             SizedBox(height: 20.h), // Adds spacing
             Image.asset(
-              'assets/Workwista (1).png',
+              'assets/workwista_text.png',
               width: screenWidth * 0.4.w,
               fit: BoxFit.cover,
             ),

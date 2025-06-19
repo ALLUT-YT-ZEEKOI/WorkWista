@@ -12,6 +12,11 @@ class JobOffersCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final imageUrl = (jobItem.job_image!.isNotEmpty)
+        ? jobItem.job_image!
+            .replaceFirst("http://localhost", "https://workwista.com")
+        : 'https://i.ibb.co/G3fLN9bk/no-image.png';
+
     return Container(
       height: 173.h,
       width: 373.w,
@@ -52,9 +57,8 @@ class JobOffersCard extends StatelessWidget {
                         children: [
                           CircleAvatar(
                             radius: 24.w,
-                            foregroundImage: NetworkImage(
-                                'https://images.pexels.com/photos/614810/pexels-photo-614810.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2'),
-                            backgroundColor: Colors.red,
+                            foregroundImage: NetworkImage(imageUrl),
+                            backgroundColor: Colors.white,
                           ),
                           SizedBox(width: 4.w),
                           Expanded(

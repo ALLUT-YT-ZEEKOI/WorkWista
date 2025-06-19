@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 
 import 'package:workwista/Utils/color_constants.dart';
@@ -128,10 +129,10 @@ class _DashboardState extends State<Dashboard>
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 CircleAvatar(
-                                  radius: 22.w,
+                                  radius: 18.w,
                                   child: Image(
                                     image:
-                                        AssetImage('assets/Frame 26080486.png'),
+                                        AssetImage('assets/workwista png.png'),
                                   ),
                                 ),
                                 Row(
@@ -151,9 +152,11 @@ class _DashboardState extends State<Dashboard>
                                     //       Icons.refresh,
                                     //       size: 25.w,
                                     //     )),
-                                    Image(
-                                      image: AssetImage('assets/bell.png'),
-                                      width: 21.w,
+                                    InkWell(
+                                      child: Image(
+                                        image: AssetImage('assets/bell.png'),
+                                        width: 21.w,
+                                      ),
                                     ),
                                     SizedBox(
                                       width: 12.w,

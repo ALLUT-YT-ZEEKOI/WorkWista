@@ -7,6 +7,7 @@ import 'package:workwista/Utils/app_utils.dart';
 
 import 'package:workwista/view/Common%20Screens/custom_bottom_navbar.dart';
 import 'package:workwista/view/Model/profile_update_model.dart';
+import 'package:workwista/view/loginScreens/homeScreens/lottie_dialog.dart';
 
 class CompleteProfileController with ChangeNotifier {
   bool isLoading = false;
@@ -56,10 +57,11 @@ class CompleteProfileController with ChangeNotifier {
             updateProfileModelFromJson(response.body);
         log("Profile updated successfully");
 
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => CustomBottomNavbar()),
-        );
+       showDialog(
+  context: context,
+  barrierDismissible: false,
+  builder: (context) => const LottieDialog(),
+);
 
         log(updateModel.message.toString());
       } else if (response.statusCode == 400) {
